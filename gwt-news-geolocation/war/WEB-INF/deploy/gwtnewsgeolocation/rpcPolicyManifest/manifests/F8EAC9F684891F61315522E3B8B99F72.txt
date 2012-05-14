@@ -1,0 +1,2 @@
+serviceClass: es.uem.geolocation.client.services.GateService
+path: 7747F035AAFCA5BBD19EEF796166EF46.gwt.rpc
