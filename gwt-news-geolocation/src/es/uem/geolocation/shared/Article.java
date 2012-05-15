@@ -2,6 +2,7 @@ package es.uem.geolocation.shared;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import com.google.common.base.Objects; 
 
@@ -18,7 +19,9 @@ public class Article implements Serializable {
 	private String headline;
 	private String description;
 	private Date publishedDate;
-
+	private List<String> categories;
+	private List<String> locations; 
+	
 	/**
 	 * Constructor 
 	 */
@@ -70,6 +73,22 @@ public class Article implements Serializable {
 	public void setPublishedDate(Date publishedDate) {
 		this.publishedDate = publishedDate;
 	}
+		
+	public List<String> getCategories() {
+		return categories;
+	}
+
+	public void setCategories(List<String> categories) {
+		this.categories = categories;
+	}
+	
+	public List<String> getLocations() {
+		return locations;
+	}
+
+	public void setLocations(List<String> locations) {
+		this.locations = locations;
+	}
 
 	/**
 	 * Provide hash code of this article instance.
@@ -78,7 +97,7 @@ public class Article implements Serializable {
 	public int hashCode() {
 		return Objects.hashCode(this.getArticleID(), this.getUri(),
 				this.getHeadline(), this.getDescription(),
-				this.getPublishedDate());
+				this.getPublishedDate(), this.getCategories());
 	}
 
 	/**
@@ -89,7 +108,8 @@ public class Article implements Serializable {
 		return Objects.toStringHelper(this).addValue(this.getArticleID())
 				.addValue(this.getUri()).addValue(this.getHeadline())
 				.addValue(this.getDescription())
-				.addValue(this.getPublishedDate()).toString();
+				.addValue(this.getPublishedDate())
+				.addValue(this.getCategories().toString()).toString();
 	}
 
 }

@@ -25,8 +25,14 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import com.google.common.base.Strings; 
+import com.google.common.base.Strings;
+import com.google.gwt.dev.shell.remoteui.RemoteMessageProto.Message.Request;
+import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestTimeoutException;
+import com.google.gwt.http.client.Response;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.sun.syndication.feed.synd.SyndCategoryImpl;
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.SyndFeedInput;
@@ -35,6 +41,7 @@ import es.uem.geolocation.client.services.RSSService;
 import es.uem.geolocation.server.util.RetryHandler;
 import es.uem.geolocation.shared.Article;
 import es.uem.geolocation.shared.NewMap;
+import es.uem.geolocation.shared.RSS;
 
 /**
  * 
@@ -71,13 +78,41 @@ public class RSSServiceImpl extends RemoteServiceServlet implements
 	/**
 	 * Load RSS news  
 	 */
-	public ArrayList<Article> loadRSSNews(String uri) throws Exception {
+	public RSS loadRSSNews(String uri) throws Exception {		
+		RSS rss = null;  		
 		ArrayList<Article> articlesList = new ArrayList<Article>();
-
+		
+		
+		RequestBuilder request = new RequestBuilder(RequestBuilder.GET, uri); 		
+		request.sendRequest(null, new RequestCallback() {
+			
+			@Override
+			public void onResponseReceived(com.google.gwt.http.client.Request request,
+					Response response) {
+				System.out.println("StatusTex " + response.getStatusText());
+				String text = response.getText();
+				System.out.println(text);  				
+			}
+			
+			@Override
+			public void onError(com.google.gwt.http.client.Request request,
+					Throwable exception) {
+			      if (exception instanceof RequestTimeoutException) {
+			            // handle a request timeout
+			          } else {
+			            // handle other request errors
+			          }				
+				
+			}
+		});
+		
+/*		
+		
 		DefaultHttpClient httpClient = new DefaultHttpClient(); 
 		RetryHandler retryHandler = new RetryHandler();
 		httpClient.setHttpRequestRetryHandler(retryHandler);
 
+		
 		HttpGet method = new HttpGet(uri);
 		HttpResponse httpResponse = httpClient.execute(method);
 		HttpEntity httpEntity = httpResponse.getEntity();
@@ -88,9 +123,20 @@ public class RSSServiceImpl extends RemoteServiceServlet implements
 				InputStream inputStream = httpEntity.getContent();
 				InputStreamReader inputStreamReader = new InputStreamReader(
 						inputStream);
-				try {
+				try {					
 					SyndFeedInput syndFeedInput = new SyndFeedInput();
-					SyndFeed syndFeed = syndFeedInput.build(inputStreamReader);					
+					SyndFeed syndFeed = syndFeedInput.build(inputStreamReader);
+					
+					
+					System.out.println("Entraaaaa121");					
+					rss = new RSS(); 
+					// Información RSS
+					rss.setTitle(Strings.nullToEmpty(syndFeed.getTitle()));
+					rss.setLink(Strings.nullToEmpty(syndFeed.getLink()));
+					rss.setDescription(Strings.nullToEmpty(syndFeed.getDescription()));
+					rss.setCopyright(Strings.nullToEmpty(syndFeed.getCopyright()));
+					rss.setPublishedDate(syndFeed.getPublishedDate()); 					
+					
 					@SuppressWarnings("unchecked")
 					List<SyndEntry> listSyndEntries = syndFeed.getEntries();
 					for (SyndEntry syndEntry : listSyndEntries) {
@@ -107,10 +153,21 @@ public class RSSServiceImpl extends RemoteServiceServlet implements
 							article.setDescription(description);							
 						} 
 						article.setDescription(Strings.nullToEmpty(syndEntry
-								.getDescription().getValue()));
+								.getDescription().getValue()));												
 						article.setPublishedDate(syndEntry.getPublishedDate());
+						
+						// Categories
+						if (syndEntry.getCategories().size() > 0 ) {							
+							List<SyndCategoryImpl> categoriesSyndEntry = syndEntry.getCategories();
+							List<String> categories =  new ArrayList<String>();						
+							for (SyndCategoryImpl category : categoriesSyndEntry) {
+								if (!Strings.isNullOrEmpty(category.getName()))
+									categories.add(category.getName());
+							}
+							article.setCategories(categories);
+						}
 
-						//System.out.println(article.toString());
+						
 						articlesList.add(article);
 					}
 				} finally {
@@ -118,6 +175,8 @@ public class RSSServiceImpl extends RemoteServiceServlet implements
 				}
 			}
 		}
-		return articlesList;
+		if (rss != null) rss.setItems(articlesList); 
+	*/	
+		return rss;
 	}
 }

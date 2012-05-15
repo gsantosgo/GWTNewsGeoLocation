@@ -15,13 +15,13 @@
 
 package es.uem.geolocation.client.services;
 
-import java.util.*;
+import java.util.List;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
-import es.uem.geolocation.shared.Article;
 import es.uem.geolocation.shared.NewMap;
+import es.uem.geolocation.shared.RSS;
 
 /**
  * The client side stub for the RPC service.
@@ -37,11 +37,11 @@ public interface RSSService extends RemoteService {
 	
 	/**
 	 * 
-	 * Load RSS News  
+	 * Load RSS Source  
 	 * 
 	 * @param uri	URI  
-	 * @return List of news articles 
+	 * @return RSS Source 
 	 * @throws Exception 
 	 */
-	List<Article> loadRSSNews(String uri) throws Exception; 	
+	RSS loadRSSNews(String uri) throws Exception; 	
 }

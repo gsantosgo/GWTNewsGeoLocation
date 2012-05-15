@@ -16,6 +16,12 @@ package es.uem.geolocation.client.presenter;
 
 import com.google.gwt.user.client.ui.HasWidgets;
 
+/**
+ * 
+ * Root of all presenters
+ * 
+ * @author Guillermos Santos (gsantosgo@yahoo.es)
+ */
 public abstract interface Presenter {
-  public abstract void go(final HasWidgets container);
+	public abstract void go(final HasWidgets container); 
 }

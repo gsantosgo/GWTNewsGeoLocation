@@ -17,6 +17,8 @@ package es.uem.geolocation.client;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwt.core.client.GWT;
+
 
 /**
  * Cadena de caracteres estaticas y literales.
@@ -55,6 +57,8 @@ public class Constant {
 			put("elpaisUltimaNoticiasMenuItem","http://ep00.epimg.net/rss/tags/ultimas_noticias.xml");
 			put("elpaisInternacionalMenuItem","http://ep00.epimg.net/rss/internacional/portada.xml");
 			
+			// Servlet Implemented
+			put("rssMenuItem", GWT.getModuleBaseURL() + "rssnews"); 
 		}
 	}; 
 

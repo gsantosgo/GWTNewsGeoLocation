@@ -31,14 +31,14 @@
 			padding: 0.5em;
 		}
                 	
-		.sourcelink {
-			height: 1.5em;
-			line-height: 1.5em;
+		.sourcelink {			
+			vertical-align: top;			
 		}
                 	
-		.label {
-			width: 8em;
+		.label {			
 			display: inline-block;
+			padding: 0.1em;
+			vertical-align: top;
 		}
 	</ui:style>	
 	<g:HTMLPanel addStyleNames="{style.fullscreen}">
@@ -98,22 +98,18 @@
 		        <g:HTMLPanel>
 		        	<g:Label ui:field="state"></g:Label> 
         	        <div class="{style.sourceblock}">
-            	            <span class="{style.label}">Fuente RSS:</span><g:Label ui:field="fuenteRSSLabel" addStyleNames="{style.label}" /><br />
-                	        <span class="{style.label}">Enlace RSS:</span><g:Anchor ui:field="fuenteRSSLink" addStyleNames="{style.sourcelink}" /><br />
-							<span class="{style.label}">Detalle RSS:</span><g:Label ui:field="fuenteRSSDetailLabel" addStyleNames="{style.label}" /><br />
+            	            <span class="{style.label}">Fuente RSS:&nbsp;&nbsp;</span><g:Label ui:field="sourceRSSTitle" addStyleNames="{style.label}" /><br />
+                	        <span class="{style.label}">Enlace RSS:&nbsp;&nbsp;</span><g:Anchor ui:field="sourceRSSLink" addStyleNames="{style.sourcelink}" /><br />							
+                	        <span class="{style.label}">Copyright:&nbsp;&nbsp;</span><g:Label ui:field="sourceRSSCopyright" addStyleNames="{style.label}" /><br />
                 	</div>                
                 	<g:SimplePanel ui:field="mapWrapper" />								
         		</g:HTMLPanel>			
 			</g:center>
-			
-			<!-- <g:Label ui:field="state">Loading...</g:Label>-->
-			
 			<g:east size="20">					
 				<g:ScrollPanel ui:field="contentNews" addStyleNames="{style.contentNews}">					
 					<g:VerticalPanel ui:field="newsList" />
 				</g:ScrollPanel>				
-			</g:east>
-					
+			</g:east>					
 		</g:DockLayoutPanel>
 	</g:HTMLPanel>
 </ui:UiBinder> 

@@ -21,18 +21,29 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.maps.client.HasJso;
+import com.google.gwt.maps.client.HasMap;
 import com.google.gwt.maps.client.base.HasInfoWindow;
 import com.google.gwt.maps.client.base.HasLatLng;
+import com.google.gwt.maps.client.base.HasLatLngBounds;
 import com.google.gwt.maps.client.event.EventCallback;
 import com.google.gwt.maps.client.overlay.HasMarker;
+import com.google.common.base.Joiner; 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.MenuItem;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
+import com.google.common.base.Strings;
+
+import es.uem.geolocation.client.Constant;
 import es.uem.geolocation.client.services.GateServiceAsync;
 import es.uem.geolocation.client.services.GeonamesServiceAsync;
 import es.uem.geolocation.client.services.RSSServiceAsync;
@@ -40,6 +51,7 @@ import es.uem.geolocation.client.view.MapView;
 import es.uem.geolocation.client.view.Resources;
 import es.uem.geolocation.shared.Article;
 import es.uem.geolocation.shared.NewMap;
+import es.uem.geolocation.shared.RSS;
 import es.uem.geolocation.shared.Toponym;
 
 /**
@@ -49,16 +61,46 @@ import es.uem.geolocation.shared.Toponym;
  * 
  * @author Guillermos Santos (gsantosgo@yahoo.es)
  */
-public class GeoRSSPresenter implements Presenter, MapView.Presenter<NewMap> {
+public class GeoRSSPresenter implements Presenter {
 
+	public interface Display {
+		HasLatLngBounds createBounds(HasLatLng southWest, HasLatLng northEast);
+		HasInfoWindow createInfoWindow(String content);
+		HasLatLng createLatLng(double lat, double lng);
+		HasMarker createMarkerAt(HasLatLng position);
+		void fitBounds(HasLatLngBounds bounds);
+		HasMap getMap();										
+		void reset();
+		
+		void addListener(HasJso instance, String eventName,
+				EventCallback callback);
+		void clearInstanceListeners(HasJso instance);
+		
+		Widget asWidget();		
+ 
+		// Source RSS (Information)  
+		void setSourceRSSTitle(String title);
+		void setSourceRSSLink(String url);
+		void setSourceRSSCopyright(String text);
+		// State line (Information) 
+		void setState(String state);
+		
+		// News list 
+		VerticalPanel getNewsList();
+	}
+	
 	private final RSSServiceAsync rssService;
 	private final GateServiceAsync gateService;
 	private final GeonamesServiceAsync geonamesService;
 	private final HandlerManager eventBus;
-	private final MapView<NewMap> view;
 	private final ArrayList<HasMarker> markers;
-
+	private List<Article> articles;
+	private final Display display;
+	private final String uri;
+	private final Resources resources = GWT.create(Resources.class);
+		
 	/**
+	 * 
 	 * Constructor
 	 * 
 	 * @param RSSService
@@ -74,14 +116,16 @@ public class GeoRSSPresenter implements Presenter, MapView.Presenter<NewMap> {
 	 */
 	public GeoRSSPresenter(RSSServiceAsync rssService,
 			GateServiceAsync gateService, GeonamesServiceAsync geonamesService,
-			HandlerManager eventBus, MapView<NewMap> view) {
+			HandlerManager eventBus, Display view, String uri) {
 		super();
 		this.rssService = rssService;
 		this.gateService = gateService;
 		this.geonamesService = geonamesService;
 		this.eventBus = eventBus;
-		this.view = view;
+		this.display = view;
 		this.markers = new ArrayList<HasMarker>();
+		this.articles = new ArrayList<Article>(); 
+		this.uri = uri;  
 	}
 
 	/**
@@ -89,144 +133,94 @@ public class GeoRSSPresenter implements Presenter, MapView.Presenter<NewMap> {
 	 * 
 	 * @param uri
 	 */
-	private void fetchRSSNews(String uri) {
+	private void fetchRSSNews(final String uri) {
+		display.setState("Accediendo a fuente RSS ..." + uri);
+		display.setState("Cargando fuente RSS ..." + uri + ". Espere ... ");
+		// RSS Request =====
 		try {
-			view.setFuenteRSSLink(uri);
-			view.setState("Cargando fuente RSS ..." + uri);
-			final List<NewMap> newMapList = new ArrayList<NewMap>();
-			final List<Article> articleList = new ArrayList<Article>();
-			rssService.loadRSSNews(uri, new AsyncCallback<List<Article>>() {
-				public void onSuccess(List<Article> articles) {
-					int resultados = articles.size();
-					view.setState("Cargando " + resultados + " noticias");
+			System.out.println(uri);
+			rssService.loadRSSNews(uri, new AsyncCallback<RSS>() {
 
-					if (articles != null && resultados > 0) {
-						// final List<Anchor> anchors = new ArrayList<Anchor>();
-						final HTML cabecera = new HTML(
-								"<b>Noticias encontradas: " + resultados
-										+ "</b>");
-						view.getNewsList().add(cabecera);
+				@Override
+				public void onSuccess(RSS rssSource) {
+					if (rssSource != null) {
+						// RSS Information =====
+						display.setState("Cargando información fuente RSS \""
+								+ rssSource.getTitle() + "\"...");
+						display.setSourceRSSTitle(rssSource.getTitle());
+						display.setSourceRSSLink(uri);
+						display.setSourceRSSCopyright(rssSource.getCopyright());
 
-						Resources resources = GWT.create(Resources.class);
-						// final Image imagenNews = new Image(Resources.)
-						for (int i = 0; i < resultados; ++i) {
-							final Article article = articles.get(i);
+						// Articles
+						articles = rssSource.getItems();						
+						if (articles != null && articles.size() > 0) {
+							int articlesCount = articles.size();
+							display.setState("Cargando " + articlesCount
+									+ " articulos de noticias...");
 
-							// Servicio Gate Service
-							try {
-								gateService.getNamedEntities(
-										article.getHeadline()
-												+ article.getDescription(),
-										new AsyncCallback<List<String>>() {
-
-											public void onSuccess(
-													List<String> toponymList) {
-												// System.out.println("Salida GateService"
-												// + result.toString());
-												int toponyms = toponymList
-														.size();
-												if (toponyms > 0) {
-													for (String toponymName : toponymList) {
-														System.out
-																.println(toponymName);
-
-														geonamesService
-																.toponymSearchCriteria(
-																		toponymName,
-																		new AsyncCallback<List<Toponym>>() {
-
-																			public void onSuccess(
-																					List<Toponym> toponyms) {
-																				System.out
-																						.println("Toponimos "
-																								+ toponyms
-																										.size());
-
-																				// Toponym
-																				if (toponyms
-																						.size() > 0) {
-
-																					System.out
-																							.println("Toponym "
-																									+ toponyms
-																											.toString());
-																					NewMap newMap = new NewMap();
-																					newMap.setPlacename(toponyms
-																							.get(0)
-																							.getName());
-																					newMap.setLatitude(toponyms
-																							.get(0)
-																							.getLatitude());
-																					newMap.setLongitude(toponyms
-																							.get(0)
-																							.getLongitude());
-																					System.out
-																							.println(" ===> "
-																									+ newMap.toString());
-																					final HasLatLng location = view
-																							.createLatLng(
-																									newMap.getLatitude(),
-																									newMap.getLongitude());
-																					System.out
-																							.println(location
-																									.toString());
-
-																					final HasMarker marker = view
-																							.createMarkerAt(location);
-																					markers.add(marker);
-																					marker.setTitle(newMap
-																							.getPlacename());
-																					articleList
-																							.add(article);
-
-																					attachArticles(
-																							marker,
-																							articleList);
-																				}
-																			}
-
-																			
-																			public void onFailure(
-																					Throwable caught) {
-																				Window.alert("Error obteniendo geolocalización de noticias");
-																			}
-																		});
-													}
-												}
-											}
-
-											
-											public void onFailure(
-													Throwable caught) {
-												Window.alert("Error obteniendo localizaciones de noticias");
-											}
-										});
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
-
-							Anchor anchor = new Anchor(article.getHeadline());
-							HTML description = new HTML(article
-									.getDescription());
-							view.getNewsList().add(new Image(resources.news()));
-							view.getNewsList().add(anchor);
-							view.getNewsList().add(description);
+							handleRSS();
 						}
+					}
+					else {
+						display.setState("Imposible cargar información fuente RSS \"" + uri + "\".");						
 					}
 				}
 
+				@Override
 				public void onFailure(Throwable caught) {
-					// TODO Auto-generated method stub
-
+					display.setState("");
+					Window.alert("Fallo. Imposible cargar información fuente RSS \""
+							+ uri + "\".");
 				}
 			});
 		} catch (Exception e) {
-			// Falta
-			e.printStackTrace();
+			display.setState("");
+			Window.alert("Fallo. Error acceso fuente RSS \"" + uri + "\".");
 		}
+	}	
+	
+	private void handleRSS() {			
+		for (Article article : articles) {				
+			String categories = ""; 
+			if (article.getCategories() != null && article.getCategories().size() > 0) {
+				categories = Joiner.on(", ").skipNulls().join(article.getCategories()); 
+			}
+			
+			String headline = article.getHeadline();  
+			String description = article.getDescription(); 			
+			String newArticle = Joiner.on(" ").skipNulls().join(categories, headline, description);
+			
+			System.out.println("Categories " + newArticle);
+			//System.out.println("Noticia " + news);
 
+			if (!Strings.isNullOrEmpty(categories)) {
+				handleNER(categories, article);				
+				//Error
+				//System.out.println(" Locations ==> " + article.getLocations().toString());				
+			}			
+			
+								
+		}				
 	}
+		
+	private void handleNER(String text, final Article article) {  
+		try {
+			gateService.getNamedEntities(text, new AsyncCallback<List<String>>() {
+				@Override
+				public void onSuccess(List<String> locations) {
+					article.setLocations(locations); 
+				}
 
+				@Override
+				public void onFailure(Throwable caught) {
+				}
+
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		 
+	}
+	
 	/**
 	 * Anexando articulos
 	 * 
@@ -251,40 +245,38 @@ public class GeoRSSPresenter implements Presenter, MapView.Presenter<NewMap> {
 			anchors.add(anchor);
 			Label label = new Label(article.getDescription());
 		}
-		final HasInfoWindow infoWindow = view.createInfoWindow(content
+		final HasInfoWindow infoWindow = display.createInfoWindow(content
 				.toString());
 
 		for (Anchor anchor : anchors) {
 			anchor.addClickHandler(new ClickHandler() {
 
 				public void onClick(ClickEvent event) {
-					infoWindow.open(view.getMap(), marker);
+					infoWindow.open(display.getMap(), marker);
 				}
 			});
-			view.getNewsList().add(anchor);
-			view.getNewsList().add(new Label("aaaa adasda"));
+			display.getNewsList().add(anchor);
+			display.getNewsList().add(new Label("aaaa adasda"));
 		}
 
 		// Click for marker.
-		view.addListener(marker, "click", new EventCallback() {
+		display.addListener(marker, "click", new EventCallback() {
 			@Override
 			public void callback() {
-				infoWindow.open(view.getMap(), marker);
+				infoWindow.open(display.getMap(), marker);
 			}
 		});
 	}
-
+	
+	/**
+	 * Takes the widget in which we wish the presenter-associated 
+	 * view associated to be displayed. 
+	 */
 	public void go(final HasWidgets container) {
 		container.clear();
-		view.setFuenteRSS("holaaaaaaa");
-		String uri = "http://elmundo.feedsportal.com/elmundo/rss/portada.xml";
-		view.setFuenteRSSLink(uri);
-		container.add(view.asWidget());
-		// RootPanel.get("state").clear();
-
-		// RootPanel.get("state").add(new Label(uri));
-		fetchRSSNews(uri);
-		// RootPanel.get("state").clear();
-	}
-
+		display.reset(); 
+		container.add(display.asWidget());
+		if (!Strings.isNullOrEmpty(uri)) fetchRSSNews(uri);	
+	}	
+	  
 }

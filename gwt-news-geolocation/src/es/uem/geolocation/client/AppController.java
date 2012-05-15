@@ -19,7 +19,9 @@ import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerManager;
+import com.google.common.base.Strings;
 import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HasWidgets;
 
 import es.uem.geolocation.client.presenter.GeoRSSPresenter;
@@ -27,7 +29,7 @@ import es.uem.geolocation.client.presenter.Presenter;
 import es.uem.geolocation.client.services.GateServiceAsync;
 import es.uem.geolocation.client.services.GeonamesServiceAsync;
 import es.uem.geolocation.client.services.RSSServiceAsync;
-import es.uem.geolocation.client.view.MapViewImpl;
+import es.uem.geolocation.client.view.MapView;
 import es.uem.geolocation.shared.NewMap;
 
 /**
@@ -39,8 +41,8 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 	private final HandlerManager eventBus;
 	private final RSSServiceAsync rssService;
 	private final GateServiceAsync gateService; 
-	private final GeonamesServiceAsync geonamesService; 
-	private MapViewImpl<NewMap> mapView = null;
+	private final GeonamesServiceAsync geonamesService;
+	private MapView view = null;   
 	private HasWidgets container;
 
 	/**
@@ -62,35 +64,39 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 		bind();
 	}
 
+	/**
+	 * 
+	 */
 	private void bind() {
 		History.addValueChangeHandler(this);
 	}
 
-	public void onValueChange(ValueChangeEvent<String> event) {
+	public void onValueChange(ValueChangeEvent<String> event) {		
 		String token = event.getValue();
+		String uri = null; 		
 		
+		if (view == null) {
+			view = new MapView(); 
+		}
 		if (token != null) {
+			Presenter presenter = null; 
 			if (token.equals("display")) {
-				GWT.runAsync(new RunAsyncCallback() {
-					public void onFailure(Throwable caught) {
-					}
-
-					public void onSuccess() {
-						// lazily initialize our views, and keep them around to
-						// be reused
-						//
-						System.out.println("onSuccess entra");
-						if (mapView == null) {
-							mapView = new MapViewImpl<NewMap>();
-						}
-						new GeoRSSPresenter(
-								rssService, 
-								gateService, 
-								geonamesService,
-								eventBus, mapView)
-								.go(container);
-					}
-				});
+				System.out.println("onSuccess entra.display");
+			}
+			else {
+				System.out.println("onSuccess entra.other");
+				uri = Constant.MENU_LIST.get(token); 				
+			} 
+			presenter = new GeoRSSPresenter(
+						rssService, 
+						gateService, 
+						geonamesService,
+						eventBus,
+						view,
+						Strings.nullToEmpty(uri));  				
+		
+			if (presenter != null) {
+				presenter.go(container); 
 			}
 		}
 	}

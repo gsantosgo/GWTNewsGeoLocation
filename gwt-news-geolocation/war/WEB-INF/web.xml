@@ -19,7 +19,11 @@
 		<servlet-name>geonamesServlet</servlet-name>
 		<servlet-class>es.uem.geolocation.server.GeonamesServiceImpl</servlet-class>
 	</servlet>	
-
+  	<servlet>
+    	<servlet-name>rssnewsServlet</servlet-name>
+     	<servlet-class>es.uem.geolocation.server.RSSNewsServlet</servlet-class>
+  	</servlet>
+  
 	<!--  Servlets Mapping -->
 	<servlet-mapping>
 		<servlet-name>geoRSSServlet</servlet-name>
@@ -34,9 +38,14 @@
 		<url-pattern>/gwtnewsgeolocation/geonames</url-pattern>		
 	</servlet-mapping>	
   
-  <!-- Default page to serve -->
-  <welcome-file-list>
-    <welcome-file>GeoParserGWT.html</welcome-file>
-  </welcome-file-list>
+  	<servlet-mapping>
+    	<servlet-name>rssnewsServlet</servlet-name>
+    	<url-pattern>/gwtnewsgeolocation/rssnews</url-pattern>
+  	</servlet-mapping>
+  
+  	<!-- Default page to serve -->
+  	<welcome-file-list>
+	    <welcome-file>GeoParserGWT.html</welcome-file>
+  	</welcome-file-list>
 
 </web-app>
