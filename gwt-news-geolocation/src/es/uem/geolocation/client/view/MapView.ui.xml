@@ -23,30 +23,32 @@
 			display: inline-block;
 		}
 		
-
 		.sourceblock {
 			background: #E3E9FF;
 			border: 1px solid black;
 			margin: 0.1em;
 			padding: 0.5em;
 		}
-                	
-		.sourcelink {			
-			vertical-align: top;			
-		}
-                	
-		.label {			
+
+		.label {	
 			display: inline-block;
 			padding: 0.1em;
 			vertical-align: top;
 		}
+		
+		.sourcelink {			
+			vertical-align: top;			
+		}
+		
+               	
+
 	</ui:style>	
 	<g:HTMLPanel addStyleNames="{style.fullscreen}">
 		<g:DockLayoutPanel unit='EM' addStyleNames="{style.fullscreen}">
 			<g:north size='5'>
 				<g:HTMLPanel styleName="{style.header}">
 					&nbsp;&nbsp; 								
-					<g:Image altText="Geolocalización Noticas"
+					<g:Image altText="Geolocalización de Noticias"
 						addStyleNames="{style.headerimage}" 
 						ui:field="headerImage" 
 						resource="{image}"/>
@@ -98,9 +100,12 @@
 		        <g:HTMLPanel>
 		        	<g:Label ui:field="state"></g:Label> 
         	        <div class="{style.sourceblock}">
-            	            <span class="{style.label}">Fuente RSS:&nbsp;&nbsp;</span><g:Label ui:field="sourceRSSTitle" addStyleNames="{style.label}" /><br />
-                	        <span class="{style.label}">Enlace RSS:&nbsp;&nbsp;</span><g:Anchor ui:field="sourceRSSLink" addStyleNames="{style.sourcelink}" /><br />							
-                	        <span class="{style.label}">Copyright:&nbsp;&nbsp;</span><g:Label ui:field="sourceRSSCopyright" addStyleNames="{style.label}" /><br />
+            	            <span class="{style.label}">Fuente RSS:&nbsp;&nbsp;</span>
+            	            	<g:Label ui:field="sourceRSSTitle" addStyleNames="{style.label}"/>
+                	        <span class="{style.label}">Enlace RSS:&nbsp;&nbsp;</span>
+                	        	<g:Anchor ui:field="sourceRSSLink" addStyleNames="{style.sourcelink}"/><br/>							
+                	        <span class="{style.label}">Copyright:&nbsp;&nbsp;</span>
+                	        	<g:Label ui:field="sourceRSSCopyright" addStyleNames="{style.label}"/><br/>
                 	</div>                
                 	<g:SimplePanel ui:field="mapWrapper" />								
         		</g:HTMLPanel>			

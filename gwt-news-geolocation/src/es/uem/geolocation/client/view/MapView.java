@@ -16,7 +16,6 @@
 package es.uem.geolocation.client.view;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.maps.client.HasJso;
 import com.google.gwt.maps.client.HasMap;
 import com.google.gwt.maps.client.MapOptions;
@@ -37,7 +36,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
@@ -48,9 +46,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import es.uem.geolocation.client.Constant;
-
 import es.uem.geolocation.client.presenter.GeoRSSPresenter;
-import es.uem.geolocation.client.presenter.HasCommandHandlers;
 /**
  * 
  *  Map View.    
@@ -97,6 +93,13 @@ public class MapView extends Composite implements GeoRSSPresenter.Display {
 	MenuItem elpaisInternacionalMenuItem; 
 	@UiField
 	MenuItem rssMenuItem; 
+
+	@UiField
+	MenuItem helpMenuItem; 
+
+	@UiField
+	MenuItem aboutMenuItem; 
+
 	
 	@UiField
 	SimplePanel contentNews;	
@@ -107,6 +110,9 @@ public class MapView extends Composite implements GeoRSSPresenter.Display {
 	Anchor sourceRSSLink;
 	@UiField
 	Label sourceRSSCopyright; 
+
+	
+	
 	
 	@UiField 
 	Label state; 
@@ -189,6 +195,24 @@ public class MapView extends Composite implements GeoRSSPresenter.Display {
 				History.newItem("rssMenuItem");
 			}					
 		});	
+		
+		helpMenuItem.setCommand(new Command() {			
+			@Override
+			public void execute() {
+				HelpDialogBox helpDialog = new HelpDialogBox(); 
+				helpDialog.setText("Ayuda");
+				helpDialog.center(); 
+			}					
+		});		
+		
+		aboutMenuItem.setCommand(new Command() {			
+			@Override
+			public void execute() {
+				AboutDialogBox aboutDialog = new AboutDialogBox();
+				aboutDialog.setText("Acerca de ..."); 
+				aboutDialog.center();
+			}					
+		});		
 	}
 
 	public HasMap getMap() {

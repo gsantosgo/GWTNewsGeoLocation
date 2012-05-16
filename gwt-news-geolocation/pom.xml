@@ -3,7 +3,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>es.uem.parser</groupId>
+	<groupId>es.uem.geolocation</groupId>
 	<artifactId>gwt-news-geolocation</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Geolocalización de Noticias</name>

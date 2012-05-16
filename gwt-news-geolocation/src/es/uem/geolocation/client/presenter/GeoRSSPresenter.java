@@ -168,7 +168,7 @@ public class GeoRSSPresenter implements Presenter {
 
 				@Override
 				public void onFailure(Throwable caught) {
-					display.setState("");
+					display.setState(""); 
 					Window.alert("Fallo. Imposible cargar información fuente RSS \""
 							+ uri + "\".");
 				}
@@ -178,8 +178,8 @@ public class GeoRSSPresenter implements Presenter {
 			Window.alert("Fallo. Error acceso fuente RSS \"" + uri + "\".");
 		}
 	}	
-	
-	private void handleRSS() {			
+		
+	private void handleRSS() {					
 		for (Article article : articles) {				
 			String categories = ""; 
 			if (article.getCategories() != null && article.getCategories().size() > 0) {
