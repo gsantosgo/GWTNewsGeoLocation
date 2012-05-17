@@ -1,0 +1,5 @@
+# Module gwtnewsgeolocation
+# RPC service class, partial path of RPC policy file
+es.uem.geolocation.client.services.RSSService, 5B3DCFBD694E42A6A6BA594DCBA5D097.gwt.rpc
+es.uem.geolocation.client.services.GateService, 7747F035AAFCA5BBD19EEF796166EF46.gwt.rpc
+es.uem.geolocation.client.services.GeonamesService, 4F2523BD5EBADB0E1E4DE93474D841B0.gwt.rpc

@@ -1,0 +1,158 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+
+	<groupId>es.uem.geolocation</groupId>
+	<artifactId>gwt-news-geolocation</artifactId>
+	<version>1.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
+	<name>Geolocalización de Noticias</name>
+	<description>Geolocalización de Noticias usando tecnologia Google Web Toolkit</description>
+
+	<licenses>
+		<license>
+			<name>Apache License 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
+		</license>
+	</licenses>
+
+	<!-- Developer information -->
+	<developers>
+		<developer>
+			<name>Guillermo Santos</name>
+			<email>gsantosgo@yahoo.es</email>
+			<organization>@gsantosgo</organization>
+			<url>http://about.me/gsantosgo</url>
+		</developer>
+	</developers>
+
+	<!-- Note 32bit JVM 64bit JVM -->
+	<properties>
+		<!-- Java properties -->
+		<javaVersion>1.6</javaVersion>
+		<webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<!-- GWT props -->
+		<gwt.version>2.4.0</gwt.version>
+		<gwt.extraJvmArgs>-Xmx1024m -Xss8m</gwt.extraJvmArgs>
+		<!-- Versions -->
+		<gate.version>7.0</gate.version>
+		<rome.version>1.0</rome.version>
+		<geonames.version>1.1.6</geonames.version>
+	</properties>
+
+	<build>
+		<!-- Build this code -->
+		<sourceDirectory>src/main/java</sourceDirectory>
+		<testSourceDirectory>src/main/test</testSourceDirectory>
+
+		<!-- Generate compiled stuff in the folder used for developing mode -->
+		<outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
+
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>gwt-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+					</execution>								
+				</executions>
+			</plugin>
+
+			<!-- <plugin> <artifactId>maven-resources-plugin</artifactId> <version>2.5</version> 
+				<executions> <execution> <id>1</id> <phase>validate</phase> <goals> <goal>copy-resources</goal> 
+				</goals> <configuration> <outputDirectory>src/main/resources/es/uem/geolocation/client</outputDirectory> 
+				<resources> <resource> <directory>src/main/resources/es/uem/geolocation/client/properties</directory> 
+				<filtering>true</filtering> <includes> <include>*.properties</include> </includes> 
+				</resource> </resources> </configuration> </execution> <execution> <id>2</id> 
+				<phase>compile</phase> <goals> <goal>copy-resources</goal> </goals> <configuration> 
+				<outputDirectory>target/www</outputDirectory> <resources> <resource> <directory>src/main/resources</directory> 
+				<filtering>true</filtering> <includes> <include>**/*.properties</include> 
+				</includes> </resource> <resource> <directory>src/main/webapp</directory> 
+				<filtering>true</filtering> </resource> <resource> <directory>src/test/jetty</directory> 
+				<filtering>true</filtering> </resource> </resources> </configuration> </execution> 
+				</executions> </plugin> -->
+		</plugins>
+	</build>
+
+
+	<!-- External project dependencies -->
+	<dependencies>		<!-- Other Google -->
+		<dependency>
+			<groupId>com.google.gwt.google-apis</groupId>
+			<artifactId>gwt-ajaxloader</artifactId>
+			<version>1.1.0</version>
+			<scope>compile</scope>
+		</dependency>		<!-- Just the necessary GWT bits -->
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-user</artifactId>
+			<version>${gwt.version}</version>
+			<scope>provided</scope>			<!-- don't copy to jar -->
+		</dependency>
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-dev</artifactId>
+			<version>${gwt.version}</version>
+			<scope>provided</scope>			<!-- don't copy to jar -->
+		</dependency>
+		<dependency>
+			<groupId>com.google.gwt.maps</groupId>
+			<artifactId>gwt-maps3-0.2b</artifactId>
+			<version>3.0.2-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>11.0.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava-gwt</artifactId>
+			<version>12.0</version>
+		</dependency>
+		<!-- GATE - ANNIE -->
+		<dependency>
+			<groupId>uk.ac.gate</groupId>
+			<artifactId>gate-core</artifactId>
+			<version>${gate.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>rome</groupId>
+			<artifactId>rome</artifactId>
+			<version>${rome.version}</version>
+		</dependency>
+		<!-- Geonames Version No existe en el repositorio ultima version 1.1.6 
+			Hacemos referencia local -->
+		<dependency>
+			<groupId>org.geonames</groupId>
+			<artifactId>geonames</artifactId>
+			<version>${geonames.version}</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/lib/geonames-1.1.6.jar</systemPath>
+		</dependency>
+		<!-- Testing -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.7</version>
+			<scope>test</scope><!-- don't copy to jar -->
+		</dependency>
+	</dependencies>
+
+	<!-- profiles (with activation per platform) -->
+	<!-- <profiles> <profile> <id>gwt-dev-windows</id> <properties> <platform>windows</platform> 
+		</properties> <activation> <activeByDefault>true</activeByDefault> <os> <family>windows</family> 
+		</os> </activation> </profile> <profile> <id>gwt-dev-mac</id> <properties> 
+		<platform>mac</platform> </properties> <activation> <activeByDefault>false</activeByDefault> 
+		<os> <family>mac</family> </os> </activation> </profile> <profile> <id>gwt-dev-linux</id> 
+		<properties> <platform>linux</platform> </properties> <activation> <activeByDefault>false</activeByDefault> 
+		<os> <name>linux</name> </os> </activation> </profile> </profiles> -->
+
+</project>
