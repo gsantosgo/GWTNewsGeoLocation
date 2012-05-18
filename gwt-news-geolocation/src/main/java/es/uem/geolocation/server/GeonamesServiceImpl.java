@@ -17,16 +17,12 @@ package es.uem.geolocation.server;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.geonames.Style;
-import org.geonames.ToponymSearchCriteria;
-import org.geonames.ToponymSearchResult;
-import org.geonames.WebService;
+import java.util.concurrent.TimeUnit;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
-import es.uem.geolocation.client.Constant;
 import es.uem.geolocation.client.services.GeonamesService;
+import es.uem.geolocation.server.cache.GeonamesSearchServiceImpl;
 import es.uem.geolocation.shared.Toponym;
 
 /**
@@ -38,43 +34,26 @@ import es.uem.geolocation.shared.Toponym;
 
 @SuppressWarnings("serial")
 public class GeonamesServiceImpl extends RemoteServiceServlet implements
-		GeonamesService {
+		GeonamesService {	
+	private GeonamesSearchServiceImpl geonamesSearch;  
 
-	public List<Toponym> toponymSearchCriteria(String name) {
+	/**
+	 * Constructor 
+	 */
+	public GeonamesServiceImpl() {
+		geonamesSearch = new GeonamesSearchServiceImpl(2, TimeUnit.DAYS, 1000);
+	}
+
+	/**
+	 * Toponym search criteria 
+	 */
+	public List<Toponym> toponymSearchCriteria(String placeName) {				
 		List<Toponym> toponymList = new ArrayList<Toponym>();
-		try {
-			ToponymSearchCriteria searchCriteria = new ToponymSearchCriteria();			
-			searchCriteria.setLanguage(Constant.DEFAULT_LANGUAGE);
-			searchCriteria.setNameEquals(name);
-			searchCriteria.setStartRow(0);
-			searchCriteria.setStyle(Style.LONG); // Importante
-
-			WebService.setUserName(Constant.GEONAMES_WEBSERVICE_USERNAME);
-
-			ToponymSearchResult searchResult = WebService
-					.search(searchCriteria);
-			for (org.geonames.Toponym toponym : searchResult.getToponyms()) {
-				/*
-				 * System.out.println(toponym.getName() + " " +
-				 * toponym.getCountryName() + " (" + toponym.getLatitude() + ","
-				 * + toponym.getLongitude() + ")");
-				 */
-
-				Toponym newToponym = new Toponym();
-				newToponym.setGeoNameId(toponym.getGeoNameId());
-				newToponym.setName(toponym.getName());
-				newToponym.setAlternateNames(toponym.getAlternateNames());
-				newToponym.setLatitude(toponym.getLatitude());
-				newToponym.setLongitude(toponym.getLongitude());
-				newToponym.setElevation(toponym.getElevation());
-				newToponym.setPopulation(toponym.getPopulation());
-
-				toponymList.add(newToponym);
-			}
-		} catch (Exception e) {
+		try {			
+			toponymList = geonamesSearch.search(placeName); 			
+		} catch (Exception e) {			
 			e.printStackTrace();
 		}
-
 		return toponymList;
 	}
 }

@@ -1,7 +1,3 @@
-package es.uem.geolocation.shared;
-
-import java.io.Serializable;
-
 /* Copyright (c) 2012 Guillermo Santos 
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +12,11 @@ import java.io.Serializable;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package es.uem.geolocation.shared;
+
+import java.io.Serializable;
+
+import com.google.common.base.Objects;
 
 /**
  * a GeoNames toponym
@@ -34,6 +35,7 @@ public class Toponym implements Serializable {
 	private String countryName;
 	private Long population;
 	private Integer elevation;
+	private String featureClass; 
 	private String featureClassName;
 	private String featureCode;
 	private String featureCodeName;
@@ -182,6 +184,21 @@ public class Toponym implements Serializable {
 	}
 
 	/**
+	 * @return Returns the featureClass.
+	 */
+	public String getFeatureClass() {
+		return featureClass;
+	}
+
+	/**
+	 * @param featureClass
+	 *            The featureClass to set.
+	 */
+	public void setFeatureClass(String featureClass) {
+		this.featureClass = featureClass;
+	}
+	
+	/**
 	 * @return Returns the featureClassName.
 	 */
 	public String getFeatureClassName() {
@@ -244,19 +261,22 @@ public class Toponym implements Serializable {
 	}
 
 	public String toString() {
-		StringBuilder str = new StringBuilder();
-		str.append("geoNameId=" + geoNameId + ",");
-		str.append("name=" + name + ",");
-		if (alternateNames != null) {
-			str.append("alternateNames=" + alternateNames + ",");
-		}
-		str.append("latitude=" + latitude + ",");
-		str.append("longitude=" + longitude + ",");
-		str.append("countryCode=" + countryCode + ",");
-		str.append("population=" + population + ",");
-		str.append("elevation=" + elevation + ",");
-		str.append("featureCode=" + featureCode);
-		return str.toString();
+		return Objects.toStringHelper(this.getClass())
+				.add("geoNameId", this.getGeoNameId())
+				.add("name", this.getName())
+				.add("alternateNames", this.getAlternateNames())
+				.add("featureClass", this.getFeatureClass())
+				.add("featureClassName", this.getFeatureClassName())
+				.add("featureCode", this.getFeatureCode())
+				.add("featureCodeName", this.getFeatureCodeName())
+				.add("continentCode", this.getContinentCode())
+				.add("countryCode", this.getCountryCode())
+				.add("countryName", this.getCountryName())
+				.add("latitude", this.getLatitude())
+				.add("longitude", this.getLongitude())
+				.add("population", this.getPopulation())
+				.add("elevation", this.getElevation())				
+				.toString(); 
 	}
 
 }

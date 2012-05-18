@@ -19,7 +19,6 @@ import org.geonames.ToponymSearchCriteria;
 import org.geonames.ToponymSearchResult;
 import org.geonames.WebService;
 
-
 /**
  * Acceso a Servicio Web GeoNames para obtener
  * las coordenadas geográficas (latitud,longitud) de un toponimo.    
