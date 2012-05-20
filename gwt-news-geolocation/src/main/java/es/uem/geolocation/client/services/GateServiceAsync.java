@@ -19,11 +19,14 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+import es.uem.geolocation.shared.Article;
+
 /**
  * Asynchronous interface <code>GateService</code>.
  * 
  * @author Guillermo Santos (gsantosgo@yahoo.es)
  */
 public interface GateServiceAsync {	
-	void getNamedEntities(String texto, AsyncCallback<List<String>> asyncCallback) throws Exception;  	
+	void getNamedEntities(String texto, AsyncCallback<List<String>> asyncCallback) throws Exception;
+	void getNamedEntities(List<Article> articles, AsyncCallback<List<Article>> asyncCallback) throws Exception;	
 }

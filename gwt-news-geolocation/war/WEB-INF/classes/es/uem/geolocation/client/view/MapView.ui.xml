@@ -38,10 +38,7 @@
 		
 		.sourcelink {			
 			vertical-align: top;			
-		}
-		
-               	
-
+		}		
 	</ui:style>	
 	<g:HTMLPanel addStyleNames="{style.fullscreen}">
 		<g:DockLayoutPanel unit='EM' addStyleNames="{style.fullscreen}">
@@ -107,7 +104,7 @@
                 	        <span class="{style.label}">Copyright:&nbsp;&nbsp;</span>
                 	        	<g:Label ui:field="sourceRSSCopyright" addStyleNames="{style.label}"/><br/>
                 	</div>                
-                	<g:SimplePanel ui:field="mapWrapper" />								
+                	<g:SimplePanel ui:field="mapWrapper"/>								
         		</g:HTMLPanel>			
 			</g:center>
 			<g:east size="20">					

@@ -1,2 +1,0 @@
-serviceClass: es.uem.geolocation.client.services.RSSService
-path: 5B3DCFBD694E42A6A6BA594DCBA5D097.gwt.rpc

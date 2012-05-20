@@ -106,13 +106,15 @@ public class RSS implements Serializable {
 	 * Representation of this RSS Instance 
 	 */
 	@Override
-	public String toString() {
-		return Objects.toStringHelper(this).addValue(this.getTitle())
-				.addValue(this.getLink())
-				.addValue(this.getDescription())
-				.addValue(this.getCopyright())
-				.addValue(this.getPublishedDate())
-				.addValue(this.getItems().toString()).toString();
+	public String toString() {		
+		return Objects.toStringHelper(this)
+				.add("title", this.getTitle())
+				.add("link", this.getLink())
+				.add("description", this.getDescription())
+				.add("copyright", this.getCopyright())
+				.add("publishedDate", this.getPublishedDate())
+				.add("items", this.getItems().toString())
+				.toString();
 	}
 
 }

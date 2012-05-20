@@ -1,5 +1,12 @@
 /** Add css rules here for your application. */
 
+.parent {
+  position: relative; /* to establish positioning context */
+}
+
+.child {
+  position: absolute; left:1em; top:1em; right:1em; bottom:1em;
+}
 
 /** Example rules used by the template application (remove for your app) */
 h1 {
@@ -31,4 +38,13 @@ h1 {
 /** Set ids using widget.getElement().setId("idOfElement") */
 #closeButton {
   margin: 15px 6px 6px;
+}
+
+.contentTxt {
+	float: left;
+	width: 300px;
+}
+
+.clear { 
+	clear: both; 
 }

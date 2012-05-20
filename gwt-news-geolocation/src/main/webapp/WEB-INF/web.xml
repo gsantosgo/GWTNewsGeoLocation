@@ -7,7 +7,7 @@
 
 	<!-- Servlets -->
 	<servlet>
-		<servlet-name>geoRSSServlet</servlet-name>
+		<servlet-name>rssServlet</servlet-name>
 		<servlet-class>es.uem.geolocation.server.RSSServiceImpl</servlet-class>
 	</servlet>
 	<servlet>
@@ -26,7 +26,7 @@
   
 	<!--  Servlets Mapping -->
 	<servlet-mapping>
-		<servlet-name>geoRSSServlet</servlet-name>
+		<servlet-name>rssServlet</servlet-name>
 		<url-pattern>/gwtnewsgeolocation/rss</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>

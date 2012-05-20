@@ -1,0 +1,51 @@
+
+( ({Token,!Token.string==":",!Token.kind=="number",!Token.string==".",!Split})
+( ({Token.orth == upperInitial,!Lookup.majorType=="date"})[1,2]
+( ({Token.string == "-"})[0,1] )
+({Token.orth == upperInitial,!Lookup.majorType=="date"})[0,2]
+):Toponym )
+
+( ({Split})
+( ({Token.orth == upperInitial,!Lookup.majorType=="date"})
+({Token.string == "-"})[0,1]
+({Token.orth == upperInitial,!Lookup.majorType=="date"})[1,2]
+):Toponym )
+
+
+( ({Token,!Token.string==":",!Token.kind=="number",!Token.string==".",!Split}) ( ({Token.string= "(of|from|at|to|near)"})
+( ({Token.orth == upperInitial,!Lookup.majorType=="date"})[1,2] ( ({Token.orth == upperInitial,!Lookup.majorType=="date"})
+( ({Token.string == "-"})[0,1] ({Token.string == "-"})[0,1]
+| ({Token.orth == lowercase, Token.string!="and",Token.length<=3})[0,1] ({Token.orth == upperInitial,!Lookup.majorType=="date"})[1,2]
+) ):Toponym )
+({Token.orth == upperInitial,!Lookup.majorType=="date"})[1,2] 
+):Toponym ) 
+
+
+( ({Token.string= "(of|from|at|to|near)"})
+( ({Token.orth == upperInitial,!Lookup.majorType=="date"})
+({Token.string == "-"})[0,1]
+({Token.orth == upperInitial,!Lookup.majorType=="date"})[1,2]
+):Toponym )
+
+
+( ( ({Token,Token.string==":"}) ( ({Token.string= "( ̈ ́
+| ({Token,Token.string=="."}) |)"})
+| ({Split}) ( ({Token.orth == upperInitial,!Lookup.majorType=="date"})
+) ({Token.string == "-"})[0,1]
+( ({Token.orth == upperInitial,!Lookup.majorType=="date"})[1,2] ({Token.orth == upperInitial,!Lookup.majorType=="date"})[1,2]
+( ({Token.string == "-"})[0,1] ):Toponym
+| ({Token.orth == lowercase, Token.string!="and",Token.length<=3})[0,1] ({Token.string= "( ̈ ́
+) |)"})
+({Token.orth == upperInitial,!Lookup.majorType=="date"})[1,2] )
+):Toponym ) 
+
+( ({Token.string= "( ̈ ́
+ |)"})
+( ({Token.orth == upperInitial,!Lookup.majorType=="date"})
+({Token.string == "-"})[0,1]
+({Token.orth == upperInitial,!Lookup.majorType=="date"})[1,2]
+):Toponym
+({Token.string= "( ̈ ́
+ |)"})
+)
+

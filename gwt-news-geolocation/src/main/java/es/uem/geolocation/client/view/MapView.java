@@ -16,6 +16,7 @@
 package es.uem.geolocation.client.view;
 
 import com.google.gwt.core.client.GWT;
+
 import com.google.gwt.maps.client.HasJso;
 import com.google.gwt.maps.client.HasMap;
 import com.google.gwt.maps.client.MapOptions;
@@ -47,6 +48,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import es.uem.geolocation.client.Constant;
 import es.uem.geolocation.client.presenter.GeoRSSPresenter;
+
 /**
  * 
  *  Map View.    
@@ -250,6 +252,7 @@ public class MapView extends Composite implements GeoRSSPresenter.Display {
 	public HasInfoWindow createInfoWindow(String content) {
 		final InfoWindow infoWindow = new InfoWindow();
 		infoWindow.setContent(content);
+		
 		return infoWindow;
 	}
 

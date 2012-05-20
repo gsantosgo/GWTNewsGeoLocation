@@ -1,0 +1,9 @@
+AALL_country_state_region.lst:Country_State_Region:Country
+HALL_stream_lake.lst:Stream_Lake:Stream
+LALL_park_area.lst:Park_Area:Park
+PALL_city_village.lst:City_Village:City
+RALL_road_railroad.lst:Road_Railroad:Road
+SALL_spot_building_farm.lst:Spot_Building_Farm:Spot
+TALL_mountain_hill.lst:Mountain_Hill:Mountain
+UALL_undersea.lst:Undersea:Undersea
+VALL_forest_heath.lst:Forest_Heath:Forest

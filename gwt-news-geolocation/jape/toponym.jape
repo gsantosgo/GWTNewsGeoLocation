@@ -1,0 +1,14 @@
+Phase:toponym
+Input: Lookup
+Options: control = brill
+
+Rule: ToponymCategory
+Priority: 20 
+(	({Token.string =~ "(of|from|at|to|near)"})
+	(	({Token.orth == upperInitial, !Lookup.majorType=="date"})
+		({Token.string == "-"})[0,1]
+		({Token.orth == upperInitial, !Lookup.majorType=="date"})[1,2]
+): toponym )
+-->
+toponym.Toponym = {rule= "ToponymCategory"}
+

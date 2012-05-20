@@ -41,6 +41,7 @@
 		<gate.version>7.0</gate.version>
 		<rome.version>1.0</rome.version>
 		<geonames.version>1.1.6</geonames.version>
+		<guava.version>12.0</guava.version>
 	</properties>
 
 	<build>
@@ -63,6 +64,7 @@
 					</execution>								
 				</executions>
 			</plugin>
+						
 
 			<!-- <plugin> <artifactId>maven-resources-plugin</artifactId> <version>2.5</version> 
 				<executions> <execution> <id>1</id> <phase>validate</phase> <goals> <goal>copy-resources</goal> 
@@ -82,13 +84,28 @@
 
 
 	<!-- External project dependencies -->
-	<dependencies>		<!-- Other Google -->
+	<dependencies>	
+		<!-- http client -->
+		<dependency>
+    		<groupId>org.apache.httpcomponents</groupId>
+    		<artifactId>httpclient</artifactId>
+    		<version>4.2</version>
+    		<scope>runtime</scope>
+  		</dependency>	
+		<!-- Other Google -->
 		<dependency>
 			<groupId>com.google.gwt.google-apis</groupId>
 			<artifactId>gwt-ajaxloader</artifactId>
 			<version>1.1.0</version>
 			<scope>compile</scope>
-		</dependency>		<!-- Just the necessary GWT bits -->
+		</dependency>			
+		<!-- Just the necessary GWT bits -->
+		<dependency>
+      		<groupId>com.google.gwt</groupId>
+      		<artifactId>gwt-servlet</artifactId>
+      		<version>${gwt.version}</version>
+      		<scope>runtime</scope>
+    	</dependency>		
 		<dependency>
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-user</artifactId>
@@ -99,7 +116,7 @@
 			<groupId>com.google.gwt</groupId>
 			<artifactId>gwt-dev</artifactId>
 			<version>${gwt.version}</version>
-			<scope>provided</scope>			<!-- don't copy to jar -->
+			<scope>provided</scope><!-- don't copy to jar -->
 		</dependency>
 		<dependency>
 			<groupId>com.google.gwt.maps</groupId>
@@ -110,12 +127,12 @@
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>11.0.2</version>
+			<version>${guava.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava-gwt</artifactId>
-			<version>12.0</version>
+			<version>${guava.version}</version>
 		</dependency>
 		<!-- GATE - ANNIE -->
 		<dependency>
@@ -135,7 +152,7 @@
 			<artifactId>geonames</artifactId>
 			<version>${geonames.version}</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/geonames-1.1.6.jar</systemPath>
+			<systemPath>${basedir}/lib/geonames-1.1.6.jar</systemPath>
 		</dependency>
 		<!-- Testing -->
 		<dependency>

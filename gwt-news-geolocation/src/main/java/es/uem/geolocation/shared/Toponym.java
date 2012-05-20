@@ -260,8 +260,9 @@ public class Toponym implements Serializable {
 		this.alternateNames = alternateNames;
 	}
 
+	@Override
 	public String toString() {
-		return Objects.toStringHelper(this.getClass())
+		return Objects.toStringHelper(this)
 				.add("geoNameId", this.getGeoNameId())
 				.add("name", this.getName())
 				.add("alternateNames", this.getAlternateNames())

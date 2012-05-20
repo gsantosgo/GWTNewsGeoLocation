@@ -15,9 +15,14 @@
 
 package es.uem.geolocation.shared;
 
+import gate.util.compilers.eclipse.jdt.internal.compiler.ast.ThisReference;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.common.base.Objects;
+import com.google.gwt.thirdparty.guava.common.base.Strings;
 
 /**  
  * 
@@ -35,8 +40,7 @@ public class NewMap implements Serializable {
 	public NewMap() { 		
 	}
 	
-	public NewMap(String placename, Double latitude, Double longitude,
-			List<Article> articles) {
+	public NewMap(String placename, Double latitude, Double longitude, List<Article> articles) {
 		this.placename = placename;
 		this.latitude = latitude;
 		this.longitude = longitude;
@@ -51,44 +55,38 @@ public class NewMap implements Serializable {
 		this.placename = placename;
 	}
 	
-	public double getLatitude() {
+	public Double getLatitude() {
 		return latitude;
 	}
 	
-	public void setLatitude(double latitude) {
+	public void setLatitude(Double latitude) {
 		this.latitude = latitude;
 	}
 	
-	public double getLongitude() {
+	public Double getLongitude() {
 		return longitude;
 	}
 	
-	public void setLongitude(double longitude) {
+	public void setLongitude(Double longitude) {
 		this.longitude = longitude;
 	}
 	
 	public List<Article> getArticles() {
 		return this.articles; 
 	}
+	
+	public void setArticles(List<Article> articles) {
+		this.articles = articles;
+	}
 
 	@Override
-	public String toString() {		
-		StringBuilder sb = new StringBuilder(); 
-		sb.append("NewMap [placename="); 
-		sb.append(placename); 
-		sb.append(", latitude="); 
-		sb.append(latitude); 
-		sb.append(", longitude="); 
-		sb.append(longitude); 
-		sb.append(", articles="); 
-		sb.append(articles); 
-		sb.append("]"); 
-		
-		return sb.toString();		
+	public String toString() {
+		return Objects.toStringHelper(this)
+				.add("placeName", this.getPlacename())
+				.add("latitude", Objects.firstNonNull(this.getLatitude(), ""))
+				.add("longitude", Objects.firstNonNull(this.getLongitude(), ""))
+				.add("articles", this.getArticles().toString())
+				.toString(); 
 	}
-	
-
-	
-	
-			
+				
 }

@@ -17,8 +17,11 @@ package es.uem.geolocation.client.services;
 
 import java.util.List;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+
+import es.uem.geolocation.shared.Article;
 
 
 /**
@@ -29,6 +32,6 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  */
 @RemoteServiceRelativePath("gate")
 public interface GateService extends RemoteService {
-	// List<String> getNamedEntities(String texto) throws ExecutionException, ResourceInstantiationException;
-	List<String> getNamedEntities(String texto) throws Exception;
+	List<String> getNamedEntities(String texto) throws Exception;	
+	List<Article> getNamedEntities(List<Article> articles) throws Exception;	
 }

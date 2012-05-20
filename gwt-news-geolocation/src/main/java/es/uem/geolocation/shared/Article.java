@@ -16,10 +16,12 @@
 package es.uem.geolocation.shared;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import com.google.common.base.Objects; 
+import com.google.gwt.thirdparty.guava.common.base.Strings;
 
 /**
  * 
@@ -34,8 +36,9 @@ public class Article implements Serializable {
 	private String headline;
 	private String description;
 	private Date publishedDate;
-	private List<String> categories;
-	private List<String> locations; 
+	private List<String> categories = new ArrayList<String>();
+	private List<String> categoriesLocations = new ArrayList<String>();
+	private List<String> headlineDescriptionLocations = new ArrayList<String>();
 	
 	/**
 	 * Constructor 
@@ -43,6 +46,13 @@ public class Article implements Serializable {
 	public Article() {
 	}
 
+	/**
+	 * Constructor 
+	 * 
+	 * @param headline the headline of new
+	 * @param description the Description of new
+	 * @param uri URI 
+	 */
 	public Article(String headline, String description, String uri) {
 		this.headline = headline;
 		this.description = description;
@@ -96,13 +106,21 @@ public class Article implements Serializable {
 	public void setCategories(List<String> categories) {
 		this.categories = categories;
 	}
-	
-	public List<String> getLocations() {
-		return locations;
+
+	public List<String> getCategoriesLocations() {
+		return categoriesLocations;
 	}
 
-	public void setLocations(List<String> locations) {
-		this.locations = locations;
+	public void setCategoriesLocations(List<String> categoriesLocations) {
+		this.categoriesLocations = categoriesLocations;
+	}
+
+	public List<String> getHeadlineDescriptionLocations() {
+		return headlineDescriptionLocations;
+	}
+
+	public void setHeadlineDescriptinLocations(List<String> headlineDescriptionLocations) {
+		this.headlineDescriptionLocations = headlineDescriptionLocations;
 	}
 
 	/**
@@ -120,11 +138,14 @@ public class Article implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this).addValue(this.getArticleID())
-				.addValue(this.getUri()).addValue(this.getHeadline())
-				.addValue(this.getDescription())
-				.addValue(this.getPublishedDate())
-				.addValue(this.getCategories().toString()).toString();
-	}
-
+		return Objects.toStringHelper(this)
+				.add("articleID", this.getArticleID())
+				.add("uri", this.getUri()).addValue(this.getHeadline())
+				.add("description",this.getDescription())
+				.add("publishedDate", this.getPublishedDate())
+				.add("categories", this.getCategories().toString())
+				.add("categoriesLocations",this.getCategoriesLocations().toString())
+				.add("headlineLocations",this.getHeadlineDescriptionLocations().toString())
+				.toString();
+	}	
 }

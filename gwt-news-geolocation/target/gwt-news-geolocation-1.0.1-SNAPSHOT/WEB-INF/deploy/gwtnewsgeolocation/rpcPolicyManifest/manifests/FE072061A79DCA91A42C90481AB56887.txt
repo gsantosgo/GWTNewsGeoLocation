@@ -1,2 +1,0 @@
-serviceClass: es.uem.geolocation.client.services.GeonamesService
-path: 4F2523BD5EBADB0E1E4DE93474D841B0.gwt.rpc

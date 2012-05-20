@@ -21,12 +21,11 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -78,15 +77,17 @@ public class FeedServiceImpl implements FeedService<RSS> {
 				.build(new CacheLoader<String, RSS>() {					
 					@Override
 					public RSS load(String uriKey) throws Exception {
-						System.out.println("Load" + uriKey);
 						RSS rss = null;
 						ArrayList<Article> articlesList = new ArrayList<Article>();
 												
-						DefaultHttpClient httpClient = new DefaultHttpClient();						
-						// Configuración PROXY 
+						DefaultHttpClient httpClient = new DefaultHttpClient();
+						
+						/*
+						// Proxy Configuration =====  
 						HttpHost httpProxy = new HttpHost("10.14.79.204",8080);
 						// Set this HttpHost to DefaultHttpClient as parameter
-						httpClient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, httpProxy);						
+						httpClient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, httpProxy);
+						*/						
 						
 						RetryHandler retryHandler = new RetryHandler();
 						httpClient.setHttpRequestRetryHandler(retryHandler);
@@ -120,7 +121,7 @@ public class FeedServiceImpl implements FeedService<RSS> {
 										// Article of the new
 										final Article article = new Article();
 										
-										article.setArticleID(Strings.nullToEmpty(""));
+										article.setArticleID(Strings.nullToEmpty(""+syndEntry.hashCode()));
 										article.setUri(Strings.nullToEmpty(syndEntry.getUri()));
 										article.setHeadline(Strings.nullToEmpty(syndEntry
 												.getTitle()));
@@ -152,9 +153,7 @@ public class FeedServiceImpl implements FeedService<RSS> {
 								}
 							}
 						}
-						if (rss != null) rss.setItems(articlesList);
-						
-						System.out.println("RSS" + rss.getTitle());
+						if (rss != null) rss.setItems(articlesList);						
 						return rss; 
 					}
 				});

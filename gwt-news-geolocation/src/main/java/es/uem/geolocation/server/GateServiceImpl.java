@@ -26,9 +26,12 @@ import es.uem.geolocation.client.Constant;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import es.uem.geolocation.client.services.GateService;
+import es.uem.geolocation.shared.Article;
 
 import gate.*;
 import gate.creole.*;
@@ -86,10 +89,10 @@ public class GateServiceImpl extends RemoteServiceServlet implements
 	}
 
 	/**
-	 * Metodo que nos sirve para obtener Entidades Nombradas
+	 * Named Recognition Entities  
 	 */
 	public List<String> getNamedEntities(String texto) throws ExecutionException, ResourceInstantiationException {
-		// Para eliminar elementos repetidos.  
+		// To remove repeated items  
 		Set<String> namedEntities = new HashSet<String>();  
 		if (Gate.isInitialised()) {
 				gate.Corpus corpus = (Corpus) Factory
@@ -133,6 +136,48 @@ public class GateServiceImpl extends RemoteServiceServlet implements
 		return new ArrayList<String>(namedEntities); 
 	} // end getNamedEntities 
 
+	
+	/**
+	 * Named Recognition Entities   
+	 */
+	public List<Article> getNamedEntities(List<Article> articles) throws ExecutionException, ResourceInstantiationException {
+		List<Article> articlesResult = new ArrayList<Article>();
+		
+		if (Gate.isInitialised()) {
+				gate.Corpus corpus = (Corpus) Factory
+						.createResource("gate.corpora.CorpusImpl");
+
+				for (Article article : articles) {
+					 
+					String categories = ""; 
+					if (article.getCategories() != null && article.getCategories().size() > 0) {
+						categories = Joiner.on(", ").skipNulls().join(article.getCategories());
+						categories = categories.trim(); 
+					}
+					
+					String headline = article.getHeadline();  
+					String description = article.getDescription();			
+					String headlineDescription = Joiner.on(" ").skipNulls().join(headline, description); 			
+					headlineDescription = headlineDescription.trim(); 
+									
+					// Categories Treatment (Places Name)
+					if (!Strings.isNullOrEmpty(categories) && categories.length() > 0 ) {
+						List<String> categoriesLocations = getNamedEntities(categories);
+						article.setCategoriesLocations(categoriesLocations);
+					}			
+					
+					// Headline + Description Treatment (Places Name) 
+					if (!Strings.isNullOrEmpty(headlineDescription)) {
+						List<String> headlineDescriptionLocations = getNamedEntities(headlineDescription);
+						article.setHeadlineDescriptinLocations(headlineDescriptionLocations); 
+					}					
+					
+					articlesResult.add(article);																	
+				}				
+		}		
+		return articlesResult; 
+	} // end getNamedEntities 
+	
 	@Override
 	public void destroy() {
 		super.destroy();

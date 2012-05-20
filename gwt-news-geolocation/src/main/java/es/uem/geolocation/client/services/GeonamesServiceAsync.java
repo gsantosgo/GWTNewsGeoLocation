@@ -20,6 +20,8 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+import es.uem.geolocation.shared.Article;
+import es.uem.geolocation.shared.NewMap;
 import es.uem.geolocation.shared.Toponym;
 
 /**
@@ -30,5 +32,6 @@ import es.uem.geolocation.shared.Toponym;
  */
 public interface GeonamesServiceAsync {
 	void toponymSearchCriteria(String toponym,
-			AsyncCallback<List<Toponym>> asyncCallback); 
+			AsyncCallback<List<Toponym>> asyncCallback);	
+	void toponymSearchCriteria(List<Article> articles, AsyncCallback<List<NewMap>> asyncCallback);	
 }

@@ -23,6 +23,8 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import es.uem.geolocation.client.services.GeonamesService;
 import es.uem.geolocation.server.cache.GeonamesSearchServiceImpl;
+import es.uem.geolocation.shared.Article;
+import es.uem.geolocation.shared.NewMap;
 import es.uem.geolocation.shared.Toponym;
 
 /**
@@ -55,5 +57,77 @@ public class GeonamesServiceImpl extends RemoteServiceServlet implements
 			e.printStackTrace();
 		}
 		return toponymList;
+	}
+	
+	/**
+	 * Toponym search criteria
+	 */
+	public List<NewMap> toponymSearchCriteria(List<Article> articles) {
+		List<NewMap>  result = new ArrayList<NewMap>(); 
+			
+		List<Toponym> categoriesToponymList = null;  
+		List<Toponym> headlineDescriptionToponymList = null;
+		
+		for (Article article : articles) {		
+			NewMap newMap = new NewMap();
+			
+			ArrayList<Article> newArticles = new ArrayList<Article>(); 
+			newArticles.add(article);
+			newMap.setArticles(newArticles);										
+
+			
+			List<String> categoriesLocations = article.getCategoriesLocations();			
+			List<String> headlineDescriptionLocations = article.getHeadlineDescriptionLocations();			
+			
+			categoriesToponymList = new ArrayList<Toponym>();			
+			headlineDescriptionToponymList = new ArrayList<Toponym>();
+			
+			// Categories =====
+			if (categoriesLocations != null && 
+				categoriesLocations.size() > 0) {	
+				
+				for (String categoryPlaceName : categoriesLocations) {
+					try {			
+						categoriesToponymList = geonamesSearch.search(categoryPlaceName); 			
+					} catch (Exception e) {			
+						e.printStackTrace();
+					}														
+				}				
+				
+				if (categoriesToponymList.size() > 0) {					 
+					newMap.setLatitude(categoriesToponymList.get(0).getLatitude()); 
+					newMap.setLongitude(categoriesToponymList.get(0).getLongitude());
+					newMap.setPlacename(categoriesToponymList.get(0).getName());
+					result.add(newMap); 
+					
+					continue; 
+				}
+			} 
+			
+			// HeadlineDescription =====
+			if (headlineDescriptionLocations != null && 
+				headlineDescriptionLocations.size() > 0) {				
+				for (String headlineDecrpiptionPlaceName : headlineDescriptionLocations) {					
+					try {			
+						headlineDescriptionToponymList = geonamesSearch.search(headlineDecrpiptionPlaceName); 			
+					} catch (Exception e) {			
+						e.printStackTrace();
+					}									
+				}				
+				
+				if (headlineDescriptionToponymList.size() > 0) {					 
+					newMap.setLatitude(headlineDescriptionToponymList.get(0).getLatitude()); 
+					newMap.setLongitude(headlineDescriptionToponymList.get(0).getLongitude());
+					newMap.setPlacename(headlineDescriptionToponymList.get(0).getName());
+					result.add(newMap);
+					
+					continue; 
+				}				
+			}					
+		
+			result.add(newMap);			
+		}
+				
+		return result; 
 	}
 }

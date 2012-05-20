@@ -92,12 +92,12 @@ public class RSSService_TypeSerializer extends com.google.gwt.user.client.rpc.im
         @com.google.web.bindery.event.shared.UmbrellaException_FieldSerializer::deserialize(Lcom/google/gwt/user/client/rpc/SerializationStreamReader;Lcom/google/web/bindery/event/shared/UmbrellaException;),
       ];
     
-    result["es.uem.geolocation.shared.Article/3305495551"] = [
+    result["es.uem.geolocation.shared.Article/980320780"] = [
         @es.uem.geolocation.shared.Article_FieldSerializer::instantiate(Lcom/google/gwt/user/client/rpc/SerializationStreamReader;),
         @es.uem.geolocation.shared.Article_FieldSerializer::deserialize(Lcom/google/gwt/user/client/rpc/SerializationStreamReader;Les/uem/geolocation/shared/Article;),
       ];
     
-    result["[Les.uem.geolocation.shared.Article;/967172383"] = [
+    result["[Les.uem.geolocation.shared.Article;/3185122609"] = [
         @es.uem.geolocation.shared.Article_Array_Rank_1_FieldSerializer::instantiate(Lcom/google/gwt/user/client/rpc/SerializationStreamReader;),
         @es.uem.geolocation.shared.Article_Array_Rank_1_FieldSerializer::deserialize(Lcom/google/gwt/user/client/rpc/SerializationStreamReader;[Les/uem/geolocation/shared/Article;),
       ];
@@ -417,8 +417,8 @@ public class RSSService_TypeSerializer extends com.google.gwt.user.client.rpc.im
     result[@com.google.gwt.core.client.impl.Impl::getHashCode(Ljava/lang/Object;)(@com.google.gwt.user.client.rpc.ServiceDefTarget.NoServiceEntryPointSpecifiedException::class)] = "com.google.gwt.user.client.rpc.ServiceDefTarget$NoServiceEntryPointSpecifiedException/3408313447";
     result[@com.google.gwt.core.client.impl.Impl::getHashCode(Ljava/lang/Object;)(@com.google.gwt.user.client.rpc.XsrfToken::class)] = "com.google.gwt.user.client.rpc.XsrfToken/4254043109";
     result[@com.google.gwt.core.client.impl.Impl::getHashCode(Ljava/lang/Object;)(@com.google.web.bindery.event.shared.UmbrellaException::class)] = "com.google.web.bindery.event.shared.UmbrellaException/1025846929";
-    result[@com.google.gwt.core.client.impl.Impl::getHashCode(Ljava/lang/Object;)(@es.uem.geolocation.shared.Article::class)] = "es.uem.geolocation.shared.Article/3305495551";
-    result[@com.google.gwt.core.client.impl.Impl::getHashCode(Ljava/lang/Object;)(@es.uem.geolocation.shared.Article[]::class)] = "[Les.uem.geolocation.shared.Article;/967172383";
+    result[@com.google.gwt.core.client.impl.Impl::getHashCode(Ljava/lang/Object;)(@es.uem.geolocation.shared.Article::class)] = "es.uem.geolocation.shared.Article/980320780";
+    result[@com.google.gwt.core.client.impl.Impl::getHashCode(Ljava/lang/Object;)(@es.uem.geolocation.shared.Article[]::class)] = "[Les.uem.geolocation.shared.Article;/3185122609";
     result[@com.google.gwt.core.client.impl.Impl::getHashCode(Ljava/lang/Object;)(@es.uem.geolocation.shared.NewMap::class)] = "es.uem.geolocation.shared.NewMap/647926835";
     result[@com.google.gwt.core.client.impl.Impl::getHashCode(Ljava/lang/Object;)(@es.uem.geolocation.shared.NewMap[]::class)] = "[Les.uem.geolocation.shared.NewMap;/4220857610";
     result[@com.google.gwt.core.client.impl.Impl::getHashCode(Ljava/lang/Object;)(@es.uem.geolocation.shared.RSS::class)] = "es.uem.geolocation.shared.RSS/1293983799";

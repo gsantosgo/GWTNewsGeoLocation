@@ -13,7 +13,7 @@ import com.google.gwt.user.client.rpc.impl.RpcStatsContext;
 
 public class GeonamesService_Proxy extends RemoteServiceProxy implements es.uem.geolocation.client.services.GeonamesServiceAsync {
   private static final String REMOTE_SERVICE_INTERFACE_NAME = "es.uem.geolocation.client.services.GeonamesService";
-  private static final String SERIALIZATION_POLICY ="4F2523BD5EBADB0E1E4DE93474D841B0";
+  private static final String SERIALIZATION_POLICY ="611FB4A4E1482EE0F0F42ED91B210EAC";
   private static final es.uem.geolocation.client.services.GeonamesService_TypeSerializer SERIALIZER = new es.uem.geolocation.client.services.GeonamesService_TypeSerializer();
   
   public GeonamesService_Proxy() {
@@ -29,6 +29,18 @@ public class GeonamesService_Proxy extends RemoteServiceProxy implements es.uem.
       SerializationStreamWriter streamWriter = helper.start(REMOTE_SERVICE_INTERFACE_NAME, 1);
       streamWriter.writeString("java.lang.String/2004016611");
       streamWriter.writeString(toponym);
+      helper.finish(asyncCallback, ResponseReader.OBJECT);
+    } catch (SerializationException ex) {
+      asyncCallback.onFailure(ex);
+    }
+  }
+  
+  public void toponymSearchCriteria(java.util.List articles, com.google.gwt.user.client.rpc.AsyncCallback asyncCallback) {
+    com.google.gwt.user.client.rpc.impl.RemoteServiceProxy.ServiceHelper helper = new com.google.gwt.user.client.rpc.impl.RemoteServiceProxy.ServiceHelper("GeonamesService_Proxy", "toponymSearchCriteria");
+    try {
+      SerializationStreamWriter streamWriter = helper.start(REMOTE_SERVICE_INTERFACE_NAME, 1);
+      streamWriter.writeString("java.util.List");
+      streamWriter.writeObject(articles);
       helper.finish(asyncCallback, ResponseReader.OBJECT);
     } catch (SerializationException ex) {
       asyncCallback.onFailure(ex);

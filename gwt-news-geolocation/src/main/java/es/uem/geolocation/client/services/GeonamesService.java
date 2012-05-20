@@ -17,9 +17,12 @@ package es.uem.geolocation.client.services;
 
 import java.util.List;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
+import es.uem.geolocation.shared.Article;
+import es.uem.geolocation.shared.NewMap;
 import es.uem.geolocation.shared.Toponym;
 
 /**
@@ -33,10 +36,18 @@ public interface GeonamesService extends RemoteService {
 	/**
 	 * Toponym search on Geonames Services
 	 * 
-	 * @param toponym
-	 *            Toponym
+	 * @param toponym Toponym
 	 * @return
 	 * @throws Exception
 	 */
-	List<Toponym> toponymSearchCriteria(String toponym); 
+	List<Toponym> toponymSearchCriteria(String toponym);	
+	
+	/**
+	 * 
+	 * Toponym search on Geonames Services
+	 * 
+	 * @param articles the List of articles 
+	 * @return the List of NewMap 
+	 */
+	List<NewMap> toponymSearchCriteria(List<Article> articles);	
 }

@@ -13,7 +13,7 @@ import com.google.gwt.user.client.rpc.impl.RpcStatsContext;
 
 public class RSSService_Proxy extends RemoteServiceProxy implements es.uem.geolocation.client.services.RSSServiceAsync {
   private static final String REMOTE_SERVICE_INTERFACE_NAME = "es.uem.geolocation.client.services.RSSService";
-  private static final String SERIALIZATION_POLICY ="5B3DCFBD694E42A6A6BA594DCBA5D097";
+  private static final String SERIALIZATION_POLICY ="3B44517F46C3A32EDB5287E0F586F5C2";
   private static final es.uem.geolocation.client.services.RSSService_TypeSerializer SERIALIZER = new es.uem.geolocation.client.services.RSSService_TypeSerializer();
   
   public RSSService_Proxy() {

@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.geonames.FeatureClass;
 import org.geonames.Style;
 import org.geonames.ToponymSearchCriteria;
 import org.geonames.ToponymSearchResult;
@@ -75,6 +76,7 @@ public class GeonamesSearchServiceImpl implements SearchService<List<Toponym>> {
 						searchCriteria.setNameEquals(queryKey);
 						searchCriteria.setStartRow(0);
 						searchCriteria.setStyle(Style.LONG); // Importante
+						searchCriteria.setFeatureClass(FeatureClass.A);
 
 						WebService.setUserName(Constant.GEONAMES_WEBSERVICE_USERNAME);
 

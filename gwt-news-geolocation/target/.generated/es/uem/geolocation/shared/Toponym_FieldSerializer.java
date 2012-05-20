@@ -52,6 +52,15 @@ public class Toponym_FieldSerializer implements com.google.gwt.user.client.rpc.i
     instance.@es.uem.geolocation.shared.Toponym::elevation = value;
   }-*/;
   
+  private static native java.lang.String getFeatureClass(es.uem.geolocation.shared.Toponym instance) /*-{
+    return instance.@es.uem.geolocation.shared.Toponym::featureClass;
+  }-*/;
+  
+  private static native void setFeatureClass(es.uem.geolocation.shared.Toponym instance, java.lang.String value) 
+  /*-{
+    instance.@es.uem.geolocation.shared.Toponym::featureClass = value;
+  }-*/;
+  
   private static native java.lang.String getFeatureClassName(es.uem.geolocation.shared.Toponym instance) /*-{
     return instance.@es.uem.geolocation.shared.Toponym::featureClassName;
   }-*/;
@@ -130,6 +139,7 @@ public class Toponym_FieldSerializer implements com.google.gwt.user.client.rpc.i
     setCountryCode(instance, streamReader.readString());
     setCountryName(instance, streamReader.readString());
     setElevation(instance, (java.lang.Integer) streamReader.readObject());
+    setFeatureClass(instance, streamReader.readString());
     setFeatureClassName(instance, streamReader.readString());
     setFeatureCode(instance, streamReader.readString());
     setFeatureCodeName(instance, streamReader.readString());
@@ -151,6 +161,7 @@ public class Toponym_FieldSerializer implements com.google.gwt.user.client.rpc.i
     streamWriter.writeString(getCountryCode(instance));
     streamWriter.writeString(getCountryName(instance));
     streamWriter.writeObject(getElevation(instance));
+    streamWriter.writeString(getFeatureClass(instance));
     streamWriter.writeString(getFeatureClassName(instance));
     streamWriter.writeString(getFeatureCode(instance));
     streamWriter.writeString(getFeatureCodeName(instance));

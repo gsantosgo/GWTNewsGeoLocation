@@ -13,7 +13,7 @@ import com.google.gwt.user.client.rpc.impl.RpcStatsContext;
 
 public class GateService_Proxy extends RemoteServiceProxy implements es.uem.geolocation.client.services.GateServiceAsync {
   private static final String REMOTE_SERVICE_INTERFACE_NAME = "es.uem.geolocation.client.services.GateService";
-  private static final String SERIALIZATION_POLICY ="7747F035AAFCA5BBD19EEF796166EF46";
+  private static final String SERIALIZATION_POLICY ="76AE47941B73C884DEAFAEFF627F58C1";
   private static final es.uem.geolocation.client.services.GateService_TypeSerializer SERIALIZER = new es.uem.geolocation.client.services.GateService_TypeSerializer();
   
   public GateService_Proxy() {
@@ -29,6 +29,18 @@ public class GateService_Proxy extends RemoteServiceProxy implements es.uem.geol
       SerializationStreamWriter streamWriter = helper.start(REMOTE_SERVICE_INTERFACE_NAME, 1);
       streamWriter.writeString("java.lang.String/2004016611");
       streamWriter.writeString(texto);
+      helper.finish(asyncCallback, ResponseReader.OBJECT);
+    } catch (SerializationException ex) {
+      asyncCallback.onFailure(ex);
+    }
+  }
+  
+  public void getNamedEntities(java.util.List articles, com.google.gwt.user.client.rpc.AsyncCallback asyncCallback) {
+    com.google.gwt.user.client.rpc.impl.RemoteServiceProxy.ServiceHelper helper = new com.google.gwt.user.client.rpc.impl.RemoteServiceProxy.ServiceHelper("GateService_Proxy", "getNamedEntities");
+    try {
+      SerializationStreamWriter streamWriter = helper.start(REMOTE_SERVICE_INTERFACE_NAME, 1);
+      streamWriter.writeString("java.util.List");
+      streamWriter.writeObject(articles);
       helper.finish(asyncCallback, ResponseReader.OBJECT);
     } catch (SerializationException ex) {
       asyncCallback.onFailure(ex);

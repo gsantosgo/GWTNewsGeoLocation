@@ -25,6 +25,15 @@ public class Article_FieldSerializer implements com.google.gwt.user.client.rpc.i
     instance.@es.uem.geolocation.shared.Article::categories = value;
   }-*/;
   
+  private static native java.util.List getCategoriesLocations(es.uem.geolocation.shared.Article instance) /*-{
+    return instance.@es.uem.geolocation.shared.Article::categoriesLocations;
+  }-*/;
+  
+  private static native void setCategoriesLocations(es.uem.geolocation.shared.Article instance, java.util.List value) 
+  /*-{
+    instance.@es.uem.geolocation.shared.Article::categoriesLocations = value;
+  }-*/;
+  
   private static native java.lang.String getDescription(es.uem.geolocation.shared.Article instance) /*-{
     return instance.@es.uem.geolocation.shared.Article::description;
   }-*/;
@@ -43,13 +52,13 @@ public class Article_FieldSerializer implements com.google.gwt.user.client.rpc.i
     instance.@es.uem.geolocation.shared.Article::headline = value;
   }-*/;
   
-  private static native java.util.List getLocations(es.uem.geolocation.shared.Article instance) /*-{
-    return instance.@es.uem.geolocation.shared.Article::locations;
+  private static native java.util.List getHeadlineDescriptionLocations(es.uem.geolocation.shared.Article instance) /*-{
+    return instance.@es.uem.geolocation.shared.Article::headlineDescriptionLocations;
   }-*/;
   
-  private static native void setLocations(es.uem.geolocation.shared.Article instance, java.util.List value) 
+  private static native void setHeadlineDescriptionLocations(es.uem.geolocation.shared.Article instance, java.util.List value) 
   /*-{
-    instance.@es.uem.geolocation.shared.Article::locations = value;
+    instance.@es.uem.geolocation.shared.Article::headlineDescriptionLocations = value;
   }-*/;
   
   private static native java.util.Date getPublishedDate(es.uem.geolocation.shared.Article instance) /*-{
@@ -73,9 +82,10 @@ public class Article_FieldSerializer implements com.google.gwt.user.client.rpc.i
   public static void deserialize(SerializationStreamReader streamReader, es.uem.geolocation.shared.Article instance) throws SerializationException {
     setArticleID(instance, streamReader.readString());
     setCategories(instance, (java.util.List) streamReader.readObject());
+    setCategoriesLocations(instance, (java.util.List) streamReader.readObject());
     setDescription(instance, streamReader.readString());
     setHeadline(instance, streamReader.readString());
-    setLocations(instance, (java.util.List) streamReader.readObject());
+    setHeadlineDescriptionLocations(instance, (java.util.List) streamReader.readObject());
     setPublishedDate(instance, (java.util.Date) streamReader.readObject());
     setUri(instance, streamReader.readString());
     
@@ -88,9 +98,10 @@ public class Article_FieldSerializer implements com.google.gwt.user.client.rpc.i
   public static void serialize(SerializationStreamWriter streamWriter, es.uem.geolocation.shared.Article instance) throws SerializationException {
     streamWriter.writeString(getArticleID(instance));
     streamWriter.writeObject(getCategories(instance));
+    streamWriter.writeObject(getCategoriesLocations(instance));
     streamWriter.writeString(getDescription(instance));
     streamWriter.writeString(getHeadline(instance));
-    streamWriter.writeObject(getLocations(instance));
+    streamWriter.writeObject(getHeadlineDescriptionLocations(instance));
     streamWriter.writeObject(getPublishedDate(instance));
     streamWriter.writeString(getUri(instance));
     
