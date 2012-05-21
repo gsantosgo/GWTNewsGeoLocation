@@ -58,7 +58,8 @@ public class Constant {
 			put("elpaisInternacionalMenuItem","http://ep00.epimg.net/rss/internacional/portada.xml");
 			
 			// Servlet Implemented
-			put("rssMenuItem", GWT.getModuleBaseURL() + "rssnews"); 
+			//put("rssMenuItem", GWT.getModuleBaseURL() + "rssnews"); 
+			put("rssMenuItem", "local");
 		}
 	}; 
 

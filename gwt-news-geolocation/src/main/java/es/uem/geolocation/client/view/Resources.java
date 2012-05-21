@@ -17,8 +17,6 @@ package es.uem.geolocation.client.view;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
 
-import com.teklabs.gwt.i18n.server.I18nFilter;
-
 /**
  * ResourceBundle 
  *  

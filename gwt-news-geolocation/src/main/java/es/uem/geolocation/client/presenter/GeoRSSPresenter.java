@@ -24,6 +24,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.maps.client.HasJso;
 import com.google.gwt.maps.client.HasMap;
 import com.google.gwt.maps.client.base.HasInfoWindow;
@@ -77,6 +78,12 @@ public class GeoRSSPresenter implements Presenter {
 		void setSourceRSSTitle(String title);
 		void setSourceRSSLink(String url);
 		void setSourceRSSCopyright(String text);
+		
+		// Count News 
+		void setCountNewsRSS(String value);
+		void setCountNewsRSSGeoLocation(String value);
+		void setCountNewsRSSNoGeoLocation(String value); 
+		
 		// State line (Information) 
 		void setState(String state);
 		
@@ -90,7 +97,6 @@ public class GeoRSSPresenter implements Presenter {
 	private final HandlerManager eventBus;
 	private final ArrayList<HasMarker> markers;
 	private List<Article> articles;
-	private List<Article> articlesNER;
 	private final Display display;
 	private final String uri;
 	private final Resources resources = GWT.create(Resources.class);
@@ -120,8 +126,7 @@ public class GeoRSSPresenter implements Presenter {
 		this.eventBus = eventBus;
 		this.display = view;
 		this.markers = new ArrayList<HasMarker>();
-		this.articles = new ArrayList<Article>();
-		this.articlesNER = new ArrayList<Article>(); 
+		this.articles = new ArrayList<Article>(); 
 		this.uri = uri;  
 	}
 
@@ -135,7 +140,7 @@ public class GeoRSSPresenter implements Presenter {
 		display.setState("Cargando fuente RSS ..." + uri + ". Espere ... ");
 		
 		// RSS Request =====
-		try {			
+		try {								
 			rssService.loadRSSNews(uri, new AsyncCallback<RSS>() {
 				public void onSuccess(RSS rssSource) {
 					if (rssSource != null) {
@@ -147,11 +152,12 @@ public class GeoRSSPresenter implements Presenter {
 						display.setSourceRSSCopyright(rssSource.getCopyright());
 
 						// Articles
-						articles = rssSource.getItems();						
+						articles = rssSource.getItems();									
 						if (articles != null && articles.size() > 0) {
 							int articlesCount = articles.size();
 							display.setState("Cargando " + articlesCount
 									+ " articulos de noticias...");
+							display.setCountNewsRSS(""+articlesCount); 
 
 							handleNER(articles); 
 						}
@@ -185,7 +191,8 @@ public class GeoRSSPresenter implements Presenter {
 			gateService.getNamedEntities(articles, new AsyncCallback<List<Article>>() {
 				//@Override
 				public void onSuccess(List<Article> articlesResult) {
-					System.out.println("Localizaciones " + articlesResult.toString()); 								
+					// OJO!!
+					//System.out.println("Localizaciones " + articlesResult.toString()); 								
 					display.setState("Reconocimiento de Entidades Nombradas (Nombres Lugares) realizado con exito.");					
 					handleGeonames(articlesResult); 										
 				}
@@ -215,7 +222,7 @@ public class GeoRSSPresenter implements Presenter {
 				
 				for (NewMap newMap : result) {										
 					// OJO!! 
-					System.out.println("newMap " + newMap.toString());
+					//System.out.println("newMap " + newMap.toString());
 					// No location 
 					if (newMap.getLatitude() == null && 
 						newMap.getLongitude() == null)  {						
@@ -228,12 +235,16 @@ public class GeoRSSPresenter implements Presenter {
 						marker.setTitle(newMap.getPlacename());
 						attachArticles(marker, newMap.getArticles());												
 					}
+					display.setCountNewsRSSGeoLocation("" + markers.size());
+					// OJO!!
+					//display.setCountNewsRSSNoGeoLocation("" + (articles.size() - markers.size()));
+					display.setState("");
 				}			
 			}
 			
-			public void onFailure(Throwable caught) {
-				
-				
+			public void onFailure(Throwable caught) {				
+				display.setState(""); 
+				Window.alert("Fallo. Imposible obtener puntos geogŕaficos de noticias.");				
 			}
 		});						
 		display.setState("Obteniendo puntos geográficos de noticias...");				
@@ -248,15 +259,20 @@ public class GeoRSSPresenter implements Presenter {
 	 * @param articles the List of articles 
 	 *           
 	 */
-	private void attachArticles(final List<Article> articles) {		
+	private void attachArticles(final List<Article> articles) {
+		final DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat("dd/MM/yyyy HH:mm:ss");
 		if (articles != null && articles.size() > 0) {
 			for (Article article : articles) {
 				Anchor headlineAnchor = new Anchor(article.getHeadline());				
 				HTML descriptionHTML = new HTML(article.getDescription());		
 				
 				display.getNewsList().add(new Image(resources.news()));
+				display.getNewsList().add(new HTML(dateTimeFormat.format(article.getPublishedDate()))); 
 				display.getNewsList().add(headlineAnchor);
-				display.getNewsList().add(descriptionHTML);							
+				display.getNewsList().add(descriptionHTML);
+				String categories = Joiner.on(", ").skipNulls().join(article.getCategories());
+				display.getNewsList().add(new HTML(categories));
+				display.getNewsList().add(new HTML("<hr/>"));
 			}
 		}	
 	}
@@ -278,8 +294,10 @@ public class GeoRSSPresenter implements Presenter {
 			
 			final HasInfoWindow infoWindow = display.createInfoWindow(content.toString());	
 
+			final DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat("dd/MM/yyyy HH:mm:ss");
 			// Display news 
-			for (Article article : articles) {								
+			for (Article article : articles) {		
+				 
 				Anchor headlineAnchor = new Anchor(article.getHeadline());			
 				HTML descriptionHTML = new HTML(article.getDescription());									 
 				headlineAnchor.addClickHandler(new ClickHandler() {
@@ -288,8 +306,12 @@ public class GeoRSSPresenter implements Presenter {
 					}
 				});
 				display.getNewsList().add(new Image(resources.news()));				
+				display.getNewsList().add(new HTML(dateTimeFormat.format(article.getPublishedDate())));
 				display.getNewsList().add(headlineAnchor);
 				display.getNewsList().add(descriptionHTML); 
+				String categories = Joiner.on(", ").skipNulls().join(article.getCategories());
+				display.getNewsList().add(new HTML(categories));				
+				display.getNewsList().add(new HTML("<hr/>"));
 			}	
 			
 			// Click for marker.

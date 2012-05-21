@@ -15,12 +15,9 @@
 
 package es.uem.geolocation.client.services;
 
-import java.util.List;
-
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
-import es.uem.geolocation.shared.NewMap;
 import es.uem.geolocation.shared.RSS;
 
 /**
@@ -31,15 +28,22 @@ import es.uem.geolocation.shared.RSS;
  */
 
 @RemoteServiceRelativePath("rss")
-public interface RSSService extends RemoteService {
-	List<NewMap> loadGeoRSSNews();
+public interface RSSService extends RemoteService {	
 	
+	/**
+	 * 
+	 * Load RSS Source (Testing)  
+	 *   
+	 * @return RSS Source 
+	 * @throws Exception 
+	 */
+	RSS loadRSSNews() throws Exception;
 	
 	/**
 	 * 
 	 * Load RSS Source  
 	 * 
-	 * @param uri	URI  
+	 * @param uri the URI  
 	 * @return RSS Source 
 	 * @throws Exception 
 	 */

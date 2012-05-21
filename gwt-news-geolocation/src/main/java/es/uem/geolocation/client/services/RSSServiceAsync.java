@@ -15,11 +15,8 @@
 
 package es.uem.geolocation.client.services;
 
-import java.util.List;
-
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import es.uem.geolocation.shared.NewMap;
 import es.uem.geolocation.shared.RSS;
 
 /**
@@ -29,6 +26,6 @@ import es.uem.geolocation.shared.RSS;
  * @author Guillermo Santos (gsantosgo@yahoo.es)
  */
 public interface RSSServiceAsync {
-	void loadGeoRSSNews(AsyncCallback<List<NewMap>> asyncCallback);
+	void loadRSSNews(AsyncCallback<RSS> asyncCallback) throws Exception;
 	void loadRSSNews(String uri, AsyncCallback<RSS> asyncCallback) throws Exception;
 }

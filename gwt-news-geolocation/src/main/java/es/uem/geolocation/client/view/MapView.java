@@ -102,10 +102,6 @@ public class MapView extends Composite implements GeoRSSPresenter.Display {
 	@UiField
 	MenuItem aboutMenuItem; 
 
-	
-	@UiField
-	SimplePanel contentNews;	
-	
 	@UiField
 	Label sourceRSSTitle;
 	@UiField
@@ -113,12 +109,19 @@ public class MapView extends Composite implements GeoRSSPresenter.Display {
 	@UiField
 	Label sourceRSSCopyright; 
 
-	
-	
-	
+	@UiField
+	Label countNewsRSS;
+	@UiField
+	Label countNewsRSSGeoLocation;
+	@UiField
+	Label countNewsRSSNoGeoLocation; 
+
 	@UiField 
 	Label state; 
 	
+	@UiField
+	SimplePanel contentNews;	
+		
 	@UiField
 	SimplePanel mapWrapper;
 	
@@ -139,8 +142,7 @@ public class MapView extends Composite implements GeoRSSPresenter.Display {
 				History.newItem("abcPortadaMenuItem"); 							
 			}
 		});
-		
-				
+						
 		abcUltimaHoraMenuItem.setCommand(new Command() {			
 			//@Override
 			public void execute() {			
@@ -302,6 +304,17 @@ public class MapView extends Composite implements GeoRSSPresenter.Display {
 		this.sourceRSSCopyright.setText(text); 
 	}
 
+	public void setCountNewsRSS(String value) {
+		this.countNewsRSS.setText(value); 		
+	}
+	
+	public void setCountNewsRSSGeoLocation(String value) {
+		this.countNewsRSSGeoLocation.setText(value); 		
+	}	
+
+	public void setCountNewsRSSNoGeoLocation(String value) {
+		this.countNewsRSSNoGeoLocation.setText(value); 		
+	}	
 	
 	/**
 	 * Map init 
@@ -323,11 +336,14 @@ public class MapView extends Composite implements GeoRSSPresenter.Display {
 	/**
 	 * Initialize widgets 
 	 */
-	public void initWidgets() { 
-		this.setState("");
+	public void initWidgets() {
 		this.setSourceRSSTitle("");
 		this.setSourceRSSLink("");
-		this.setSourceRSSCopyright(""); 
+		this.setSourceRSSCopyright("");
+		this.setCountNewsRSS("");
+		this.setCountNewsRSSGeoLocation("");
+		this.setCountNewsRSSNoGeoLocation(""); 
+		this.setState("");
 		this.newsList.clear();  
 	}
 
@@ -338,7 +354,5 @@ public class MapView extends Composite implements GeoRSSPresenter.Display {
 		initWidgets(); 
 		initMap();		
 	}
-	
-	
-	
+		
 }

@@ -26,6 +26,9 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 
 import com.google.common.base.Strings;
 import com.google.common.cache.Cache;
@@ -86,10 +89,15 @@ public class FeedServiceImpl implements FeedService<RSS> {
 					public RSS load(String uriKey) throws Exception {
 						RSS rss = null;
 						ArrayList<Article> articlesList = new ArrayList<Article>();
-												
-						DefaultHttpClient httpClient = new DefaultHttpClient();
+											
+						HttpParams httpParameters = new BasicHttpParams();
+						// Set the timeout in milliseconds until a connection is established.
+						// The default value is zero, that means the timeout is not used. 
+						HttpConnectionParams.setConnectionTimeout(httpParameters, appConstants.connectTimeOut());
+						
+						DefaultHttpClient httpClient = new DefaultHttpClient(httpParameters); 
 																		
-						if (appConstants.isProxy().trim().toLowerCase().equals("true")) {  
+						if (appConstants.isProxy()) {  
 							// Proxy Configuration =====  
 							HttpHost httpProxy = new HttpHost(appConstants.proxyHostName().trim(), appConstants.proxyPort());
 							// Set this HttpHost to DefaultHttpClient as parameter
@@ -99,6 +107,7 @@ public class FeedServiceImpl implements FeedService<RSS> {
 						
 						RetryHandler retryHandler = new RetryHandler();
 						httpClient.setHttpRequestRetryHandler(retryHandler);
+						
 						
 						HttpGet method = new HttpGet(uriKey);
 						HttpResponse httpResponse = httpClient.execute(method);

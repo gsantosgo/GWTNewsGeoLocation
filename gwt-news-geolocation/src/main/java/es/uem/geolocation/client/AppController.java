@@ -14,14 +14,11 @@
  */
 package es.uem.geolocation.client;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.RunAsyncCallback;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.common.base.Strings;
 import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HasWidgets;
 
 import es.uem.geolocation.client.presenter.GeoRSSPresenter;
@@ -77,11 +74,7 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 		}
 		if (token != null) {
 			Presenter presenter = null; 
-			if (token.equals("display")) {
-				System.out.println("onSuccess entra.display");
-			}
-			else {
-				System.out.println("onSuccess entra.other");
+			if (!token.equals("display")) {
 				uri = Constant.MENU_LIST.get(token); 				
 			} 
 			presenter = new GeoRSSPresenter(

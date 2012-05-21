@@ -12,22 +12,46 @@
 			background-color: #6694E3; 
 			font-size: 1.5em;
 			padding: 0.1em; 
+			vertical-align:middle;
 		}
 		
-		.headerimage {				  
+		.image {
+   			position: relative;
+   			width: 100%; /* for IE 6 */
 		}
-						
+
+		.title {
+   			position: absolute;
+   			top: 2%;
+   			left: 84px;
+   			width: 100%;
+		}
+
+		.info {
+			background-color: #E3E9FF;
+			border: 1px solid #6694E3;
+			margin-left: 0.1em;
+			margin-right: 0.1em;
+		} 
+			
 		.contentNews {			
-			border-left: 2px solid #6694E3;
-			background-color: #6694E3;
+			background-color: #E3E9FF;
+			border: 1px solid #6694E3;
 			display: inline-block;
+			margin: 0.1em;
+			padding: 0.5em;			
 		}
 		
 		.sourceblock {
-			background: #E3E9FF;
-			border: 1px solid black;
+			background-color: #E3E9FF;
 			margin: 0.1em;
-			padding: 0.5em;
+			padding: 0.5em;			
+		}
+
+		.infoblock {
+			background-color: #E3E9FF;
+			margin: 0.1em;
+			padding: 0.5em; 
 		}
 
 		.label {	
@@ -44,12 +68,14 @@
 		<g:DockLayoutPanel unit='EM' addStyleNames="{style.fullscreen}">
 			<g:north size='5'>
 				<g:HTMLPanel styleName="{style.header}">
-					&nbsp;&nbsp; 								
-					<g:Image altText="Geolocalización de Noticias"
-						addStyleNames="{style.headerimage}" 
+					&nbsp;&nbsp;
+					   <span> 
+						<g:Image altText="Geolocalización de Noticias"
+						addStyleNames="{style.image}" 
 						ui:field="headerImage" 
 						resource="{image}"/>
-						<span>Geolocalización de Noticias</span>						
+						</span>													
+						<h2 class="{style.title}">Geolocalización de Noticias</h2>						
 				</g:HTMLPanel>
 			</g:north>			
 			<!-- menu -->
@@ -84,33 +110,54 @@
 								<!-- http://ep00.epimg.net/rss/internacional/portada.xml -->								
 							</g:MenuBar>
 						</g:MenuItem>
-						<g:MenuItem text="RSS" title="Introduzca Fuente RSS" ui:field="rssMenuItem"/>
+						<g:MenuItem text="RSS" title="Fuente RSS Local" ui:field="rssMenuItem"/>
 						
 						
 						<!--  Ayuda -->						
 						<g:MenuItem ui:field="helpMenuItem" title="Ayuda">Ayuda</g:MenuItem>
 						<g:MenuItem ui:field="aboutMenuItem" title="Acerca de">Acerca de </g:MenuItem>
-					</g:MenuBar>
-				</g:HTMLPanel>								
+					</g:MenuBar>										
+				</g:HTMLPanel>											
 			</g:north>
+			<g:north size="6">
+				<g:HTMLPanel styleName="{style.info}">
+					<table width="100%">
+						<tr>
+							<td>
+			        	        <div class="{style.sourceblock}">
+			            	    	    <span class="{style.label}">Fuente RSS:&nbsp;&nbsp;</span>
+			            	            	<g:Label ui:field="sourceRSSTitle" addStyleNames="{style.label}"/><br/>
+			                	        <span class="{style.label}">Enlace RSS:&nbsp;&nbsp;</span>
+			                	        	<g:Anchor ui:field="sourceRSSLink" addStyleNames="{style.sourcelink}"/><br/>							
+			                	        <span class="{style.label}">Copyright:&nbsp;&nbsp;</span>
+			                	        	<g:Label ui:field="sourceRSSCopyright" addStyleNames="{style.label}"/><br/>
+			                	</div>
+							</td>
+							<td width="256">
+								<div class="{style.infoblock}">
+									<span class="{style.label}">Noticias RSS:&nbsp;&nbsp;</span>
+									<g:Label ui:field="countNewsRSS" addStyleNames="{style.label}" /><br />
+									<span class="{style.label}">Noticas Geolocalizadas:&nbsp;&nbsp;</span>
+									<g:Label ui:field="countNewsRSSGeoLocation" addStyleNames="{style.label}" /><br />
+									<span class="{style.label}">Noticias No Geolocalizadas:&nbsp;&nbsp;</span>
+									<g:Label ui:field="countNewsRSSNoGeoLocation" addStyleNames="{style.label}" /><br />
+								</div>                								
+							</td>
+						</tr>
+					</table>		        	
+                	                            								
+        		</g:HTMLPanel>						
+			</g:north>
+			<g:north size="1">
+				<g:Label ui:field="state"></g:Label>
+			</g:north>			
 			<g:center size="80">				
-		        <g:HTMLPanel>
-		        	<g:Label ui:field="state"></g:Label> 
-        	        <div class="{style.sourceblock}">
-            	            <span class="{style.label}">Fuente RSS:&nbsp;&nbsp;</span>
-            	            	<g:Label ui:field="sourceRSSTitle" addStyleNames="{style.label}"/>
-                	        <span class="{style.label}">Enlace RSS:&nbsp;&nbsp;</span>
-                	        	<g:Anchor ui:field="sourceRSSLink" addStyleNames="{style.sourcelink}"/><br/>							
-                	        <span class="{style.label}">Copyright:&nbsp;&nbsp;</span>
-                	        	<g:Label ui:field="sourceRSSCopyright" addStyleNames="{style.label}"/><br/>
-                	</div>                
-                	<g:SimplePanel ui:field="mapWrapper"/>								
-        		</g:HTMLPanel>			
+        		<g:SimplePanel ui:field="mapWrapper"/>
 			</g:center>
-			<g:east size="20">					
-				<g:ScrollPanel ui:field="contentNews" addStyleNames="{style.contentNews}">					
+			<g:east size="20">																							
+				<g:ScrollPanel ui:field="contentNews" addStyleNames="{style.contentNews}">									
 					<g:VerticalPanel ui:field="newsList" />
-				</g:ScrollPanel>				
+				</g:ScrollPanel>									
 			</g:east>					
 		</g:DockLayoutPanel>
 	</g:HTMLPanel>

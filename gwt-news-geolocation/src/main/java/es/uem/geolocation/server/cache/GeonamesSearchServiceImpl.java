@@ -61,9 +61,9 @@ public class GeonamesSearchServiceImpl implements SearchService<List<Toponym>> {
 		appConstants = LocaleFactory.get(AppConstants.class);
 		
 		// Proxy Configuration 
-		if (appConstants.isProxy().trim().toLowerCase().equals("true")) {
-			System.setProperty("http.proxyHost", "10.14.79.204");
-			System.setProperty("http.proxyPort", "8080");
+		if (appConstants.isProxy()) {
+			System.setProperty("http.proxyHost", appConstants.proxyHostName());
+			System.setProperty("http.proxyPort", ""+appConstants.proxyPort());
 		}
 		
 		buildCache(duration, timeUnit, size);
@@ -90,7 +90,8 @@ public class GeonamesSearchServiceImpl implements SearchService<List<Toponym>> {
 						searchCriteria.setNameEquals(queryKey);
 						searchCriteria.setStartRow(0);
 						searchCriteria.setStyle(Style.LONG); // Importante
-						
+												
+						WebService.setConnectTimeOut(appConstants.geonamesWebServiceConnectTimeOut()); 
 						WebService.setUserName(appConstants.geonamesWebServiceUsername());
 
 						

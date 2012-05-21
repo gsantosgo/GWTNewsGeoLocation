@@ -45,18 +45,21 @@ public class Article implements Serializable {
 	 */
 	public Article() {
 	}
-
+	
 	/**
-	 * Constructor 
 	 * 
+	 * Constructor 
+	 *  
 	 * @param headline the headline of new
 	 * @param description the Description of new
-	 * @param uri URI 
+	 * @param uri the URI 
+	 * @param publishedDate the Date of published 
 	 */
-	public Article(String headline, String description, String uri) {
+	public Article(String headline, String description, String uri, Date publishedDate) {
 		this.headline = headline;
 		this.description = description;
 		this.uri = uri;
+		this.publishedDate = publishedDate; 
 	}
 
 	public String getArticleID() {
