@@ -18,14 +18,19 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.teklabs.gwt.i18n.client.LocaleFactory;
+import com.teklabs.gwt.i18n.server.LocaleProxy;
 
 import es.uem.geolocation.client.Constant;
+import es.uem.geolocation.server.AppConstants;
 import es.uem.geolocation.shared.Toponym;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.http.HttpHost;
+import org.apache.http.conn.params.ConnRoutePNames;
 import org.geonames.FeatureClass;
 import org.geonames.Style;
 import org.geonames.ToponymSearchCriteria;
@@ -40,7 +45,7 @@ import org.geonames.WebService;
  * 
  */
 public class GeonamesSearchServiceImpl implements SearchService<List<Toponym>> {
-	
+	protected AppConstants appConstants;	
 	protected LoadingCache<String, List<Toponym>> cache;
 
 	/** 
@@ -52,6 +57,15 @@ public class GeonamesSearchServiceImpl implements SearchService<List<Toponym>> {
 	 * @param size the cache size
 	 */
 	public GeonamesSearchServiceImpl(long duration, TimeUnit timeUnit, long size) {
+		LocaleProxy.initialize();		
+		appConstants = LocaleFactory.get(AppConstants.class);
+		
+		// Proxy Configuration 
+		if (appConstants.isProxy().trim().toLowerCase().equals("true")) {
+			System.setProperty("http.proxyHost", "10.14.79.204");
+			System.setProperty("http.proxyPort", "8080");
+		}
+		
 		buildCache(duration, timeUnit, size);
 	}
 
@@ -76,10 +90,10 @@ public class GeonamesSearchServiceImpl implements SearchService<List<Toponym>> {
 						searchCriteria.setNameEquals(queryKey);
 						searchCriteria.setStartRow(0);
 						searchCriteria.setStyle(Style.LONG); // Importante
-						searchCriteria.setFeatureClass(FeatureClass.A);
+						
+						WebService.setUserName(appConstants.geonamesWebServiceUsername());
 
-						WebService.setUserName(Constant.GEONAMES_WEBSERVICE_USERNAME);
-
+						
 						ToponymSearchResult searchResult = WebService
 								.search(searchCriteria);
 						for (org.geonames.Toponym toponym : searchResult

@@ -51,7 +51,7 @@ import es.uem.geolocation.client.presenter.GeoRSSPresenter;
 
 /**
  * 
- *  Map View.    
+ *  Map View  
  * 
  * @author Guillermos Santos (gsantosgo@yahoo.es)
  */

@@ -21,11 +21,12 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -35,7 +36,10 @@ import com.sun.syndication.feed.synd.SyndCategoryImpl;
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.SyndFeedInput;
+import com.teklabs.gwt.i18n.client.LocaleFactory;
+import com.teklabs.gwt.i18n.server.LocaleProxy;
 
+import es.uem.geolocation.server.AppConstants;
 import es.uem.geolocation.server.util.RetryHandler;
 import es.uem.geolocation.shared.Article;
 import es.uem.geolocation.shared.RSS;
@@ -48,7 +52,8 @@ import es.uem.geolocation.shared.RSS;
  * @author Guillermo Santos (gsantosgo@yahoo.es)
  * 
  */
-public class FeedServiceImpl implements FeedService<RSS> {	
+public class FeedServiceImpl implements FeedService<RSS> {
+	protected AppConstants appConstants;  
 	protected LoadingCache<String, RSS> cache;
 	
 	/** 
@@ -60,6 +65,8 @@ public class FeedServiceImpl implements FeedService<RSS> {
 	 * @param size the cache size
 	 */	
 	public FeedServiceImpl(long duration, TimeUnit timeUnit, long size) {
+		LocaleProxy.initialize();  
+		appConstants = LocaleFactory.get(AppConstants.class);		
 		buildCache(duration, timeUnit, size);
 	}
 			
@@ -81,13 +88,14 @@ public class FeedServiceImpl implements FeedService<RSS> {
 						ArrayList<Article> articlesList = new ArrayList<Article>();
 												
 						DefaultHttpClient httpClient = new DefaultHttpClient();
+																		
+						if (appConstants.isProxy().trim().toLowerCase().equals("true")) {  
+							// Proxy Configuration =====  
+							HttpHost httpProxy = new HttpHost(appConstants.proxyHostName().trim(), appConstants.proxyPort());
+							// Set this HttpHost to DefaultHttpClient as parameter
+							httpClient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, httpProxy);
+						}
 						
-						/*
-						// Proxy Configuration =====  
-						HttpHost httpProxy = new HttpHost("10.14.79.204",8080);
-						// Set this HttpHost to DefaultHttpClient as parameter
-						httpClient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, httpProxy);
-						*/						
 						
 						RetryHandler retryHandler = new RetryHandler();
 						httpClient.setHttpRequestRetryHandler(retryHandler);

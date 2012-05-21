@@ -4,7 +4,7 @@
               http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
          version="2.5"
          xmlns="http://java.sun.com/xml/ns/javaee">
-
+    
 	<!-- Servlets -->
 	<servlet>
 		<servlet-name>rssServlet</servlet-name>
@@ -23,6 +23,12 @@
     	<servlet-name>rssnewsServlet</servlet-name>
      	<servlet-class>es.uem.geolocation.server.RSSNewsServlet</servlet-class>
   	</servlet>
+  	
+  	<!-- Filters -->
+  	<filter>
+  		<filter-name>I18nFilter</filter-name>
+  		<filter-class>com.teklabs.gwt.i18n.server.I18nFilter</filter-class>
+  	</filter>  	
   
 	<!--  Servlets Mapping -->
 	<servlet-mapping>
@@ -42,10 +48,16 @@
     	<servlet-name>rssnewsServlet</servlet-name>
     	<url-pattern>/gwtnewsgeolocation/rssnews</url-pattern>
   	</servlet-mapping>
+  	
+  	<!-- Filters mapping -->
+  	<filter-mapping>
+  		<filter-name>I18nFilter</filter-name>
+  		<url-pattern>*</url-pattern>
+  	</filter-mapping>
   
   	<!-- Default page to serve -->
   	<welcome-file-list>
 	    <welcome-file>gwtnewsgeolocation.html</welcome-file>
-  	</welcome-file-list>
+  	</welcome-file-list>  	
 
 </web-app>

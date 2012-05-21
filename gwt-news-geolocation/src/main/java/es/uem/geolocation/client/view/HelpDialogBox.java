@@ -9,8 +9,9 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.Widget;
 
-public class HelpDialogBox extends DialogBox {
-    private static final Binder binder = GWT.create(Binder.class);    
+public class HelpDialogBox extends DialogBox {	
+    private static final Binder binder = GWT.create(Binder.class);
+    
     interface Binder extends UiBinder<Widget, HelpDialogBox> {
     }
     
