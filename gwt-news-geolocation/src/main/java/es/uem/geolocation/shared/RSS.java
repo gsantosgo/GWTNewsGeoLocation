@@ -19,7 +19,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-import com.google.common.base.Objects; 
+import com.google.common.base.Objects;
 
 /**
  * 

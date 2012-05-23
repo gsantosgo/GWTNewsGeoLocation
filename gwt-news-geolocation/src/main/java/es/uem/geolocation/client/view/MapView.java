@@ -16,7 +16,6 @@
 package es.uem.geolocation.client.view;
 
 import com.google.gwt.core.client.GWT;
-
 import com.google.gwt.maps.client.HasJso;
 import com.google.gwt.maps.client.HasMap;
 import com.google.gwt.maps.client.MapOptions;
@@ -72,11 +71,14 @@ public class MapView extends Composite implements GeoRSSPresenter.Display {
 	@UiField
 	MenuBar menuBar;
 	
-	// ABC.ES
+	// LARAZON.ES
 	@UiField
-	MenuItem abcPortadaMenuItem;	
+	MenuItem larazonGeneralesMenuItem;	
 	@UiField
-	MenuItem abcUltimaHoraMenuItem;
+	MenuItem larazonEspanaMenuItem;
+	@UiField
+	MenuItem larazonInternacionalMenuItem;	
+	
 
 	// ELMUNDO.ES
 	@UiField
@@ -113,11 +115,11 @@ public class MapView extends Composite implements GeoRSSPresenter.Display {
 	Label countNewsRSS;
 	@UiField
 	Label countNewsRSSGeoLocation;
-	@UiField
-	Label countNewsRSSNoGeoLocation; 
+	/*@UiField
+	Label countNewsRSSNoGeoLocation;*/ 
 
 	@UiField 
-	Label state; 
+	Label status; 
 	
 	@UiField
 	SimplePanel contentNews;	
@@ -133,20 +135,27 @@ public class MapView extends Composite implements GeoRSSPresenter.Display {
 	 */
 	public MapView() {
 		initWidget(uiBinder.createAndBindUi(this));		
-		initMap();  
-				
+		initMap();  			
+		
 		// ABC.es 
-		abcPortadaMenuItem.setCommand(new Command() {			
+		larazonGeneralesMenuItem.setCommand(new Command() {			
 			//@Override
 			public void execute() {
-				History.newItem("abcPortadaMenuItem"); 							
+				History.newItem("larazonGeneralesMenuItem"); 							
 			}
 		});
 						
-		abcUltimaHoraMenuItem.setCommand(new Command() {			
+		larazonEspanaMenuItem.setCommand(new Command() {			
 			//@Override
 			public void execute() {			
-				History.newItem("abcUltimaHoraMenuItem");							
+				History.newItem("larazonEspanaMenuItem");							
+			}
+		}); 
+		
+		larazonInternacionalMenuItem.setCommand(new Command() {			
+			//@Override
+			public void execute() {			
+				History.newItem("larazonInternacionalMenuItem");							
 			}
 		}); 
 		
@@ -278,8 +287,8 @@ public class MapView extends Composite implements GeoRSSPresenter.Display {
 		return this;
 	}
 
-	public void setState(String state) {
-		this.state.setText(state); 		
+	public void setStatus(String text) {
+		this.status.setText(text); 		
 	}
 
 	/**
@@ -312,9 +321,9 @@ public class MapView extends Composite implements GeoRSSPresenter.Display {
 		this.countNewsRSSGeoLocation.setText(value); 		
 	}	
 
-	public void setCountNewsRSSNoGeoLocation(String value) {
+/*	public void setCountNewsRSSNoGeoLocation(String value) {
 		this.countNewsRSSNoGeoLocation.setText(value); 		
-	}	
+	}*/ 	
 	
 	/**
 	 * Map init 
@@ -342,8 +351,8 @@ public class MapView extends Composite implements GeoRSSPresenter.Display {
 		this.setSourceRSSCopyright("");
 		this.setCountNewsRSS("");
 		this.setCountNewsRSSGeoLocation("");
-		this.setCountNewsRSSNoGeoLocation(""); 
-		this.setState("");
+		//this.setCountNewsRSSNoGeoLocation(""); 
+		this.setStatus("");
 		this.newsList.clear();  
 	}
 

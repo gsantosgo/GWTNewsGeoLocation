@@ -11,17 +11,17 @@
         	<b>Geolocalización de Noticias</b>
         	<br/>
         	<br/>
-        	<span>Aplicación que usa fuentes de información en formato RSS (formato XML) y en español,</span>
+        	<span>
+        		Aplicación con tecnología Google Web Toolkit (GWT) que hace uso
+        		de fuentes de información en formato RSS (XML) en idioma español
+        		procedente de distintos periódicos, agencias de noticias, 
+        		organismos públicos,..., para determinar entidades nombradas que 
+        		sean nombres de lugares (topónimos) dentro de cada noticia, y 
+        		por último, obtener las coordenadas geográficas (latitud,longitud)
+        		para geoposicionarla dentro de la cartografía ofrecida 
+        		por Google Maps.  
+        	</span>
         	<br/>
-        	<span>de distintos periodicos, agencias de noticias, organismos públicos,.. </span>
-        	<br/>
-        	<span>para detectar posibles nombres de lugares (topónimos) dentro de cada noticia,</span>
-        	<br/>
-        	<span>para despues utilizar la cartografía de Google Maps</span>
-        	<br/>
-        	<span>para posicionar geográficamente las noticias.</span>
-        	<br/>        	
-			<br/>
         	<br/>        	
         </g:HTML>
 		<g:HorizontalPanel horizontalAlignment="ALIGN_CENTER">

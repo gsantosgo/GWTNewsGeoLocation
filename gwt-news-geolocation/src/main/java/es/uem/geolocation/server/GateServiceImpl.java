@@ -22,7 +22,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import es.uem.geolocation.client.Constant;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
@@ -30,14 +29,22 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
+import es.uem.geolocation.client.Constant;
 import es.uem.geolocation.client.services.GateService;
 import es.uem.geolocation.shared.Article;
-
-import gate.*;
-import gate.creole.*;
-import gate.util.persistence.PersistenceManager;
+import gate.Annotation;
+import gate.AnnotationSet;
+import gate.Corpus;
+import gate.Document;
+import gate.Factory;
+import gate.Gate;
 import gate.corpora.DocumentContentImpl;
 import gate.corpora.DocumentImpl;
+import gate.creole.ANNIEConstants;
+import gate.creole.ExecutionException;
+import gate.creole.ResourceInstantiationException;
+import gate.creole.SerialAnalyserController;
+import gate.util.persistence.PersistenceManager;
 
 /**
  * 

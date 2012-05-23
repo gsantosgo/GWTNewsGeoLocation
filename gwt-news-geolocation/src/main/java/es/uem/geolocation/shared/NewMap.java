@@ -15,14 +15,11 @@
 
 package es.uem.geolocation.shared;
 
-import gate.util.compilers.eclipse.jdt.internal.compiler.ast.ThisReference;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.base.Objects;
-import com.google.gwt.thirdparty.guava.common.base.Strings;
 
 /**  
  * 

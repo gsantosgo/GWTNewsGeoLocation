@@ -14,10 +14,10 @@
  */
 package es.uem.geolocation.client;
 
+import com.google.common.base.Strings;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerManager;
-import com.google.common.base.Strings;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.HasWidgets;
 
@@ -27,7 +27,6 @@ import es.uem.geolocation.client.services.GateServiceAsync;
 import es.uem.geolocation.client.services.GeonamesServiceAsync;
 import es.uem.geolocation.client.services.RSSServiceAsync;
 import es.uem.geolocation.client.view.MapView;
-import es.uem.geolocation.shared.NewMap;
 
 /**
  * Controlador para escuchar eventos y tomar acciones relevantes.

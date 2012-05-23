@@ -19,7 +19,6 @@ import java.util.List;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
-import com.google.common.primitives.Doubles;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -38,10 +37,10 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import es.uem.geolocation.client.AppMessages;
 import es.uem.geolocation.client.services.GateServiceAsync;
 import es.uem.geolocation.client.services.GeonamesServiceAsync;
 import es.uem.geolocation.client.services.RSSServiceAsync;
@@ -49,7 +48,6 @@ import es.uem.geolocation.client.view.Resources;
 import es.uem.geolocation.shared.Article;
 import es.uem.geolocation.shared.NewMap;
 import es.uem.geolocation.shared.RSS;
-import es.uem.geolocation.shared.Toponym;
 
 /**
  * GeoRSS Presenter
@@ -82,10 +80,10 @@ public class GeoRSSPresenter implements Presenter {
 		// Count News 
 		void setCountNewsRSS(String value);
 		void setCountNewsRSSGeoLocation(String value);
-		void setCountNewsRSSNoGeoLocation(String value); 
+		//void setCountNewsRSSNoGeoLocation(String value); 
 		
-		// State line (Information) 
-		void setState(String state);
+		// Status (Information) 
+		void setStatus(String text);
 		
 		// News list 
 		VerticalPanel getNewsList();
@@ -100,6 +98,7 @@ public class GeoRSSPresenter implements Presenter {
 	private final Display display;
 	private final String uri;
 	private final Resources resources = GWT.create(Resources.class);
+	private AppMessages messages = GWT.create(AppMessages.class);
 		
 	/**
 	 * 
@@ -136,8 +135,8 @@ public class GeoRSSPresenter implements Presenter {
 	 * @param uri
 	 */
 	private void fetchRSSNews(final String uri) {
-		display.setState("Accediendo a fuente RSS ..." + uri);
-		display.setState("Cargando fuente RSS ..." + uri + ". Espere ... ");
+		display.setStatus(messages.fetchRSS(uri));
+		display.setStatus(messages.loadingRSS(uri));
 		
 		// RSS Request =====
 		try {								
@@ -145,8 +144,7 @@ public class GeoRSSPresenter implements Presenter {
 				public void onSuccess(RSS rssSource) {
 					if (rssSource != null) {
 						// RSS Information =====
-						display.setState("Cargando información fuente RSS \""
-								+ rssSource.getTitle() + "\"...");
+						//display.setStatus(messages.infoRSS(rssSource.getTitle()));
 						display.setSourceRSSTitle(rssSource.getTitle());
 						display.setSourceRSSLink(uri);
 						display.setSourceRSSCopyright(rssSource.getCopyright());
@@ -155,30 +153,29 @@ public class GeoRSSPresenter implements Presenter {
 						articles = rssSource.getItems();									
 						if (articles != null && articles.size() > 0) {
 							int articlesCount = articles.size();
-							display.setState("Cargando " + articlesCount
-									+ " articulos de noticias...");
+							display.setStatus(messages.loadingRSSArticles(articlesCount)); 
 							display.setCountNewsRSS(""+articlesCount); 
 
 							handleNER(articles); 
 						}
 					}
 					else {
-						display.setState("Imposible cargar información fuente RSS \"" + uri + "\".");						
+						display.setStatus("Imposible cargar información fuente RSS \"" + uri + "\".");						
 					}
 				}
 
 				//@Override
 				public void onFailure(Throwable caught) {
-					display.setState(""); 
+					display.setStatus(""); 
 					Window.alert("Fallo. Imposible cargar información fuente RSS \""
 							+ uri + "\".");
 				}
 			});
 		} catch (Exception e) {
-			display.setState("");
+			display.setStatus("");
 			Window.alert("Fallo. Error acceso fuente RSS \"" + uri + "\".");
 		}		
-		display.setState("Procesando RSS ..."); 		
+		display.setStatus(messages.processingRSS()); 		
 	}	
 	
 	/**
@@ -193,13 +190,13 @@ public class GeoRSSPresenter implements Presenter {
 				public void onSuccess(List<Article> articlesResult) {
 					// OJO!!
 					//System.out.println("Localizaciones " + articlesResult.toString()); 								
-					display.setState("Reconocimiento de Entidades Nombradas (Nombres Lugares) realizado con exito.");					
+					display.setStatus("Reconocimiento de Entidades Nombradas (Nombres Lugares) realizado con exito.");					
 					handleGeonames(articlesResult); 										
 				}
 
 				//@Override
 				public void onFailure(Throwable caught) {
-					display.setState(""); 
+					display.setStatus(""); 
 					Window.alert("Fallo. Imposible reconocer entidades nombradas.");
 				}
 
@@ -207,14 +204,15 @@ public class GeoRSSPresenter implements Presenter {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}		 
-		display.setState("Reconocimiento de Entidades Nombradas (Nombres Lugares)...");
+		
+		display.setStatus(messages.processingNER());
 	}
 	
 
 	/**
-	 * Geonames 
+	 * Geonames Handling  
 	 * 
-	 * @param articles the List of articles 
+	 * @param articles the List of Articles 
 	 */
 	private void handleGeonames(List<Article> articles) {						
 		geonamesService.toponymSearchCriteria(articles, new AsyncCallback<List<NewMap>>() {			
@@ -236,22 +234,19 @@ public class GeoRSSPresenter implements Presenter {
 						attachArticles(marker, newMap.getArticles());												
 					}
 					display.setCountNewsRSSGeoLocation("" + markers.size());
-					// OJO!!
-					//display.setCountNewsRSSNoGeoLocation("" + (articles.size() - markers.size()));
-					display.setState("");
+					display.setStatus("");
 				}			
 			}
 			
 			public void onFailure(Throwable caught) {				
-				display.setState(""); 
+				display.setStatus(""); 
 				Window.alert("Fallo. Imposible obtener puntos geogŕaficos de noticias.");				
 			}
 		});						
-		display.setState("Obteniendo puntos geográficos de noticias...");				
+			
+		display.setStatus(messages.processingGeocoding());				
 	}
-	
-
-	
+		
 	/**
 	 * 
 	 * Attach articles on Map 

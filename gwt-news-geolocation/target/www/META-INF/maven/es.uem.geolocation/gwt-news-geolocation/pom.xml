@@ -32,7 +32,7 @@
 	<properties>
 		<!-- Java properties -->
 		<javaVersion>1.6</javaVersion>
-		<webappDirectory>/home/gsantos/git/GWTNewsGeoLocation/gwt-news-geolocation/target/gwt-news-geolocation-1.0.1-SNAPSHOT</webappDirectory>
+		<webappDirectory>C:\\Users\\gsantos\\GWTNewsGeoLocation\\gwt-news-geolocation\\target/gwt-news-geolocation-1.0.1-SNAPSHOT</webappDirectory>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<!-- GWT props -->
 		<gwt.version>2.4.0</gwt.version>
@@ -58,7 +58,7 @@
 		<testSourceDirectory>src/main/test</testSourceDirectory>
 
 		<!-- Generate compiled stuff in the folder used for developing mode -->
-		<outputDirectory>/home/gsantos/git/GWTNewsGeoLocation/gwt-news-geolocation/target/gwt-news-geolocation-1.0.1-SNAPSHOT/WEB-INF/classes</outputDirectory>
+		<outputDirectory>C:\\Users\\gsantos\\GWTNewsGeoLocation\\gwt-news-geolocation\\target/gwt-news-geolocation-1.0.1-SNAPSHOT/WEB-INF/classes</outputDirectory>
 
 		<plugins>
 			<plugin>
@@ -225,7 +225,7 @@
 			<artifactId>geonames</artifactId>
 			<version>1.1.6</version>
 			<scope>system</scope>
-			<systemPath>/home/gsantos/git/GWTNewsGeoLocation/gwt-news-geolocation/lib/geonames-1.1.6.jar</systemPath>
+			<systemPath>C:\\Users\\gsantos\\GWTNewsGeoLocation\\gwt-news-geolocation/lib/geonames-1.1.6.jar</systemPath>
 		</dependency>
 		<!-- Testing -->
 		<dependency>

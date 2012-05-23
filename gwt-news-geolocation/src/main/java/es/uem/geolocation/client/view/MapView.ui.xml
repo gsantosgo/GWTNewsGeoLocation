@@ -33,7 +33,13 @@
 			margin-left: 0.1em;
 			margin-right: 0.1em;
 		} 
-			
+
+		.status {
+			border: 1px solid #6694E3;
+			margin-left: 0.1em;
+			margin-right: 0.1em;			
+		}
+					
 		.contentNews {			
 			background-color: #E3E9FF;
 			border: 1px solid #6694E3;
@@ -78,16 +84,18 @@
 						<h2 class="{style.title}">Geolocalización de Noticias</h2>						
 				</g:HTMLPanel>
 			</g:north>			
-			<!-- menu -->
+			<!-- Menu -->
 			<g:north size='1.7'>
 				<g:HTMLPanel>
 					<g:MenuBar ui:field="menuBar">
-						<g:MenuItem text="ABC.es">
-							<g:MenuBar vertical="true">
-								<g:MenuItem text="Portada" title="ABC.es.- Portada" ui:field="abcPortadaMenuItem" />
-								<!-- http://www.abc.es/rss/ticker.aspx?sc=abcPortada-->
-								<g:MenuItem text="Última Hora" title="ABC.es - Última hora" ui:field="abcUltimaHoraMenuItem"/>
-								<!-- http://www.abc.es/rss/ticker.aspx?sc=abc_ultima -->
+						<g:MenuItem text="LARAZON.es">
+							<g:MenuBar vertical="true">							
+								<g:MenuItem text="Noticias Generales" title="LARAZON.es - Noticias Generales" ui:field="larazonGeneralesMenuItem" />
+								<!-- http://www.larazon.es/noticias/rss-->
+								<g:MenuItem text="España" title="LARAZON.es - España" ui:field="larazonEspanaMenuItem"/>
+								<!-- http://www.larazon.es/noticias/rss/espana -->
+								<g:MenuItem text="Internacional" title="LARAZON.es - Internacional" ui:field="larazonInternacionalMenuItem"/>
+								<!-- http://www.larazon.es/noticias/rss/internacional -->								
 							</g:MenuBar>
 						</g:MenuItem>
 						<g:MenuItem text="ElMundo.es">
@@ -119,6 +127,7 @@
 					</g:MenuBar>										
 				</g:HTMLPanel>											
 			</g:north>
+			<!--  -->
 			<g:north size="6">
 				<g:HTMLPanel styleName="{style.info}">
 					<table width="100%">
@@ -139,17 +148,15 @@
 									<g:Label ui:field="countNewsRSS" addStyleNames="{style.label}" /><br />
 									<span class="{style.label}">Noticas Geolocalizadas:&nbsp;&nbsp;</span>
 									<g:Label ui:field="countNewsRSSGeoLocation" addStyleNames="{style.label}" /><br />
-									<span class="{style.label}">Noticias No Geolocalizadas:&nbsp;&nbsp;</span>
-									<g:Label ui:field="countNewsRSSNoGeoLocation" addStyleNames="{style.label}" /><br />
 								</div>                								
 							</td>
 						</tr>
-					</table>		        	
-                	                            								
+					</table>		        	                	                            							
         		</g:HTMLPanel>						
 			</g:north>
-			<g:north size="1">
-				<g:Label ui:field="state"></g:Label>
+			<!-- Status Bar -->
+			<g:north size="1.5">
+				<g:Label ui:field="status" addStyleNames="{style.status}"></g:Label>
 			</g:north>			
 			<g:center size="80">				
         		<g:SimplePanel ui:field="mapWrapper"/>

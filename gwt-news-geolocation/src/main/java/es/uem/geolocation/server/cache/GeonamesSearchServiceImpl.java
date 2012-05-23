@@ -14,6 +14,15 @@
  */
 package es.uem.geolocation.server.cache;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.geonames.Style;
+import org.geonames.ToponymSearchCriteria;
+import org.geonames.ToponymSearchResult;
+import org.geonames.WebService;
+
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -24,18 +33,6 @@ import com.teklabs.gwt.i18n.server.LocaleProxy;
 import es.uem.geolocation.client.Constant;
 import es.uem.geolocation.server.AppConstants;
 import es.uem.geolocation.shared.Toponym;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import org.apache.http.HttpHost;
-import org.apache.http.conn.params.ConnRoutePNames;
-import org.geonames.FeatureClass;
-import org.geonames.Style;
-import org.geonames.ToponymSearchCriteria;
-import org.geonames.ToponymSearchResult;
-import org.geonames.WebService;
 
 /**
  * 

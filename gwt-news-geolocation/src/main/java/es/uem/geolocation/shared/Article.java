@@ -20,8 +20,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.google.common.base.Objects; 
-import com.google.gwt.thirdparty.guava.common.base.Strings;
+import com.google.common.base.Objects;
 
 /**
  * 

@@ -17,8 +17,6 @@ package es.uem.geolocation.client;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.gwt.core.client.GWT;
-
 
 /**
  * Cadena de caracteres estaticas y literales.
@@ -42,11 +40,18 @@ public class Constant {
 	public static final Map<String, String> MENU_LIST  = new HashMap<String, String>(){
 		private static final long serialVersionUID = 1L;
 		
-		{
+		{			
 			// ABC.ES
+			/*
 			put("abcPortadaMenuItem", "http://www.abc.es/rss/ticker.aspx?sc=abcPortada");
 			put("abcUltimaHoraMenuItem", "http://www.abc.es/rss/ticker.aspx?sc=abc_ultima");
-
+			*/
+			
+			// LARAZON.ES 
+			put("larazonGeneralesMenuItem","http://www.larazon.es/noticias/rss"); 	
+			put("larazonEspanaMenuItem","http://www.larazon.es/noticias/rss/espana");
+			put("larazonInternacionalMenuItem","http://www.larazon.es/noticias/rss/internacional");			
+			
 			// ELMUNDO.ES
 			put("elmundoPortadaMenuItem", "http://elmundo.feedsportal.com/elmundo/rss/portada.xml");			
 			put("elmundoEspanaMenuItem", "http://elmundo.feedsportal.com/elmundo/rss/espana.xml");
@@ -58,7 +63,7 @@ public class Constant {
 			put("elpaisInternacionalMenuItem","http://ep00.epimg.net/rss/internacional/portada.xml");
 			
 			// Servlet Implemented
-			//put("rssMenuItem", GWT.getModuleBaseURL() + "rssnews"); 
+			// put("rssMenuItem", GWT.getModuleBaseURL() + "rssnews"); 
 			put("rssMenuItem", "local");
 		}
 	}; 
