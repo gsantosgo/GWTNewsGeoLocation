@@ -44,7 +44,7 @@ import es.uem.geolocation.shared.Toponym;
 public class GeonamesSearchServiceImpl implements SearchService<List<Toponym>> {
 	protected AppConstants appConstants;	
 	protected LoadingCache<String, List<Toponym>> cache;
-
+	
 	/** 
 	 * 
 	 * Constructor 
@@ -78,19 +78,19 @@ public class GeonamesSearchServiceImpl implements SearchService<List<Toponym>> {
 		cache = CacheBuilder.newBuilder()
 				.expireAfterWrite(duration, timeUnit).maximumSize(size)
 				// .refreshAfterWrite(duration, unit)
-				.build(new CacheLoader<String, List<Toponym>>() {					
+				.build(new CacheLoader<String, List<Toponym>>() {
+										
 					@Override
 					public List<Toponym> load(String queryKey) throws Exception {						
 						List<Toponym> toponymList = new ArrayList<Toponym>();
 						ToponymSearchCriteria searchCriteria = new ToponymSearchCriteria();
 						searchCriteria.setLanguage(Constant.DEFAULT_LANGUAGE);
 						searchCriteria.setNameEquals(queryKey);
-						searchCriteria.setStartRow(0);
+						searchCriteria.setStartRow(0); // Limit 100 
 						searchCriteria.setStyle(Style.LONG); // Importante
 												
 						WebService.setConnectTimeOut(appConstants.geonamesWebServiceConnectTimeOut()); 
 						WebService.setUserName(appConstants.geonamesWebServiceUsername());
-
 						
 						ToponymSearchResult searchResult = WebService
 								.search(searchCriteria);
@@ -119,6 +119,8 @@ public class GeonamesSearchServiceImpl implements SearchService<List<Toponym>> {
 
 							toponymList.add(newToponym);
 						}
+																						
+						
 						return toponymList;
 					}
 				});
@@ -131,4 +133,5 @@ public class GeonamesSearchServiceImpl implements SearchService<List<Toponym>> {
 	public Cache<String, List<Toponym>> getCache() {
 		return cache;
 	}
+
 }

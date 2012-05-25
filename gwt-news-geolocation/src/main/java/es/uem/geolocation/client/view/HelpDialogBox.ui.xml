@@ -5,10 +5,17 @@
         .panel {
             background-color: ivory;
         }        
+        
+        .label {
+			font-weight: bold;
+		}
     </ui:style>   
-  	<g:VerticalPanel styleName="style.panel">  	
+  	<g:VerticalPanel styleName="{style.panel}">
+		<g:HTML>
+	       	<br/>
+  		</g:HTML>
+  		<g:Label ui:field="labelProduct" styleName="{style.label}"/>  	
         <g:HTML>
-        	<b>Geolocalización de Noticias</b>
         	<br/>
         	<br/>
         	<span>

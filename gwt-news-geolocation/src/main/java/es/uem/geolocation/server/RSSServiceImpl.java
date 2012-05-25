@@ -37,6 +37,7 @@ import es.uem.geolocation.shared.RSS;
 
 @SuppressWarnings("serial")
 public class RSSServiceImpl extends RemoteServiceServlet implements RSSService {
+	
 	private FeedService<RSS> feedService;
 
 	/**

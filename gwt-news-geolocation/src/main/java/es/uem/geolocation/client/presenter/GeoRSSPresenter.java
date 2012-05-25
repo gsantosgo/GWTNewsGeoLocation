@@ -31,6 +31,8 @@ import com.google.gwt.maps.client.base.HasLatLng;
 import com.google.gwt.maps.client.base.HasLatLngBounds;
 import com.google.gwt.maps.client.event.EventCallback;
 import com.google.gwt.maps.client.overlay.HasMarker;
+import com.google.gwt.maps.client.overlay.HasMarkerImage;
+import com.google.gwt.maps.client.overlay.MarkerImage;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
@@ -45,6 +47,7 @@ import es.uem.geolocation.client.services.GateServiceAsync;
 import es.uem.geolocation.client.services.GeonamesServiceAsync;
 import es.uem.geolocation.client.services.RSSServiceAsync;
 import es.uem.geolocation.client.view.Resources;
+import es.uem.geolocation.client.AppConstants;
 import es.uem.geolocation.shared.Article;
 import es.uem.geolocation.shared.NewMap;
 import es.uem.geolocation.shared.RSS;
@@ -62,6 +65,7 @@ public class GeoRSSPresenter implements Presenter {
 		HasInfoWindow createInfoWindow(String content);
 		HasLatLng createLatLng(double lat, double lng);
 		HasMarker createMarkerAt(HasLatLng position);
+		HasMarker createCustomMarkerAt(HasLatLng position, HasMarkerImage markerImage); 
 		void fitBounds(HasLatLngBounds bounds);
 		HasMap getMap();										
 		void reset();
@@ -98,7 +102,9 @@ public class GeoRSSPresenter implements Presenter {
 	private final Display display;
 	private final String uri;
 	private final Resources resources = GWT.create(Resources.class);
-	private AppMessages messages = GWT.create(AppMessages.class);
+	private AppConstants constants =  GWT.create(AppConstants.class);
+	private AppMessages messages = GWT.create(AppMessages.class);	
+	private String urlMarkerImage = constants.markerImage();
 		
 	/**
 	 * 
@@ -160,20 +166,19 @@ public class GeoRSSPresenter implements Presenter {
 						}
 					}
 					else {
-						display.setStatus("Imposible cargar información fuente RSS \"" + uri + "\".");						
+						display.setStatus(messages.processingRSSNoInformation(uri));						
 					}
 				}
 
 				//@Override
 				public void onFailure(Throwable caught) {
 					display.setStatus(""); 
-					Window.alert("Fallo. Imposible cargar información fuente RSS \""
-							+ uri + "\".");
+					Window.alert(messages.processingRSSFailure(uri));
 				}
 			});
 		} catch (Exception e) {
 			display.setStatus("");
-			Window.alert("Fallo. Error acceso fuente RSS \"" + uri + "\".");
+			Window.alert(messages.processingRSSException(uri));
 		}		
 		display.setStatus(messages.processingRSS()); 		
 	}	
@@ -188,29 +193,27 @@ public class GeoRSSPresenter implements Presenter {
 			gateService.getNamedEntities(articles, new AsyncCallback<List<Article>>() {
 				//@Override
 				public void onSuccess(List<Article> articlesResult) {
-					// OJO!!
-					//System.out.println("Localizaciones " + articlesResult.toString()); 								
-					display.setStatus("Reconocimiento de Entidades Nombradas (Nombres Lugares) realizado con exito.");					
-					handleGeonames(articlesResult); 										
+					display.setStatus(messages.processingNERSuccess()); 					
+					handleGeonames(articlesResult);				
 				}
 
 				//@Override
 				public void onFailure(Throwable caught) {
 					display.setStatus(""); 
-					Window.alert("Fallo. Imposible reconocer entidades nombradas.");
+					Window.alert(messages.processingNERFailure());
 				}
 
 			});
 		} catch (Exception e) {
 			e.printStackTrace();
-		}		 
-		
+			Window.alert(messages.processingNERException());
+		}		 		
 		display.setStatus(messages.processingNER());
 	}
 	
 
 	/**
-	 * Geonames Handling  
+	 * News geolocation. Geonames Handling  
 	 * 
 	 * @param articles the List of Articles 
 	 */
@@ -227,10 +230,10 @@ public class GeoRSSPresenter implements Presenter {
 						attachArticles(newMap.getArticles());
 					// Location 
 					} else {						
-						final HasLatLng location = display.createLatLng(newMap.getLatitude(), newMap.getLongitude());
-						final HasMarker marker = display.createMarkerAt(location);
+						final HasLatLng location = display.createLatLng(newMap.getLatitude(), newMap.getLongitude());							
+						final HasMarker marker = display.createCustomMarkerAt(location, new MarkerImage.Builder(urlMarkerImage).build());
 						markers.add(marker);
-						marker.setTitle(newMap.getPlacename());
+						marker.setTitle(newMap.getPlacename());						
 						attachArticles(marker, newMap.getArticles());												
 					}
 					display.setCountNewsRSSGeoLocation("" + markers.size());
@@ -240,10 +243,9 @@ public class GeoRSSPresenter implements Presenter {
 			
 			public void onFailure(Throwable caught) {				
 				display.setStatus(""); 
-				Window.alert("Fallo. Imposible obtener puntos geogŕaficos de noticias.");				
+				Window.alert(messages.processingNERFailure());							
 			}
-		});						
-			
+		});									
 		display.setStatus(messages.processingGeocoding());				
 	}
 		
@@ -255,7 +257,7 @@ public class GeoRSSPresenter implements Presenter {
 	 *           
 	 */
 	private void attachArticles(final List<Article> articles) {
-		final DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat("dd/MM/yyyy HH:mm:ss");
+		final DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat(constants.formatDateTime());
 		if (articles != null && articles.size() > 0) {
 			for (Article article : articles) {
 				Anchor headlineAnchor = new Anchor(article.getHeadline());				
@@ -266,7 +268,9 @@ public class GeoRSSPresenter implements Presenter {
 				display.getNewsList().add(headlineAnchor);
 				display.getNewsList().add(descriptionHTML);
 				String categories = Joiner.on(", ").skipNulls().join(article.getCategories());
-				display.getNewsList().add(new HTML(categories));
+				if (!Strings.isNullOrEmpty(categories)) { 
+					display.getNewsList().add(new HTML("Categorías: " + categories));
+				}
 				display.getNewsList().add(new HTML("<hr/>"));
 			}
 		}	
@@ -289,7 +293,7 @@ public class GeoRSSPresenter implements Presenter {
 			
 			final HasInfoWindow infoWindow = display.createInfoWindow(content.toString());	
 
-			final DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat("dd/MM/yyyy HH:mm:ss");
+			final DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat(constants.formatDateTime());
 			// Display news 
 			for (Article article : articles) {		
 				 
@@ -300,12 +304,14 @@ public class GeoRSSPresenter implements Presenter {
 						infoWindow.open(display.getMap(), marker);
 					}
 				});
-				display.getNewsList().add(new Image(resources.news()));				
+				display.getNewsList().add(new Image(resources.newsGeo()));				
 				display.getNewsList().add(new HTML(dateTimeFormat.format(article.getPublishedDate())));
 				display.getNewsList().add(headlineAnchor);
 				display.getNewsList().add(descriptionHTML); 
 				String categories = Joiner.on(", ").skipNulls().join(article.getCategories());
-				display.getNewsList().add(new HTML(categories));				
+				if (!Strings.isNullOrEmpty(categories)) { 
+					display.getNewsList().add(new HTML("Categorías: " + categories));
+				}				
 				display.getNewsList().add(new HTML("<hr/>"));
 			}	
 			

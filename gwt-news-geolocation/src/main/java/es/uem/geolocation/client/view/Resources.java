@@ -30,5 +30,16 @@ public interface Resources extends ClientBundle {
 	
 	@Source("images/icon_news.gif")
 	ImageResource news(); 
+
+	@Source("images/latlong-32.png")
+	ImageResource newsGeo(); 
+	
+	@Source("images/redpushpin.png")
+	ImageResource redPushpin(); 
+
+	@Source("images/world-blue-full.png")
+	ImageResource worldBlue(); 
+
+	
 	
 }

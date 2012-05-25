@@ -30,6 +30,7 @@ import com.google.gwt.maps.client.base.LatLngBounds;
 import com.google.gwt.maps.client.event.Event;
 import com.google.gwt.maps.client.event.EventCallback;
 import com.google.gwt.maps.client.overlay.HasMarker;
+import com.google.gwt.maps.client.overlay.HasMarkerImage;
 import com.google.gwt.maps.client.overlay.Marker;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -249,12 +250,22 @@ public class MapView extends Composite implements GeoRSSPresenter.Display {
 	 * Create marker on the map. 
 	 */
 	public HasMarker createMarkerAt(HasLatLng position) {
-		   final Marker marker = new Marker(); 
-		   //marker.setIcon(new MarkerImage.Builder("/images/icons_news.gif").build());
-		   marker.setMap(getMap());
-		   marker.setPosition(position);
-		   return marker;
+		final Marker marker = new Marker();		  
+		marker.setMap(getMap());
+		marker.setPosition(position);
+		return marker;
 	}
+	
+	/**
+	 * Create custom marker on the map. 
+	 */
+	public HasMarker createCustomMarkerAt(HasLatLng position, HasMarkerImage markerImage) {
+		final Marker marker = new Marker();		  
+		marker.setIcon(markerImage); 
+		marker.setMap(getMap());
+		marker.setPosition(position);
+		return marker;
+	}	
 
 	/* 
 	 * (non-Javadoc)

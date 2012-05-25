@@ -20,5 +20,6 @@ package es.uem.geolocation.server.cache;
  * @author Guillermo Santos (gsantosgo@yahoo.es)
  */
 public interface SearchService<T> {
-	 T search(String query) throws Exception;	 
+	 T search(String query) throws Exception;
+	 //T hierarchy(int geonameId, String language, Style style) throw Exception; 
 }

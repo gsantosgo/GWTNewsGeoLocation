@@ -7,26 +7,26 @@
             background-color: ivory; 
         }        
     </ui:style>   
-  	<g:VerticalPanel styleName="style.panel">  	
+  	<g:VerticalPanel styleName="{style.panel}">  	
 		<g:Image altText="" 
 			ui:field="headerImage" 
 			resource="{image}"/>  	
         <g:HTML>
         	<b>Producto:</b>
         </g:HTML>
-			<g:Label ui:field="labelProduct" text="Geolocalización de Noticias"/>
+			<g:Label ui:field="labelProduct" text=""/>
 		<g:HTML>
         	<b>Version:</b>
         </g:HTML>
-        <g:Label ui:field="labelVersion" text="1.0"/>
+        <g:Label ui:field="labelVersion" text=""/>
 		<g:HTML>
         	<b>Autor:</b>
         </g:HTML>
-        <g:Label ui:field="labelAutor" text="Guillermo Santos García"/>
+        <g:Label ui:field="labelAuthor" text=""/>
 		<g:HTML>
         	<b>Detalle:</b>
         </g:HTML>
-        <g:Label ui:field="labelDesc" text="Junio 2012 - Proyecto Fin de Grado - Ingenieria de Informática"/>
+        <g:Label ui:field="labelDetail" text=""/>
 		<g:HTML>
 			<br/>
 			<br/>			

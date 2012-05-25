@@ -87,7 +87,8 @@ public class FeedServiceImpl implements FeedService<RSS> {
 				.build(new CacheLoader<String, RSS>() {					
 					@Override
 					public RSS load(String uriKey) throws Exception {
-						RSS rss = null;
+						// No return NullPointException 
+						RSS rss = new RSS(); 
 						ArrayList<Article> articlesList = new ArrayList<Article>();
 											
 						HttpParams httpParameters = new BasicHttpParams();
@@ -123,8 +124,7 @@ public class FeedServiceImpl implements FeedService<RSS> {
 									SyndFeedInput syndFeedInput = new SyndFeedInput();
 									SyndFeed syndFeed = syndFeedInput.build(inputStreamReader);
 									
-														
-									rss = new RSS(); 
+														 
 									// Información RSS
 									rss.setTitle(Strings.nullToEmpty(syndFeed.getTitle()));
 									rss.setLink(Strings.nullToEmpty(syndFeed.getLink()));

@@ -23,6 +23,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import es.uem.geolocation.client.services.GeonamesService;
 import es.uem.geolocation.server.cache.GeonamesSearchServiceImpl;
+import es.uem.geolocation.server.cache.SearchService;
 import es.uem.geolocation.shared.Article;
 import es.uem.geolocation.shared.NewMap;
 import es.uem.geolocation.shared.Toponym;
@@ -37,7 +38,7 @@ import es.uem.geolocation.shared.Toponym;
 @SuppressWarnings("serial")
 public class GeonamesServiceImpl extends RemoteServiceServlet implements
 		GeonamesService {	
-	private GeonamesSearchServiceImpl geonamesSearch;  
+	private SearchService<List<Toponym>> geonamesSearch;  
 
 	/**
 	 * Constructor 
