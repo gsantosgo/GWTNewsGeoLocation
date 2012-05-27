@@ -19,9 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import javax.servlet.ServletException;
+
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import es.uem.geolocation.client.services.GeonamesService;
+import es.uem.geolocation.geonames.ToponymDisambiguator;
 import es.uem.geolocation.server.cache.GeonamesSearchServiceImpl;
 import es.uem.geolocation.server.cache.SearchService;
 import es.uem.geolocation.shared.Article;
@@ -38,14 +41,21 @@ import es.uem.geolocation.shared.Toponym;
 @SuppressWarnings("serial")
 public class GeonamesServiceImpl extends RemoteServiceServlet implements
 		GeonamesService {	
-	private SearchService<List<Toponym>> geonamesSearch;  
+	private ToponymDisambiguator toponymDisambiguator;  
 
 	/**
 	 * Constructor 
 	 */
-	public GeonamesServiceImpl() {
-		geonamesSearch = new GeonamesSearchServiceImpl(2, TimeUnit.DAYS, 1000);
+	public GeonamesServiceImpl() {				 
 	}
+	
+	
+	@Override
+	public void init() throws ServletException {
+		SearchService<List<Toponym>> geonamesSearch = new GeonamesSearchServiceImpl(2, TimeUnit.DAYS, 1000);
+		toponymDisambiguator = new ToponymDisambiguator(geonamesSearch);
+	}
+	
 
 	/**
 	 * Toponym search criteria 
@@ -53,7 +63,8 @@ public class GeonamesServiceImpl extends RemoteServiceServlet implements
 	public List<Toponym> toponymSearchCriteria(String placeName) {				
 		List<Toponym> toponymList = new ArrayList<Toponym>();
 		try {			
-			toponymList = geonamesSearch.search(placeName); 			
+			// OJO!! Arreglarlo 
+			//toponymList = geonamesSearch.search(placeName); 			
 		} catch (Exception e) {			
 			e.printStackTrace();
 		}
@@ -83,13 +94,17 @@ public class GeonamesServiceImpl extends RemoteServiceServlet implements
 			categoriesToponymList = new ArrayList<Toponym>();			
 			headlineDescriptionToponymList = new ArrayList<Toponym>();
 			
+
 			// Categories =====
 			if (categoriesLocations != null && 
 				categoriesLocations.size() > 0) {	
 				
 				for (String categoryPlaceName : categoriesLocations) {
-					try {			
-						categoriesToponymList = geonamesSearch.search(categoryPlaceName); 			
+					try {						
+						// OJO!!		
+						// Arreglarlo
+						//categoriesToponymList = geonamesSearch.search(categoryPlaceName);
+												
 					} catch (Exception e) {			
 						e.printStackTrace();
 					}														
@@ -110,7 +125,8 @@ public class GeonamesServiceImpl extends RemoteServiceServlet implements
 				headlineDescriptionLocations.size() > 0) {				
 				for (String headlineDecrpiptionPlaceName : headlineDescriptionLocations) {					
 					try {			
-						headlineDescriptionToponymList = geonamesSearch.search(headlineDecrpiptionPlaceName); 			
+						// OJO!! Arreglarlo 
+						//headlineDescriptionToponymList = geonamesSearch.search(headlineDecrpiptionPlaceName); 			
 					} catch (Exception e) {			
 						e.printStackTrace();
 					}									

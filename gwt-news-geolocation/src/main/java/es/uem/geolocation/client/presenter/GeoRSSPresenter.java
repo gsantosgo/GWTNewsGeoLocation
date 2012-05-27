@@ -48,6 +48,7 @@ import es.uem.geolocation.client.services.GeonamesServiceAsync;
 import es.uem.geolocation.client.services.RSSServiceAsync;
 import es.uem.geolocation.client.view.Resources;
 import es.uem.geolocation.client.AppConstants;
+import es.uem.geolocation.geonames.ToponymDisambiguator;
 import es.uem.geolocation.shared.Article;
 import es.uem.geolocation.shared.NewMap;
 import es.uem.geolocation.shared.RSS;
@@ -132,7 +133,7 @@ public class GeoRSSPresenter implements Presenter {
 		this.display = view;
 		this.markers = new ArrayList<HasMarker>();
 		this.articles = new ArrayList<Article>(); 
-		this.uri = uri;  
+		this.uri = uri;
 	}
 
 	/**

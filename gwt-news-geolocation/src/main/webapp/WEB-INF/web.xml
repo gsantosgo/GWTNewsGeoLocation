@@ -18,6 +18,7 @@
 	<servlet>
 		<servlet-name>geonamesServlet</servlet-name>
 		<servlet-class>es.uem.geolocation.server.GeonamesServiceImpl</servlet-class>
+		<load-on-startup>1</load-on-startup><!-- Initialize Cache -->
 	</servlet>	
   	<servlet>
     	<servlet-name>rssnewsServlet</servlet-name>

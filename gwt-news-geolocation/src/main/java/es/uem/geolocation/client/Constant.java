@@ -19,7 +19,8 @@ import java.util.Map;
 
 
 /**
- * Cadena de caracteres estaticas y literales.
+ * 
+ * Static and literal strings
  * 
  * @author Guillermo Santos (gsantosgo@yahoo.es)
  */

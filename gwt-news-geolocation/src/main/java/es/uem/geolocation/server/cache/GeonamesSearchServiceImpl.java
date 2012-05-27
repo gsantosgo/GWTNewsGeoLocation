@@ -16,6 +16,7 @@ package es.uem.geolocation.server.cache;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.geonames.Style;
