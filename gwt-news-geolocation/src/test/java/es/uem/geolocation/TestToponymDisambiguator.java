@@ -89,7 +89,7 @@ public class TestToponymDisambiguator {
 		if (toponym instanceof ToponymCountry) {
 			System.out.println("country");
 		}
-		
+	
 		//List<String> placeNames = Lists.newArrayList("Asturias", "España", "Estados Unidos", "Europa", "UK", "GB", "Oceanía", "Talavera de la Reina", "Toledo");
 		List<String> placeNames = Lists.newArrayList("Valladolid");		
 		//List<String> placeNames = Lists.newArrayList("Asturias", "Talavera de la Reina", "Toledo");
