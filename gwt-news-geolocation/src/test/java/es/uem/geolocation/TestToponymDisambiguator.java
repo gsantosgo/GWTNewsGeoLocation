@@ -91,7 +91,7 @@ public class TestToponymDisambiguator {
 		}
 	
 		//List<String> placeNames = Lists.newArrayList("Asturias", "España", "Estados Unidos", "Europa", "UK", "GB", "Oceanía", "Talavera de la Reina", "Toledo");
-		List<String> placeNames = Lists.newArrayList("Valladolid");		
+		List<String> placeNames = Lists.newArrayList("Valladolid", "España");		
 		//List<String> placeNames = Lists.newArrayList("Asturias", "Talavera de la Reina", "Toledo");
 /*		Map<String,List<es.uem.geolocation.shared.Toponym>> toponyms = toponymDisambiguator.extractPlaceNames(placeNames);
 		System.out.println("Tamaño: " + toponyms.size());
