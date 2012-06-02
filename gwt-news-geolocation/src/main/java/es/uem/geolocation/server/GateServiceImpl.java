@@ -16,7 +16,6 @@
 package es.uem.geolocation.server;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -27,6 +26,7 @@ import javax.servlet.ServletException;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import es.uem.geolocation.client.Constant;
@@ -138,9 +138,8 @@ public class GateServiceImpl extends RemoteServiceServlet implements
 						namedEntities.add(location); 
 					}
 				}
-		}
-				 
-		return new ArrayList<String>(namedEntities); 
+		}				 
+		return Lists.newArrayList(namedEntities); 
 	} // end getNamedEntities 
 
 	
@@ -148,7 +147,7 @@ public class GateServiceImpl extends RemoteServiceServlet implements
 	 * Named Recognition Entities   
 	 */
 	public List<Article> getNamedEntities(List<Article> articles) throws ExecutionException, ResourceInstantiationException {
-		List<Article> articlesResult = new ArrayList<Article>();
+		List<Article> articlesResult = Lists.newArrayList();
 		
 		if (Gate.isInitialised()) {
 				gate.Corpus corpus = (Corpus) Factory

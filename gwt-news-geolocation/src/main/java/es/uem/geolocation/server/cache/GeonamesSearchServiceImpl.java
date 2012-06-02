@@ -14,9 +14,7 @@
  */
 package es.uem.geolocation.server.cache;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.geonames.Style;
@@ -28,6 +26,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.collect.Lists;
 import com.teklabs.gwt.i18n.client.LocaleFactory;
 import com.teklabs.gwt.i18n.server.LocaleProxy;
 
@@ -45,7 +44,8 @@ import es.uem.geolocation.shared.Toponym;
 public class GeonamesSearchServiceImpl implements SearchService<List<Toponym>> {
 	protected AppConstants appConstants;	
 	protected LoadingCache<String, List<Toponym>> cache;
-	
+	protected LoadingCache<String, List<Toponym>> cacheCountries;
+		
 	/** 
 	 * 
 	 * Constructor 
@@ -58,13 +58,15 @@ public class GeonamesSearchServiceImpl implements SearchService<List<Toponym>> {
 		LocaleProxy.initialize();		
 		appConstants = LocaleFactory.get(AppConstants.class);
 		
-		// Proxy Configuration 
+		/*
+		// Proxy Configuration
 		if (appConstants.isProxy()) {
 			System.setProperty("http.proxyHost", appConstants.proxyHostName());
 			System.setProperty("http.proxyPort", ""+appConstants.proxyPort());
-		}
+		}*/
 		
 		buildCache(duration, timeUnit, size);
+		buildCacheCountry(duration, timeUnit, 300);		
 	}
 
 	/**
@@ -83,11 +85,20 @@ public class GeonamesSearchServiceImpl implements SearchService<List<Toponym>> {
 										
 					@Override
 					public List<Toponym> load(String queryKey) throws Exception {						
-						List<Toponym> toponymList = new ArrayList<Toponym>();
+						List<Toponym> toponymList = Lists.newArrayList();
 						ToponymSearchCriteria searchCriteria = new ToponymSearchCriteria();
-						searchCriteria.setLanguage(Constant.DEFAULT_LANGUAGE);
+						/*
+						 * OJO!!
+						searchCriteria.setFeatureClass(FeatureClass.A);
+						searchCriteria.setFeatureClass(FeatureClass.H);
+						searchCriteria.setFeatureClass(FeatureClass.L);
+						searchCriteria.setFeatureClass(FeatureClass.P);
+						searchCriteria.setFeatureClass(FeatureClass.T);
+						searchCriteria.setFeatureClass(FeatureClass.V);*/
+						searchCriteria.setLanguage(Constant.DEFAULT_LANGUAGE);						
 						searchCriteria.setNameEquals(queryKey);
 						searchCriteria.setStartRow(0); // Limit 100 
+						searchCriteria.setMaxRows(200); 
 						searchCriteria.setStyle(Style.LONG); // Importante
 												
 						WebService.setConnectTimeOut(appConstants.geonamesWebServiceConnectTimeOut()); 
@@ -127,12 +138,91 @@ public class GeonamesSearchServiceImpl implements SearchService<List<Toponym>> {
 				});
 	}
 
-	public List<Toponym> search(String query) throws Exception {
-		return cache.get(query);
+	/**
+	 * 
+	 * Build cache Country  
+	 *   
+	 * @param duration the duration
+	 * @param timeUnit the time unit 
+	 * @param size the cache size
+	 */
+	private void buildCacheCountry(long duration, TimeUnit timeUnit, long size) {
+		cacheCountries = CacheBuilder.newBuilder()
+				.expireAfterWrite(duration, timeUnit).maximumSize(size)
+				// .refreshAfterWrite(duration, unit)
+				.build(new CacheLoader<String, List<Toponym>>() {
+										
+					@Override
+					public List<Toponym> load(String queryCountry) throws Exception {						
+						List<Toponym> toponymList = Lists.newArrayList(); 
+																							
+						WebService.setConnectTimeOut(appConstants.geonamesWebServiceConnectTimeOut()); 
+						WebService.setUserName(appConstants.geonamesWebServiceUsername());						
+												
+						ToponymSearchCriteria searchCriteria = new ToponymSearchCriteria();
+						searchCriteria.setLanguage(Constant.DEFAULT_LANGUAGE);
+						searchCriteria.setNameEquals(queryCountry);					
+						searchCriteria.setStartRow(0);
+						searchCriteria.setMaxRows(1000);
+						searchCriteria.setStyle(Style.LONG);												
+						// PCLI. independent political entity						
+						// PCL. political entity						
+						searchCriteria.setFeatureCodes(new String[]{"PCL","PCLD","PCLF","PCLI","PCLIX","PCLS"}); 						  						
+						
+												
+						ToponymSearchResult searchResult = WebService
+								.search(searchCriteria);
+												
+						//Toponym get(int geoNameId, String language, String style)
+						//WebService.get(arg0, arg1, arg2)
+						for (org.geonames.Toponym toponym : searchResult
+								.getToponyms()) {
+							Toponym newToponym = new Toponym();
+							newToponym.setGeoNameId(toponym.getGeoNameId());
+							newToponym.setName(toponym.getName());
+							newToponym.setContinentCode(toponym
+									.getContinentCode());
+							newToponym.setCountryCode(toponym.getCountryCode());
+							newToponym.setCountryName(toponym.getCountryName());
+							newToponym.setAlternateNames(toponym
+									.getAlternateNames());
+							newToponym.setFeatureCode(toponym.getFeatureCode());
+							newToponym.setFeatureCodeName(toponym
+									.getFeatureCodeName());
+							newToponym.setFeatureClass(toponym
+									.getFeatureClass().name());
+							newToponym.setFeatureClassName(toponym
+									.getFeatureClassName());
+							newToponym.setLatitude(toponym.getLatitude());
+							newToponym.setLongitude(toponym.getLongitude());
+							newToponym.setElevation(toponym.getElevation());
+							newToponym.setPopulation(toponym.getPopulation());
+
+							toponymList.add(newToponym);
+						}																					
+						
+						return toponymList;
+					}
+				});
 	}
 
+	/**
+	 * Place name search 
+	 */	
+	public List<Toponym> search(String queryPlaceName) throws Exception {
+		return cache.get(queryPlaceName);
+	}
+
+	
 	public Cache<String, List<Toponym>> getCache() {
 		return cache;
+	}
+
+	/**
+	 *	Country search  
+	 */
+	public List<Toponym> searchCountry(String queryCountry) throws Exception {
+		return cacheCountries.get(queryCountry); 
 	}
 
 }

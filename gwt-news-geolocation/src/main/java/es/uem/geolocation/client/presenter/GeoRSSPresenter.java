@@ -19,6 +19,7 @@ import java.util.List;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -42,13 +43,12 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import es.uem.geolocation.client.AppConstants;
 import es.uem.geolocation.client.AppMessages;
 import es.uem.geolocation.client.services.GateServiceAsync;
 import es.uem.geolocation.client.services.GeonamesServiceAsync;
 import es.uem.geolocation.client.services.RSSServiceAsync;
 import es.uem.geolocation.client.view.Resources;
-import es.uem.geolocation.client.AppConstants;
-import es.uem.geolocation.geonames.ToponymDisambiguator;
 import es.uem.geolocation.shared.Article;
 import es.uem.geolocation.shared.NewMap;
 import es.uem.geolocation.shared.RSS;
@@ -131,8 +131,8 @@ public class GeoRSSPresenter implements Presenter {
 		this.geonamesService = geonamesService;
 		this.eventBus = eventBus;
 		this.display = view;
-		this.markers = new ArrayList<HasMarker>();
-		this.articles = new ArrayList<Article>(); 
+		this.markers = Lists.newArrayList();
+		this.articles = Lists.newArrayList();  
 		this.uri = uri;
 	}
 

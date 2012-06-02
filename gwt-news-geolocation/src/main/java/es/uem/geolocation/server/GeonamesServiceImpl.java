@@ -17,10 +17,12 @@ package es.uem.geolocation.server;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletException;
 
+import com.google.common.collect.Lists;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import es.uem.geolocation.client.services.GeonamesService;
@@ -61,10 +63,13 @@ public class GeonamesServiceImpl extends RemoteServiceServlet implements
 	 * Toponym search criteria 
 	 */
 	public List<Toponym> toponymSearchCriteria(String placeName) {				
-		List<Toponym> toponymList = new ArrayList<Toponym>();
+		List<Toponym> toponymList = Lists.newArrayList();  
 		try {			
-			// OJO!! Arreglarlo 
-			//toponymList = geonamesSearch.search(placeName); 			
+			Map<String,Toponym> toponymDisambiguatonMaps = toponymDisambiguator.getToponymDisambiguation(Lists.newArrayList(placeName));			
+			if (!toponymDisambiguatonMaps.isEmpty()) {				
+				Map.Entry<String, Toponym> entry = toponymDisambiguatonMaps.entrySet().iterator().next();				
+				toponymList.add(entry.getValue());
+			}
 		} catch (Exception e) {			
 			e.printStackTrace();
 		}
@@ -75,7 +80,7 @@ public class GeonamesServiceImpl extends RemoteServiceServlet implements
 	 * Toponym search criteria
 	 */
 	public List<NewMap> toponymSearchCriteria(List<Article> articles) {
-		List<NewMap>  result = new ArrayList<NewMap>(); 
+		List<NewMap>  result = Lists.newArrayList();  
 			
 		List<Toponym> categoriesToponymList = null;  
 		List<Toponym> headlineDescriptionToponymList = null;
@@ -83,7 +88,7 @@ public class GeonamesServiceImpl extends RemoteServiceServlet implements
 		for (Article article : articles) {		
 			NewMap newMap = new NewMap();
 			
-			ArrayList<Article> newArticles = new ArrayList<Article>(); 
+			ArrayList<Article> newArticles = Lists.newArrayList();  
 			newArticles.add(article);
 			newMap.setArticles(newArticles);										
 
@@ -91,26 +96,22 @@ public class GeonamesServiceImpl extends RemoteServiceServlet implements
 			List<String> categoriesLocations = article.getCategoriesLocations();			
 			List<String> headlineDescriptionLocations = article.getHeadlineDescriptionLocations();			
 			
-			categoriesToponymList = new ArrayList<Toponym>();			
-			headlineDescriptionToponymList = new ArrayList<Toponym>();
+			categoriesToponymList = Lists.newArrayList();			
+			headlineDescriptionToponymList = Lists.newArrayList(); 
 			
 
 			// Categories =====
-			if (categoriesLocations != null && 
-				categoriesLocations.size() > 0) {	
+			if (categoriesLocations != null && !categoriesLocations.isEmpty()) {				
+				Map<String,Toponym> toponymDisambiguatonMaps = toponymDisambiguator.getToponymDisambiguation(categoriesLocations);												
+				if (!toponymDisambiguatonMaps.isEmpty()) {				
+					Map.Entry<String, Toponym> entry = toponymDisambiguatonMaps.entrySet().iterator().next();
+					System.out.println("entry" + entry.getValue().toString());
+					categoriesToponymList.add(entry.getValue()); 
+				}
 				
-				for (String categoryPlaceName : categoriesLocations) {
-					try {						
-						// OJO!!		
-						// Arreglarlo
-						//categoriesToponymList = geonamesSearch.search(categoryPlaceName);
-												
-					} catch (Exception e) {			
-						e.printStackTrace();
-					}														
-				}				
-				
-				if (categoriesToponymList.size() > 0) {					 
+				// OJO!!
+				if (!categoriesToponymList.isEmpty()) {		
+					System.out.println("Entraaa" + categoriesToponymList.get(0).getName());
 					newMap.setLatitude(categoriesToponymList.get(0).getLatitude()); 
 					newMap.setLongitude(categoriesToponymList.get(0).getLongitude());
 					newMap.setPlacename(categoriesToponymList.get(0).getName());
@@ -122,17 +123,16 @@ public class GeonamesServiceImpl extends RemoteServiceServlet implements
 			
 			// HeadlineDescription =====
 			if (headlineDescriptionLocations != null && 
-				headlineDescriptionLocations.size() > 0) {				
-				for (String headlineDecrpiptionPlaceName : headlineDescriptionLocations) {					
-					try {			
-						// OJO!! Arreglarlo 
-						//headlineDescriptionToponymList = geonamesSearch.search(headlineDecrpiptionPlaceName); 			
-					} catch (Exception e) {			
-						e.printStackTrace();
-					}									
-				}				
+				!headlineDescriptionLocations.isEmpty()) {		
+				Map<String,Toponym> toponymDisambiguatonMaps = toponymDisambiguator.getToponymDisambiguation(headlineDescriptionLocations);												
+				if (!toponymDisambiguatonMaps.isEmpty()) {				
+					Map.Entry<String, Toponym> entry = toponymDisambiguatonMaps.entrySet().iterator().next();
+					headlineDescriptionToponymList.add(entry.getValue()); 
+					System.out.println("entry" + entry.getValue().toString());					
+				}
 				
-				if (headlineDescriptionToponymList.size() > 0) {					 
+				if (!headlineDescriptionToponymList.isEmpty()) {
+					System.out.println("Entraaa" + headlineDescriptionToponymList.get(0).getName());
 					newMap.setLatitude(headlineDescriptionToponymList.get(0).getLatitude()); 
 					newMap.setLongitude(headlineDescriptionToponymList.get(0).getLongitude());
 					newMap.setPlacename(headlineDescriptionToponymList.get(0).getName());

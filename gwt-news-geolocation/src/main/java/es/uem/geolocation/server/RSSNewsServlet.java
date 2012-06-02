@@ -1,7 +1,6 @@
 package es.uem.geolocation.server;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -10,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.common.collect.Lists;
 import com.sun.syndication.feed.synd.SyndContent;
 import com.sun.syndication.feed.synd.SyndContentImpl;
 import com.sun.syndication.feed.synd.SyndEntry;
@@ -27,7 +27,7 @@ public class RSSNewsServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		try {
-			List<SyndEntry> entries = new ArrayList<SyndEntry>(); 
+			List<SyndEntry> entries = Lists.newArrayList();  
 			entries.add(createEntry("ONU-SAHARA OCCIDENTAL", "link", "Consejo de Seguridad ONU ha decidido por unanimidad renovar por un año el mandato de la Misión de la ONU para el Referéndum en el Sahara Occidental (Minurso) y ha exigido al gobierno marroquí y al Frente Polisario que \"demuestren mayor voluntad política en buscar una solución\". FUENTE: AGENCIAS.", new Date())); 
 			entries.add(createEntry("O.MEDIO", "link", "El gobierno israelí ha otorgado el estatus legal a 3 grupos de viviendas construidas en Cisjordania alegando que \"fueron establecidas en la década de 1990 siguiendo las decisiones de Gobiernos previos\". El presidente palestino ha declarado que esta situación les lleva \"de nuevo a un callejón sin salida\". FUENTE: AGENCIAS.", new Date()));
 			entries.add(createEntry("MAURITANIA-PESQUERO ESPAÑOL", "link", "Sobre las 14.40h han sido rescatados los 8 tripulantes (2 de ellos españoles) del pesquero \"Nuevo Francisco Javier\" que se hundía (por causas desconocidas) a unas 30 millas de Nouadibí. Todos se encuentran en buen estado y se dirigen en un pesquero polaco hacia Nouadibí. FUENTE: SASEMAR.", new Date()));

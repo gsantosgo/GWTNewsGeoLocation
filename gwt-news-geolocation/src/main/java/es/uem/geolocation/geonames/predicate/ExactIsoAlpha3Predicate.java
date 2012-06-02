@@ -2,7 +2,7 @@ package es.uem.geolocation.geonames.predicate;
 
 import com.google.common.base.Predicate;
 
-import es.uem.geolocation.geonames.model.CountryInfo;
+import es.uem.geolocation.shared.ToponymCountry;
 
 /**
  * 
@@ -18,14 +18,14 @@ import es.uem.geolocation.geonames.model.CountryInfo;
  * @author Guillermo Santos (gsantosgo@yahoo.es)
  *
  */
-public class ExactIsoAlpha3Predicate implements Predicate<CountryInfo> {
+public class ExactIsoAlpha3Predicate implements Predicate<ToponymCountry> {
 	private String isoAlpha3;
 
 	public ExactIsoAlpha3Predicate(String isoAlpha3) {
 		this.isoAlpha3 = isoAlpha3;
 	}
 
-	public boolean apply(CountryInfo input) {
+	public boolean apply(ToponymCountry input) {
 		if (input.getIsoAlpha3().equalsIgnoreCase(isoAlpha3)) {
 			return true; 
 		}

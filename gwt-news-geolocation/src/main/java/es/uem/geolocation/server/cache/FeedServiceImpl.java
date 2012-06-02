@@ -35,6 +35,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import com.google.common.collect.Lists;
 import com.sun.syndication.feed.synd.SyndCategoryImpl;
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;
@@ -46,7 +47,6 @@ import es.uem.geolocation.server.AppConstants;
 import es.uem.geolocation.server.util.RetryHandler;
 import es.uem.geolocation.shared.Article;
 import es.uem.geolocation.shared.RSS;
-
 
 /**
  * 
@@ -89,7 +89,7 @@ public class FeedServiceImpl implements FeedService<RSS> {
 					public RSS load(String uriKey) throws Exception {
 						// No return NullPointException 
 						RSS rss = new RSS(); 
-						ArrayList<Article> articlesList = new ArrayList<Article>();
+						ArrayList<Article> articlesList = Lists.newArrayList(); 
 											
 						HttpParams httpParameters = new BasicHttpParams();
 						// Set the timeout in milliseconds until a connection is established.
@@ -154,15 +154,13 @@ public class FeedServiceImpl implements FeedService<RSS> {
 										// Categories
 										if (syndEntry.getCategories().size() > 0 ) {							
 											List<SyndCategoryImpl> categoriesSyndEntry = syndEntry.getCategories();
-											List<String> categories =  new ArrayList<String>();						
+											List<String> categories =  Lists.newArrayList(); 						
 											for (SyndCategoryImpl category : categoriesSyndEntry) {
 												if (!Strings.isNullOrEmpty(category.getName()))
 													categories.add(category.getName());
 											}
 											article.setCategories(categories);
 										}
-
-										
 										articlesList.add(article);
 									}
 								} finally {

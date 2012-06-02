@@ -16,10 +16,12 @@ package es.uem.geolocation.shared;
 
 import java.io.Serializable;
 
+import org.geonames.Style;
+
 import com.google.common.base.Objects;
 
 /**
- * a GeoNames toponym
+ * a GeoNames toponym 
  * 
  * @author Guillermo Santos (gsantosgo@yahoo.es)
  * 
@@ -38,10 +40,43 @@ public class Toponym implements Serializable {
 	private String featureClass; 
 	private String featureClassName;
 	private String featureCode;
-	private String featureCodeName;
+	private String featureCodeName; 
 	private double latitude;
-	private double longitude;
+	private double longitude;	
+	private double score; 
+	private double disambiguationScore; 		
 
+	/**
+	 * Constructor 
+	 */
+	public Toponym() {
+		
+	}
+	
+	/**
+	 * Constructor for Continent  
+	 * 
+	 * 	<toponymName>Asia</toponymName>
+	 * 	<name>Asia</name>
+	 *  <lat>29.84064</lat>
+	 *  <lng>89.29688</lng>
+	 *  <geonameId>6255147</geonameId>
+	 *  <countryCode/>
+	 *  <countryName/>
+	 *  <fcl>L</fcl>
+	 *  <fcode>CONT</fcode>
+	 * @param continentInfo
+	 */
+	/*public Toponym(ContinentInfo continentInfo) {
+		this.geoNameId = continentInfo.getGeonameId(); 
+		this.name = continentInfo.getName(); 
+		this.latitude = continentInfo.getLat(); 
+		this.longitude = continentInfo.getLng(); 
+		this.featureClass = continentInfo.getFcl(); 
+		this.featureCode = continentInfo.getFcode();
+	}*/
+			
+	
 	/**
 	 * @return the continentCode
 	 */
@@ -259,7 +294,40 @@ public class Toponym implements Serializable {
 	public void setAlternateNames(String alternateNames) {
 		this.alternateNames = alternateNames;
 	}
+		
+	/**
+	 * 
+	 * @return the Score
+	 */
+	public double getScore() {
+		return score;
+	}
 
+	/**
+	 * the Score 
+	 * @param score the Score
+	 */
+	public void setScore(double score) {
+		this.score = score;
+	}
+		
+	/**
+	 * 
+	 * @return the Disambiguation Score
+	 */
+	public double getDisambiguationScore() {
+		return disambiguationScore;
+	}
+
+	/**
+	 * the Disambiguation Score 
+	 * @param disambiguationScore the Disambiguation Score
+	 */
+	public void setDisambiguationScore(double disambiguationScore) {
+		this.disambiguationScore = disambiguationScore;
+	}
+	
+	
 	@Override
 	public String toString() {
 		return Objects.toStringHelper(this)
@@ -277,6 +345,8 @@ public class Toponym implements Serializable {
 				.add("longitude", this.getLongitude())
 				.add("population", this.getPopulation())
 				.add("elevation", this.getElevation())				
+				.add("disambiguationScore", this.getDisambiguationScore())
+				.add("score", this.getScore())
 				.toString(); 
 	}
 

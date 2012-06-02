@@ -15,11 +15,11 @@
 
 package es.uem.geolocation.server;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import com.google.common.collect.Lists;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import es.uem.geolocation.client.services.RSSService;
@@ -61,7 +61,7 @@ public class RSSServiceImpl extends RemoteServiceServlet implements RSSService {
 			rssSource.setCopyright("@gsantosgo");
 			rssSource.setPublishedDate(new java.util.Date()); 
 			
-			List<Article> items = new ArrayList<Article>();		
+			List<Article> items = Lists.newArrayList();		
 			items.add(new Article("ONU-SAHARA OCCIDENTAL", "Consejo de Seguridad ONU ha decidido por unanimidad renovar por un año el mandato de la Misión de la ONU para el Referéndum en el Sahara Occidental (Minurso) y ha exigido al gobierno marroquí y al Frente Polisario que \"demuestren mayor voluntad política en buscar una solución\". FUENTE: AGENCIAS.", "link", new Date())); 
 			items.add(new Article("O.MEDIO", "El gobierno israelí ha otorgado el estatus legal a 3 grupos de viviendas construidas en Cisjordania alegando que \"fueron establecidas en la década de 1990 siguiendo las decisiones de Gobiernos previos\". El presidente palestino ha declarado que esta situación les lleva \"de nuevo a un callejón sin salida\". FUENTE: AGENCIAS.", "link", new Date()));
 			items.add(new Article("MAURITANIA-PESQUERO ESPAÑOL", "Sobre las 14.40h han sido rescatados los 8 tripulantes (2 de ellos españoles) del pesquero \"Nuevo Francisco Javier\" que se hundía (por causas desconocidas) a unas 30 millas de Nouadibí. Todos se encuentran en buen estado y se dirigen en un pesquero polaco hacia Nouadibí. FUENTE: SASEMAR.", "link", new Date()));

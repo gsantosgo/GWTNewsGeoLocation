@@ -2,7 +2,7 @@ package es.uem.geolocation.geonames.predicate;
 
 import com.google.common.base.Predicate;
 
-import es.uem.geolocation.geonames.model.CountryInfo;
+import es.uem.geolocation.shared.ToponymCountry;
 
 /**
  * 
@@ -16,7 +16,7 @@ import es.uem.geolocation.geonames.model.CountryInfo;
  * @author Guillermo Santos (gsantosgo@yahoo.es)
  *
  */
-public class ExactFipsCodePredicate implements Predicate<CountryInfo> {
+public class ExactFipsCodePredicate implements Predicate<ToponymCountry> {
 	private String fipsCode;
 
 	/**
@@ -28,7 +28,7 @@ public class ExactFipsCodePredicate implements Predicate<CountryInfo> {
 		this.fipsCode = fipsCode;
 	}
 
-	public boolean apply(CountryInfo input) {
+	public boolean apply(ToponymCountry input) {
 		if (input.getFipsCode().equalsIgnoreCase(fipsCode)) {
 			return true; 
 		}
