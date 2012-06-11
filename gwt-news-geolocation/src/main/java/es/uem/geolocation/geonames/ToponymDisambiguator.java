@@ -25,6 +25,8 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Preconditions;
@@ -48,8 +50,8 @@ import es.uem.geolocation.shared.ToponymCountry;
  * @author Guillermo Santos (gsantosgo@yahoo.es)
  * 
  */
-public class ToponymDisambiguator {
-	
+public class ToponymDisambiguator {		
+	final static Logger logger = LoggerFactory.getLogger(ToponymDisambiguator.class); 
 	public static Map<String, ToponymCountry> mapContinents = null;
 	public static Map<String, ToponymCountry> mapCountries = null;	
 	private SearchService<List<Toponym>> geonamesSearch;	
@@ -88,8 +90,8 @@ public class ToponymDisambiguator {
 				es.uem.geolocation.shared.ToponymCountry toponym = MyWebService.getToponymContinentCountryFromElement(toponymElement);		
 				mapContinents.put(toponym.getName(), toponym);
 			}
-		}				
-		System.out.println("Cached Continents: " + mapContinents.size());
+		}	
+		logger.info("Cached Continents: " + mapContinents.size());
 	 				
 		// Countries ====================================================================
 		// CountryInfo 
@@ -116,7 +118,7 @@ public class ToponymDisambiguator {
 			es.uem.geolocation.shared.ToponymCountry toponym = MyWebService.getToponymCountryInfoFromElement(toponymElement);
 			mapCountryInfoTemp.put(toponym.getGeoNameId(), toponym);  			 		
 		}		
-		System.out.println("Cached Map CountryInfo (Temp): " + mapCountryInfoTemp.size());				
+		logger.info("Cached Map CountryInfo (Temp): " + mapCountryInfoTemp.size());
 		
 
 		// Countries ========================================================
@@ -157,8 +159,8 @@ public class ToponymDisambiguator {
 					toponym.setCurrencyCode(toponymCountryInfo.getCurrencyCode());
 					toponym.setLanguages(toponymCountryInfo.getLanguages());
 				}						
-				else { 
-					System.out.println("No CountryInfo for " + toponymCountryInfo);
+				else {
+					logger.info("No CountryInfo for " + toponymCountryInfo);
 				}
 				mapCountries.put(toponym.getName(), toponym);
 			}
@@ -168,7 +170,7 @@ public class ToponymDisambiguator {
 			mapCountryInfoTemp.clear();
 			mapCountryInfoTemp = null; 
 		}
-		System.out.println("Cached Countries: " + mapCountries.size());		
+		logger.info("Cached Countries: " + mapCountries.size());		
 	}
 	
 	/**

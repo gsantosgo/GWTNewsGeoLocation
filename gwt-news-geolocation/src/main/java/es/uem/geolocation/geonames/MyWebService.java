@@ -1,24 +1,22 @@
 package es.uem.geolocation.geonames;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.geonames.*;
+import org.geonames.FeatureClass;
+import org.geonames.GeoNamesException;
+import org.geonames.Style;
+import org.geonames.ToponymSearchCriteria;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -309,7 +307,6 @@ public class MyWebService {
 		
 		toponym.setCountryName(toponymElement.getChildText("countryName"));
 		toponym.setCountryCode(toponymElement.getChildText("countryCode"));
-		toponym.setCountryName(toponymElement.getChildText("countryName"));
 		toponym.setIsoAlpha2(toponymElement.getChildText("countryCode")); 
 		toponym.setIsoNumeric(toponymElement.getChildText("isoNumeric"));
 		toponym.setIsoAlpha3(toponymElement.getChildText("isoAlpha3"));

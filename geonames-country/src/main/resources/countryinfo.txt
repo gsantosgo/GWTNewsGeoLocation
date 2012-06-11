@@ -1,0 +1,25 @@
+To get countries from Geonames in XML format 
+http://api.geonames.org/countryInfo?lang=es&username=gsantosgo&style=full
+
+<geonames><country><countryCode>AD</countryCode><countryName>Andorra</countryName><isoNumeric>020</isoNumeric><isoAlpha3>AND</isoAlpha3><fipsCode>AN</fipsCode><continent>EU</continent><continentName>Europa</continentName><capital>Andorra la Vella</capital><areaInSqKm>468.0</areaInSqKm><population>84000</population><currencyCode>EUR</currencyCode><languages>ca</languages><geonameId>3041565</geonameId><west>1.4071867141112762</west><north>42.65604389629997</north><east>1.7865427778319827</east><south>42.42849259876837</south></country><country>
+
+To get countries from Geonames in CSV format
+http://api.geonames.org/countryInfoCSV?lang=es&username=demo&style=full
+
+iso alpha2	iso alpha3	iso numeric	fips code	name	capital	areaInSqKm	population	continent	languages	currency	geonameId
+AD	AND	020	AN	Andorra	Andorra la Vella	468.0	84000	EU	ca	EUR	3041565
+AE	ARE	784	AE	Emiratos Árabes Unidos	Abu Dhabi	82880.0	4975593	AS	ar-AE,fa,en,hi,ur	AED	290557
+AF	AFG	004	AF	Afganistán	Kabul	647500.0	29121286	AS	fa-AF,ps,uz-AF,tk	AFN	1149361
+AG	ATG	028	AC	Antigua y Barbuda	Saint John's	443.0	86754	NA	en-AG	XCD	3576396
+AI	AIA	660	AV	Anguila	The Valley	102.0	13254	NA	en-AI	XCD	3573511
+AL	ALB	008	AL	Albania	Tirana	28748.0	2986952	EU	sq,el	ALL	783754
+AM	ARM	051	AM	Armenia	Ereván	29800.0	2968000	AS	hy	AMD	174982
+AN	ANT	530	NT			960.0	136197	NA	nl-AN,en,es	ANG	0
+AO	AGO	024	AO	Angola	Luanda	1246700.0	13068161	AF	pt-AO	AOA	3351879
+AQ	ATA	010	AY	Antártida		1.4E7	0	AN			6697173
+AR	ARG	032	AR	Argentina	Buenos Aires	2766890.0	41343201	SA	es-AR,en,it,de,fr,gn	ARS	3865483
+AS	ASM	016	AQ	Samoa Americana	Pago Pago	199.0	57881	OC	en-AS,sm,to	USD	5880801
+AT	AUT	040	AU	Austria	Viena	83858.0	8205000	EU	de-AT,hr,hu,sl	EUR	2782113
+AU	AUS	036	AS	Australia	Canberra	7686850.0	21515754	OC	en-AU	AUD	2077456
+AW	ABW	533	AA	Aruba	Oranjestad	193.0	71566	NA	nl-AW,es,en	AWG	3577279
+AX	ALA	248		Islas de Åland	Mariehamn		26711	EU	sv-AX	EUR	661882

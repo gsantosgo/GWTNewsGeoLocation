@@ -21,6 +21,6 @@ package es.uem.geolocation.server.cache;
  */
 public interface SearchService<T> {
 	 T search(String query) throws Exception;
-	 T searchCountry(String query) throws Exception; 
+	 //T searchCountry(String query) throws Exception; 
 	 //T hierarchy(int geonameId, String language, Style style) throw Exception;
 }

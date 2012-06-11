@@ -44,7 +44,6 @@ import es.uem.geolocation.shared.Toponym;
 public class GeonamesSearchServiceImpl implements SearchService<List<Toponym>> {
 	protected AppConstants appConstants;	
 	protected LoadingCache<String, List<Toponym>> cache;
-	protected LoadingCache<String, List<Toponym>> cacheCountries;
 		
 	/** 
 	 * 
@@ -65,8 +64,7 @@ public class GeonamesSearchServiceImpl implements SearchService<List<Toponym>> {
 			System.setProperty("http.proxyPort", ""+appConstants.proxyPort());
 		}*/
 		
-		buildCache(duration, timeUnit, size);
-		buildCacheCountry(duration, timeUnit, 300);		
+		buildCache(duration, timeUnit, size);		
 	}
 
 	/**
@@ -95,8 +93,12 @@ public class GeonamesSearchServiceImpl implements SearchService<List<Toponym>> {
 						searchCriteria.setFeatureClass(FeatureClass.P);
 						searchCriteria.setFeatureClass(FeatureClass.T);
 						searchCriteria.setFeatureClass(FeatureClass.V);*/
-						searchCriteria.setLanguage(Constant.DEFAULT_LANGUAGE);						
+						searchCriteria.setLanguage(Constant.DEFAULT_LANGUAGE);
 						searchCriteria.setNameEquals(queryKey);
+						
+						// 11.06.2012
+						// Que el nombre comienz
+						searchCriteria.setNameStartsWith(queryKey);
 						searchCriteria.setStartRow(0); // Limit 100 
 						searchCriteria.setMaxRows(200); 
 						searchCriteria.setStyle(Style.LONG); // Importante
@@ -138,73 +140,6 @@ public class GeonamesSearchServiceImpl implements SearchService<List<Toponym>> {
 				});
 	}
 
-	/**
-	 * 
-	 * Build cache Country  
-	 *   
-	 * @param duration the duration
-	 * @param timeUnit the time unit 
-	 * @param size the cache size
-	 */
-	private void buildCacheCountry(long duration, TimeUnit timeUnit, long size) {
-		cacheCountries = CacheBuilder.newBuilder()
-				.expireAfterWrite(duration, timeUnit).maximumSize(size)
-				// .refreshAfterWrite(duration, unit)
-				.build(new CacheLoader<String, List<Toponym>>() {
-										
-					@Override
-					public List<Toponym> load(String queryCountry) throws Exception {						
-						List<Toponym> toponymList = Lists.newArrayList(); 
-																							
-						WebService.setConnectTimeOut(appConstants.geonamesWebServiceConnectTimeOut()); 
-						WebService.setUserName(appConstants.geonamesWebServiceUsername());						
-												
-						ToponymSearchCriteria searchCriteria = new ToponymSearchCriteria();
-						searchCriteria.setLanguage(Constant.DEFAULT_LANGUAGE);
-						searchCriteria.setNameEquals(queryCountry);					
-						searchCriteria.setStartRow(0);
-						searchCriteria.setMaxRows(1000);
-						searchCriteria.setStyle(Style.LONG);												
-						// PCLI. independent political entity						
-						// PCL. political entity						
-						searchCriteria.setFeatureCodes(new String[]{"PCL","PCLD","PCLF","PCLI","PCLIX","PCLS"}); 						  						
-						
-												
-						ToponymSearchResult searchResult = WebService
-								.search(searchCriteria);
-												
-						//Toponym get(int geoNameId, String language, String style)
-						//WebService.get(arg0, arg1, arg2)
-						for (org.geonames.Toponym toponym : searchResult
-								.getToponyms()) {
-							Toponym newToponym = new Toponym();
-							newToponym.setGeoNameId(toponym.getGeoNameId());
-							newToponym.setName(toponym.getName());
-							newToponym.setContinentCode(toponym
-									.getContinentCode());
-							newToponym.setCountryCode(toponym.getCountryCode());
-							newToponym.setCountryName(toponym.getCountryName());
-							newToponym.setAlternateNames(toponym
-									.getAlternateNames());
-							newToponym.setFeatureCode(toponym.getFeatureCode());
-							newToponym.setFeatureCodeName(toponym
-									.getFeatureCodeName());
-							newToponym.setFeatureClass(toponym
-									.getFeatureClass().name());
-							newToponym.setFeatureClassName(toponym
-									.getFeatureClassName());
-							newToponym.setLatitude(toponym.getLatitude());
-							newToponym.setLongitude(toponym.getLongitude());
-							newToponym.setElevation(toponym.getElevation());
-							newToponym.setPopulation(toponym.getPopulation());
-
-							toponymList.add(newToponym);
-						}																					
-						
-						return toponymList;
-					}
-				});
-	}
 
 	/**
 	 * Place name search 
@@ -217,12 +152,4 @@ public class GeonamesSearchServiceImpl implements SearchService<List<Toponym>> {
 	public Cache<String, List<Toponym>> getCache() {
 		return cache;
 	}
-
-	/**
-	 *	Country search  
-	 */
-	public List<Toponym> searchCountry(String queryCountry) throws Exception {
-		return cacheCountries.get(queryCountry); 
-	}
-
 }

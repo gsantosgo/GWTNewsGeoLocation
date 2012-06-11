@@ -1,0 +1,5 @@
+To get continents from Geonames in XML format
+
+http://api.geonames.org/search?featureClass=L&fcode=CONT&lang=ES&username=gsantosgo&maxRows=1000&style=full
+
+
