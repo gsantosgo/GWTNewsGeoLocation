@@ -96,8 +96,12 @@ public class MapView extends Composite implements GeoRSSPresenter.Display {
 	MenuItem elpaisUltimaNoticiasMenuItem;
 	@UiField
 	MenuItem elpaisInternacionalMenuItem; 
+	
+	// Local News 
 	@UiField
-	MenuItem rssMenuItem; 
+	MenuItem rssLocalNacionalMenuItem;  
+	@UiField
+	MenuItem rssLocalInternacionalMenuItem;
 
 	@UiField
 	MenuItem helpMenuItem; 
@@ -202,13 +206,21 @@ public class MapView extends Composite implements GeoRSSPresenter.Display {
 				History.newItem("elpaisInternacionalMenuItem");				
 			}					
 		});	
-		
-		rssMenuItem.setCommand(new Command() {			
+
+		rssLocalNacionalMenuItem.setCommand(new Command() {			
 			//@Override
 			public void execute() {
-				History.newItem("rssMenuItem");
+				History.newItem("rssLocalNacionalMenuItem");
+			}					
+		});		
+		
+		rssLocalInternacionalMenuItem.setCommand(new Command() {			
+			//@Override
+			public void execute() {
+				History.newItem("rssLocalInternacionalMenuItem");
 			}					
 		});	
+		
 		
 		helpMenuItem.setCommand(new Command() {			
 			//@Override

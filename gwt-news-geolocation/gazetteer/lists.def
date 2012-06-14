@@ -1,7 +1,5 @@
-Organization_final.lst:organization:organization
-Person_final.lst:person_full
-airport_final.lst:location:airport
 A_Country_State_Region_final.lst:location:country
+airport_final.lst:location:airport
 continent_cap.lst:location:continent
 continent.lst:location:continent
 country_abbrev.lst:location:country_abbrev
@@ -10,10 +8,13 @@ country.lst:location:country
 country_code.lst:location:country
 country_fipscode.lst:location:country
 country_isoalpha3.lst:location:country
+stop.lst:stop
+region.lst:location:region
+Organization_final.lst:organization:organization
+Person_final.lst:person_full
 H_Stream_Lake_final.lst:location:stream
 L_Parks_Area_final.lst:location:parks
 P_City_Village_final.lst:location:city
 R_Road_RailRoad_final.lst:location:road
 T_Mountain_Hill_Rock_final.lst:location:mountain
 V_Forest_Heath_final.lst:location:forest
-stop.lst:stop

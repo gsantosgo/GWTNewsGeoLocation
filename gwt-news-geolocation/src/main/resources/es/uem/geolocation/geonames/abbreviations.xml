@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<geonames>
+	<geoname>
+		<id>EAU</id>
+		<name>Estados Arabes Unidos</name>
+	</geoname>
+	<geoname>	
+		<id>EUA</id>
+		<name>Estados Unidos de América</name>
+	</geoname>
+	<geoname>
+		<id>EEUU</id>
+		<name>Estados Unidos</name>
+	</geoname>
+	<geoname>
+		<id>EE.UU</id>
+		<name>Estados Unidos</name>
+	</geoname>
+	<geoname>
+		<id>EE.UU.</id>
+		<name>Estados Unidos</name>
+	</geoname>			
+	<geoname>
+		<id>Iraq</id>
+		<name>Iraq</name>
+	</geoname>	
+	<geoname>
+		<id>IRAQ</id>
+		<name>IRAQ</name>
+	</geoname>
+	<geoname>
+		<id>O.MEDIO</id>
+		<name>Oriente Medio</name>
+	</geoname>		
+	<geoname>
+		<id>O.Medio</id>
+		<name>Oriente Medio</name>
+	</geoname>
+	<geoname>
+		<id>O.PRÓXIMO</id>
+		<name>Oriente Medio</name>
+	</geoname>
+	<geoname>
+		<id>O.Próximo</id>
+		<name>Oriente Medio</name>
+	</geoname>	
+	<geoname>
+		<id>O.PROXIMO</id>
+		<name>Oriente Medio</name>
+	</geoname>
+	<geoname>
+		<id>O.Proximo</id>
+		<name>Oriente Medio</name>
+	</geoname>	
+	<geoname>
+		<id>R.D.Congo</id>
+		<name>República del Congo</name>
+	</geoname>
+	<geoname>
+		<id>R.D. Congo</id>
+		<name>República del Congo</name>
+	</geoname>
+</geonames>

@@ -17,8 +17,10 @@ package es.uem.geolocation.geonames;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 import org.jdom.Document;
@@ -34,6 +36,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import es.uem.geolocation.geonames.predicate.ExactAlternateNamesPredicate;
 import es.uem.geolocation.geonames.predicate.ExactCountryCodePredicate;
 import es.uem.geolocation.geonames.predicate.ExactFipsCodePredicate;
 import es.uem.geolocation.geonames.predicate.ExactIsoAlpha2Predicate;
@@ -51,16 +54,50 @@ import es.uem.geolocation.shared.ToponymCountry;
  * 
  */
 public class ToponymDisambiguator {		
-	final static Logger logger = LoggerFactory.getLogger(ToponymDisambiguator.class); 
+	final static Logger logger = LoggerFactory.getLogger(ToponymDisambiguator.class);
+	public static Map<String, String> mapAbbreviations = null;
 	public static Map<String, ToponymCountry> mapContinents = null;
 	public static Map<String, ToponymCountry> mapCountries = null;	
 	private SearchService<List<Toponym>> geonamesSearch;	
 	
 	// Initialize continents, countries 
-	static {		
-		mapContinents = Maps.newHashMapWithExpectedSize(10);
+	static {	
+		mapAbbreviations = Maps.newHashMapWithExpectedSize(10);
+		mapContinents = Maps.newHashMapWithExpectedSize(7);
 		mapCountries = Maps.newHashMapWithExpectedSize(300);
  		
+		// Abbreviations ======================================================== 
+		String abbreviationsFileName = "abbreviations.xml"; 		
+		Preconditions.checkNotNull(abbreviationsFileName,
+				"Input filename should NOT be NULL");
+		File abbreviationsInputFile = new File(new ToponymDisambiguator()
+				.getClass().getResource(abbreviationsFileName).getFile());
+		Preconditions.checkArgument(abbreviationsInputFile.exists(),
+				"File does not exist: %s", abbreviationsInputFile);
+				
+		SAXBuilder parserAbbreviations = new SAXBuilder();
+		Document docAbbreviations = null;  
+		try {
+			docAbbreviations = parserAbbreviations.build(abbreviationsInputFile);
+		} catch (JDOMException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		Preconditions.checkNotNull(docAbbreviations, "Error en documento XML" + abbreviationsFileName);		
+		Element rootAbbreviations = docAbbreviations.getRootElement();	
+		for (Object obj : rootAbbreviations.getChildren("geoname")) {						
+				Element element = (Element) obj;
+				String id = element.getChildText("id"); 
+				String name = element.getChildText("name");	
+				mapAbbreviations.put(id, name);
+		}
+		parserAbbreviations = null; 
+		docAbbreviations = null; 
+		logger.info("Cached Continents: " + mapAbbreviations.size());
+		
+		
 		// Continents ========================================================
 		String continentFileName = "continents.xml";
 		Preconditions.checkNotNull(continentFileName,
@@ -91,6 +128,8 @@ public class ToponymDisambiguator {
 				mapContinents.put(toponym.getName(), toponym);
 			}
 		}	
+		parser = null; 
+		docContinent = null; 
 		logger.info("Cached Continents: " + mapContinents.size());
 	 				
 		// Countries ====================================================================
@@ -118,6 +157,8 @@ public class ToponymDisambiguator {
 			es.uem.geolocation.shared.ToponymCountry toponym = MyWebService.getToponymCountryInfoFromElement(toponymElement);
 			mapCountryInfoTemp.put(toponym.getGeoNameId(), toponym);  			 		
 		}		
+		parserCountryInfo = null; 
+		docCountryInfo = null; 
 		logger.info("Cached Map CountryInfo (Temp): " + mapCountryInfoTemp.size());
 		
 
@@ -170,6 +211,8 @@ public class ToponymDisambiguator {
 			mapCountryInfoTemp.clear();
 			mapCountryInfoTemp = null; 
 		}
+		parserCountries = null; 
+		docCountries = null; 
 		logger.info("Cached Countries: " + mapCountries.size());		
 	}
 	
@@ -202,9 +245,10 @@ public class ToponymDisambiguator {
 	 * @param placeNamesList the List of place names 
 	 * @return 
 	 */
-	public Map<String,Toponym> getToponymDisambiguation(List<String> placeNamesList) {
-		
+	public Map<String,Toponym> getToponymDisambiguation(List<String> placeNamesList) {		
 		System.out.println("placesNamesList: " + placeNamesList);
+		placeNamesList = translateAbbreviations(placeNamesList); 
+		System.out.println("translate placesNamesList: " + placeNamesList);
 		
 		Map<String,Toponym> resultToponyms = Maps.newHashMap(); 		
 		Map<String,List<Toponym>> placeNames = extractPlaceNames(placeNamesList);
@@ -329,9 +373,8 @@ public class ToponymDisambiguator {
 	 */
 	public Map<String,List<Toponym>> extractPlaceNames(List<String> placeNames)  {		
 		Map<String,List<Toponym>> result = Maps.newHashMap();		
-		for (String placeName : placeNames) {				
-			
-			List<Toponym> toponymList = Lists.newArrayList();			
+		for (String placeName : placeNames) {							
+			List<Toponym> toponymList = Lists.newArrayList();
 			// Find continents =====			
 			Map<String, ToponymCountry> filterContinents = Maps.filterKeys(mapContinents, new ExactNamePredicate(placeName));
 			if (filterContinents.size() > 0) {
@@ -350,9 +393,8 @@ public class ToponymDisambiguator {
 						// toponymList.addAll(geonamesSearch.searchCountry(list.get(0).getCountryName()));
 					} catch (Exception e) {
 						e.printStackTrace();
-					} 																	
-
-				}				
+					}
+				}								
 				// UK (no GB) 
 				else if (placeName.length() == 2 && CharMatcher.JAVA_UPPER_CASE.matchesAllOf(placeName)) {					
 					// There aren't continents, search continents 				
@@ -397,8 +439,24 @@ public class ToponymDisambiguator {
 								e.printStackTrace();
 						} 																
 					}
-				}												
-			}			
+				}				
+				// OJO!! 13.06.2012
+				// performance 
+				// alternateNames
+				else {
+					Map<String, ToponymCountry> filterAlternateNamesCountries = Maps.filterValues(mapCountries, new ExactAlternateNamesPredicate(placeName));				
+					if (filterAlternateNamesCountries.size() > 0)  {
+						List<ToponymCountry> list = Lists.newArrayList(filterAlternateNamesCountries.values());
+						try {						
+							toponymList.add(list.get(0));						
+							// Geonames Web Services 
+							// toponymList.addAll(geonamesSearch.searchCountry(list.get(0).getCountryName()));
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					} 						
+				}
+			}					
 			
 			// Find locations =====
 			if(toponymList.size() == 0) {				
@@ -714,5 +772,23 @@ public class ToponymDisambiguator {
 	 */
 	private boolean isNearLatitude(double latitude, double north, double south, int distance) {
 		return  (Math.abs(south - latitude) <= distance) || (Math.abs(latitude - north) <= distance); 
-	}	
+	}
+	
+	/**
+	 * If it is an abbreviations, translate  
+	 * @param placeNamesList the List of place names 
+	 * @return
+	 */
+	private List<String> translateAbbreviations(List<String> placeNamesList) {
+		List<String> placeNamesListTemp = Lists.newArrayList(); 
+		for (String placeName : placeNamesList) {
+			if (mapAbbreviations.containsKey(placeName)) {
+				placeNamesListTemp.add(mapAbbreviations.get(placeName)); 
+			} 
+			else {
+				placeNamesListTemp.add(placeName); 
+			}
+		}
+		return placeNamesListTemp; 
+	}
 }

@@ -26,6 +26,6 @@ import es.uem.geolocation.shared.RSS;
  * @author Guillermo Santos (gsantosgo@yahoo.es)
  */
 public interface RSSServiceAsync {
-	void loadRSSNews(AsyncCallback<RSS> asyncCallback) throws Exception;
+	void loadLocalRSSNews(String type, AsyncCallback<RSS> asyncCallback) throws Exception;
 	void loadRSSNews(String uri, AsyncCallback<RSS> asyncCallback) throws Exception;
 }

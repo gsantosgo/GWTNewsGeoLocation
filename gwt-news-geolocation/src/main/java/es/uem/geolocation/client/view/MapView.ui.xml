@@ -118,9 +118,12 @@
 								<!-- http://ep00.epimg.net/rss/internacional/portada.xml -->								
 							</g:MenuBar>
 						</g:MenuItem>
-						<g:MenuItem text="RSS" title="Fuente RSS Local" ui:field="rssMenuItem"/>
-						
-						
+						<g:MenuItem text="RSS">
+							<g:MenuBar vertical="true">
+								<g:MenuItem text="RSS Nacional (No remoto)" title="RSS Nacional" ui:field="rssLocalNacionalMenuItem"/>								
+								<g:MenuItem text="RSS Internacional (No remoto)" title="RSS Internacional" ui:field="rssLocalInternacionalMenuItem"/>
+							</g:MenuBar>
+						</g:MenuItem>						
 						<!--  Ayuda -->						
 						<g:MenuItem ui:field="helpMenuItem" title="Ayuda">Ayuda</g:MenuItem>
 						<g:MenuItem ui:field="aboutMenuItem" title="Acerca de">Acerca de </g:MenuItem>

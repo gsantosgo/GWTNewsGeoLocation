@@ -139,7 +139,7 @@ public class GeoRSSPresenter implements Presenter {
 	/**
 	 * Fetching news
 	 * 
-	 * @param uri
+	 * @param uri the URI Source RSS
 	 */
 	private void fetchRSSNews(final String uri) {
 		display.setStatus(messages.fetchRSS(uri));
