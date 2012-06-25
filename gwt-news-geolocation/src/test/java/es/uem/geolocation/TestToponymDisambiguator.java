@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
@@ -52,8 +53,9 @@ public class TestToponymDisambiguator {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {		
-		 geonamesSearch = new GeonamesSearchServiceImpl(2, TimeUnit.DAYS, 1000);
-		 toponymDisambiguator = new ToponymDisambiguator(geonamesSearch);	
+		 //geonamesSearch = 
+		 toponymDisambiguator = new ToponymDisambiguator();
+		 //toponymDisambiguator.setSearchService(geonamesSearch); 
 	}
 
 	/**
@@ -84,14 +86,32 @@ public class TestToponymDisambiguator {
 	}
 	
 	@Test
-	public void testToponymDisambiguator() {		 		
-		Toponym toponym= new ToponymCountry(); 
-		if (toponym instanceof ToponymCountry) {
-			System.out.println("country");
-		}
-	
+	public void testToponymDisambiguator() throws Exception {		 		
+
+		/*
+		List<Toponym> list = geonamesSearch.search("Cataluña");
+		list = geonamesSearch.search("Protección");
+		System.out.println("List " + list.size());
+		list = geonamesSearch.search("Cataluña");
+		System.out.println("List " + list.size());
+		list = geonamesSearch.search("Mallorca");
+		System.out.println("List " + list.size());
+
+
+		list = geonamesSearch.search("Protección");
+		System.out.println("List " + list.size());
+		list = geonamesSearch.search("Cataluña");
+		System.out.println("List " + list.size());
+		list = geonamesSearch.search("Mallorca");
+		System.out.println("List " + list.size());
+
+		*/
+		
 		//List<String> placeNames = Lists.newArrayList("Asturias", "España", "Estados Unidos", "Europa", "UK", "GB", "Oceanía", "Talavera de la Reina", "Toledo");
-		List<String> placeNames = Lists.newArrayList("Valladolid", "España", "Guijo de Santa Barbara");		
+		//List<String> placeNames = Lists.newArrayList("Valladolid", "España", "Guijo de Santa Barbara");
+		
+		List<String> placeNames = Lists.newArrayList("Protección", "Cataluña", "Mallorca");		
+		// [fue, Zumárraga, PSE, Guipúzcoa]
 		//List<String> placeNames = Lists.newArrayList("Asturias", "Talavera de la Reina", "Toledo");
 /*		Map<String,List<es.uem.geolocation.shared.Toponym>> toponyms = toponymDisambiguator.extractPlaceNames(placeNames);
 		System.out.println("Tamaño: " + toponyms.size());
@@ -101,6 +121,7 @@ public class TestToponymDisambiguator {
 			System.out.println("PlaceName: " + placeName + " " + toponyms.get(placeName).size() );
 		}*/
 		
+		
 		// ======= 
 		Map<String,Toponym> toponymsDisambiguation = toponymDisambiguator.getToponymDisambiguation(placeNames); 
 		Iterator<String> iterator2 = toponymsDisambiguation.keySet().iterator();
@@ -108,7 +129,57 @@ public class TestToponymDisambiguator {
 			String placeName = iterator2.next(); 
 			System.out.println("PlaceName: " + placeName + " " + toponymsDisambiguation.get(placeName));
 		}
-							
+		
+		/*
+		list = geonamesSearch.search("Protección");
+		System.out.println("List " + list.size());
+		list = geonamesSearch.search("Cataluña");
+		System.out.println("List " + list.size());
+		list = geonamesSearch.search("Mallorca");
+		System.out.println("List " + list.size());
+		*/
+		
+		toponymsDisambiguation = toponymDisambiguator.getToponymDisambiguation(placeNames); 
+		iterator2 = toponymsDisambiguation.keySet().iterator();
+		while (iterator2.hasNext()) {
+			String placeName = iterator2.next(); 
+			System.out.println("PlaceName: " + placeName + " " + toponymsDisambiguation.get(placeName));
+		}
+		
+		toponymsDisambiguation = toponymDisambiguator.getToponymDisambiguation(placeNames); 
+		iterator2 = toponymsDisambiguation.keySet().iterator();
+		while (iterator2.hasNext()) {
+			String placeName = iterator2.next(); 
+			System.out.println("PlaceName: " + placeName + " " + toponymsDisambiguation.get(placeName));
+		}
+		
+		ConcurrentMap<String, List<Toponym>> map = geonamesSearch.getCache().asMap();
+		Iterator<String> aaaa = map.keySet().iterator(); 
+		while (aaaa.hasNext()) {
+			String key = aaaa.next(); 
+			System.out.println( key + " " +  map.get(key).size());			
+		}
+
+		
+		aaaa = map.keySet().iterator(); 
+		while (aaaa.hasNext()) {
+			String key = aaaa.next(); 
+			System.out.println( key + " " +  map.get(key).size());			
+		}
+
+
+		toponymsDisambiguation = toponymDisambiguator.getToponymDisambiguation(placeNames); 
+		iterator2 = toponymsDisambiguation.keySet().iterator();
+		while (iterator2.hasNext()) {
+			String placeName = iterator2.next(); 
+			System.out.println("PlaceName: " + placeName + " " + toponymsDisambiguation.get(placeName));
+		}
+		
+		aaaa = map.keySet().iterator(); 
+		while (aaaa.hasNext()) {
+			String key = aaaa.next(); 
+			System.out.println( key + " " +  map.get(key).size());			
+		}		
  
 	}
 

@@ -54,8 +54,7 @@ public class GeonamesServiceImpl extends RemoteServiceServlet implements
 	
 	@Override
 	public void init() throws ServletException {
-		SearchService<List<Toponym>> geonamesSearch = new GeonamesSearchServiceImpl(2, TimeUnit.DAYS, 1000);
-		toponymDisambiguator = new ToponymDisambiguator(geonamesSearch);
+		toponymDisambiguator = new ToponymDisambiguator();
 	}
 	
 

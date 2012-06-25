@@ -5,7 +5,7 @@
 
 
 	<groupId>es.uem.geolocation</groupId>
-	<artifactId>gwt-news-geolocation</artifactId>
+	<artifactId>gwtnewsgeolocation</artifactId>
 	<version>1.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>Geolocalización de Noticias</name>
@@ -53,6 +53,8 @@
 	</repositories>
 	
 	<build>
+		<!-- Application WAR Name -->
+		<finalName>gwtnewsgeolocation</finalName>
 		<!-- Build this code -->
 		<sourceDirectory>src/main/java</sourceDirectory>
 		<testSourceDirectory>src/main/test</testSourceDirectory>
@@ -249,13 +251,43 @@
 		</dependency>
 	</dependencies>
 
-	<!-- profiles (with activation per platform) -->
-	<!-- <profiles> <profile> <id>gwt-dev-windows</id> <properties> <platform>windows</platform> 
-		</properties> <activation> <activeByDefault>true</activeByDefault> <os> <family>windows</family> 
-		</os> </activation> </profile> <profile> <id>gwt-dev-mac</id> <properties> 
-		<platform>mac</platform> </properties> <activation> <activeByDefault>false</activeByDefault> 
-		<os> <family>mac</family> </os> </activation> </profile> <profile> <id>gwt-dev-linux</id> 
-		<properties> <platform>linux</platform> </properties> <activation> <activeByDefault>false</activeByDefault> 
-		<os> <name>linux</name> </os> </activation> </profile> </profiles> -->
-
+	<!-- profiles (with activation per platform) 
+	<profiles>
+		<profile>
+			<id>gwt-dev-windows</id>
+			<properties>
+				<platform>windows</platform>
+			</properties>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+				<os>
+					<family>windows</family>
+				</os>
+			</activation>
+		</profile>
+		<profile>
+			<id>gwt-dev-mac</id>
+			<properties>
+				<platform>mac</platform>
+			</properties>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+				<os>
+					<family>mac</family>
+				</os>
+			</activation>
+		</profile>
+		<profile>
+			<id>gwt-dev-linux</id>
+			<properties>
+				<platform>linux</platform>
+			</properties>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+				<os>
+					<name>linux</name>
+				</os>
+			</activation>
+		</profile>
+	</profiles>-->
 </project>

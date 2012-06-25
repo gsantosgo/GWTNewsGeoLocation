@@ -17,16 +17,16 @@ package es.uem.geolocation.geonames;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
+import org.mortbay.log.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,6 +42,7 @@ import es.uem.geolocation.geonames.predicate.ExactFipsCodePredicate;
 import es.uem.geolocation.geonames.predicate.ExactIsoAlpha2Predicate;
 import es.uem.geolocation.geonames.predicate.ExactIsoAlpha3Predicate;
 import es.uem.geolocation.geonames.predicate.ExactNamePredicate;
+import es.uem.geolocation.server.cache.GeonamesSearchServiceImpl;
 import es.uem.geolocation.server.cache.SearchService;
 import es.uem.geolocation.shared.Toponym;
 import es.uem.geolocation.shared.ToponymCountry;
@@ -57,9 +58,8 @@ public class ToponymDisambiguator {
 	final static Logger logger = LoggerFactory.getLogger(ToponymDisambiguator.class);
 	public static Map<String, String> mapAbbreviations = null;
 	public static Map<String, ToponymCountry> mapContinents = null;
-	public static Map<String, ToponymCountry> mapCountries = null;	
-	private SearchService<List<Toponym>> geonamesSearch;	
-	
+	public static Map<String, ToponymCountry> mapCountries = null;		 	
+	GeonamesSearchServiceImpl geonamesSearch = new GeonamesSearchServiceImpl(2, TimeUnit.DAYS, 1000); 
 	// Initialize continents, countries 
 	static {	
 		mapAbbreviations = Maps.newHashMapWithExpectedSize(10);
@@ -221,39 +221,22 @@ public class ToponymDisambiguator {
 	 */
 	public ToponymDisambiguator() {		
 	}
-	
-	/**
-	 * 
-	 * Constructor 
-	 * 
-	 * @param geonamesSearch1 Geonames search
-	 */
-	public ToponymDisambiguator(SearchService<List<Toponym>> geonamesSearch1) {
-		this.geonamesSearch = geonamesSearch1;
-	}
-	
-	/**
-	 * Set Geonames search 
-	 * @param geonamesSearch1 Geonames search 
-	 */
-	public void setSearchService(SearchService<List<Toponym>> geonamesSearch1) {
-		this.geonamesSearch = geonamesSearch1;
-	}
-	
 	/**
 	 * Toponym Disambiguation  
+	 * 
 	 * @param placeNamesList the List of place names 
 	 * @return 
 	 */
-	public Map<String,Toponym> getToponymDisambiguation(List<String> placeNamesList) {		
-		System.out.println("placesNamesList: " + placeNamesList);
+	public Map<String,Toponym> getToponymDisambiguation(List<String> placeNamesList) {
+		logger.info("List of place names: " + placeNamesList); 
 		placeNamesList = translateAbbreviations(placeNamesList); 
-		System.out.println("translate placesNamesList: " + placeNamesList);
+		logger.info("Traslation List of place names (Abbreviations): " + placeNamesList);
 		
-		Map<String,Toponym> resultToponyms = Maps.newHashMap(); 		
+		Map<String,Toponym> resultToponyms = Maps.newHashMap(); 	
 		Map<String,List<Toponym>> placeNames = extractPlaceNames(placeNamesList);
+		System.out.println("Size placeNames: " + placeNames.size());
 		Map<ToponymCountry,List<Toponym>> countriesMap = Maps.newHashMap();				
-		
+				
 		for (Iterator<String> iteratorPlaceNames = placeNames.keySet().iterator();iteratorPlaceNames.hasNext();) {
 			String placeNameKey = iteratorPlaceNames.next();
 			List<Toponym> list = placeNames.get(placeNameKey);			
@@ -261,7 +244,7 @@ public class ToponymDisambiguator {
 				
 				// Only one toponym, no need disambiguation
 				Toponym toponym = list.get(0); 				
-				System.out.println("Found unique toponym:" + toponym.getName());
+				logger.info("Found unique toponym:" + toponym.getName());
 								
 				// =========================================================================
 				// Countries Toponym 
@@ -318,13 +301,13 @@ public class ToponymDisambiguator {
 			}								
 		}
 		
-		System.out.println("Salida " + countriesMap.size());
+		logger.info("Numero paises: " + countriesMap.size());
 		// ====================================================		
 		// cleanCountries 
 		List<ToponymCountry> countries = Lists.newArrayList();
 		for (Toponym toponym : countriesMap.keySet()) {
 			List<Toponym> toponymList = countriesMap.get(toponym);
-			System.out.println("Place name in " + toponym.getCountryCode() + ":");
+			logger.info("Place name in " + toponym.getCountryCode() + ":");
 			if (toponymList.size() > 1)
 				countries.add((ToponymCountry)toponym); 
 			else if ((toponymList.size() == 1) && ((toponymList.get(0) instanceof ToponymCountry)))
@@ -332,9 +315,9 @@ public class ToponymDisambiguator {
 		}		
 		if (countries.size() == 0)
 			countries.addAll(countriesMap.keySet());
-		System.out.println("Using the following countries:");
+		logger.info("Using the following countries:");
 		for (ToponymCountry country : countries) {
-			System.out.println("" + country.getName() + " " + country.getCountryCode());
+			logger.info("" + country.getName() + " " + country.getCountryCode());
 		}		
 				
 		// ====================================================		
@@ -351,7 +334,7 @@ public class ToponymDisambiguator {
 				resultToponyms.put(placeNameKey, toponymList.get(0));	 			
 			} else {
 				// There aren't toponym
-				System.out.println("Not find toponyms for " + placeNameKey);
+				logger.info("Not find toponyms for " + placeNameKey);
 			}			
 		}		
 		return resultToponyms; 
@@ -374,6 +357,7 @@ public class ToponymDisambiguator {
 	public Map<String,List<Toponym>> extractPlaceNames(List<String> placeNames)  {		
 		Map<String,List<Toponym>> result = Maps.newHashMap();		
 		for (String placeName : placeNames) {							
+			System.out.println("placeName" + placeName);
 			List<Toponym> toponymList = Lists.newArrayList();
 			// Find continents =====			
 			Map<String, ToponymCountry> filterContinents = Maps.filterKeys(mapContinents, new ExactNamePredicate(placeName));
@@ -463,16 +447,19 @@ public class ToponymDisambiguator {
 				// There aren't countries, search locations								
 				// name = 'name', name REGEXP, ansiname REGEXP, alternatenames REGEXP()									
 				// !!OJO Exception 
-				try {
+				try {					
 					toponymList = geonamesSearch.search(placeName);
+					System.out.println("toponymList.size()==== " + toponymList.size());
 				} catch (Exception e) {
 					e.printStackTrace();
 				} 				
 			}
 						
 			// Are there toponym 
-			if (toponymList.size() > 0)	
+			if (toponymList.size() > 0) {
+				System.out.println("placeName:" + placeName + "(" +toponymList.size() + ")");
 				result.put(placeName, toponymList);
+			}
 		}		
 		return result; 
 	}
@@ -591,8 +578,8 @@ public class ToponymDisambiguator {
 					
 					default: 
 						break; 										
-				}								
-				//System.out.println(toponym.getName() + " in " + toponym.getContinentCode() + ":" + featureClassC + ", " + score);				
+				}		
+				logger.debug(toponym.getName() + " in " + toponym.getContinentCode() + ":" + featureClassC + ", " + score);				
 			}						
 		}
 		return score; 

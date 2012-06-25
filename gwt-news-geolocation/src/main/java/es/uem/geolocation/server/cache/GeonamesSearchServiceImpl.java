@@ -44,7 +44,7 @@ import es.uem.geolocation.shared.Toponym;
 public class GeonamesSearchServiceImpl implements SearchService<List<Toponym>> {
 	protected AppConstants appConstants;	
 	protected LoadingCache<String, List<Toponym>> cache;
-		
+			
 	/** 
 	 * 
 	 * Constructor 
@@ -57,13 +57,11 @@ public class GeonamesSearchServiceImpl implements SearchService<List<Toponym>> {
 		LocaleProxy.initialize();		
 		appConstants = LocaleFactory.get(AppConstants.class);
 		
-		/*
 		// Proxy Configuration
 		if (appConstants.isProxy()) {
 			System.setProperty("http.proxyHost", appConstants.proxyHostName());
 			System.setProperty("http.proxyPort", ""+appConstants.proxyPort());
-		}*/
-		
+		}		
 		buildCache(duration, timeUnit, size);		
 	}
 
@@ -76,13 +74,14 @@ public class GeonamesSearchServiceImpl implements SearchService<List<Toponym>> {
 	 * @param size the cache size
 	 */
 	private void buildCache(long duration, TimeUnit timeUnit, long size) {
-		cache = CacheBuilder.newBuilder()
+
+		cache = CacheBuilder.newBuilder()								
 				.expireAfterWrite(duration, timeUnit).maximumSize(size)
 				// .refreshAfterWrite(duration, unit)
-				.build(new CacheLoader<String, List<Toponym>>() {
-										
+				.build(new CacheLoader<String, List<Toponym>>() {								
 					@Override
-					public List<Toponym> load(String queryKey) throws Exception {						
+					public List<Toponym> load(String queryPlaceName) throws Exception {
+						System.out.println("queryKey" + queryPlaceName);
 						List<Toponym> toponymList = Lists.newArrayList();
 						ToponymSearchCriteria searchCriteria = new ToponymSearchCriteria();
 						/*
@@ -94,11 +93,11 @@ public class GeonamesSearchServiceImpl implements SearchService<List<Toponym>> {
 						searchCriteria.setFeatureClass(FeatureClass.T);
 						searchCriteria.setFeatureClass(FeatureClass.V);*/
 						searchCriteria.setLanguage(Constant.DEFAULT_LANGUAGE);
-						searchCriteria.setNameEquals(queryKey);
+						searchCriteria.setNameEquals(queryPlaceName);
 						
 						// 11.06.2012
-						// Que el nombre comienz
-						searchCriteria.setNameStartsWith(queryKey);
+						// Que el nombre comienzo
+						searchCriteria.setNameStartsWith(queryPlaceName);
 						searchCriteria.setStartRow(0); // Limit 100 
 						searchCriteria.setMaxRows(200); 
 						searchCriteria.setStyle(Style.LONG); // Importante
