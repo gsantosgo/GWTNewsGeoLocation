@@ -16,8 +16,6 @@ package es.uem.geolocation.shared;
 
 import java.io.Serializable;
 
-import org.geonames.Style;
-
 import com.google.common.base.Objects;
 
 /**

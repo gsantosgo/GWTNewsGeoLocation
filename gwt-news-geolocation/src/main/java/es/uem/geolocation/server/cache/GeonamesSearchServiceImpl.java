@@ -15,12 +15,15 @@
 package es.uem.geolocation.server.cache;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import org.geonames.Style;
 import org.geonames.ToponymSearchCriteria;
 import org.geonames.ToponymSearchResult;
 import org.geonames.WebService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -42,6 +45,7 @@ import es.uem.geolocation.shared.Toponym;
  * 
  */
 public class GeonamesSearchServiceImpl implements SearchService<List<Toponym>> {
+	final static Logger logger = LoggerFactory.getLogger(GeonamesSearchServiceImpl.class);	
 	protected AppConstants appConstants;	
 	protected LoadingCache<String, List<Toponym>> cache;
 			
@@ -57,10 +61,12 @@ public class GeonamesSearchServiceImpl implements SearchService<List<Toponym>> {
 		LocaleProxy.initialize();		
 		appConstants = LocaleFactory.get(AppConstants.class);
 		
+		logger.info("Conexión con proxy: "  + appConstants.isProxy());
 		// Proxy Configuration
-		if (appConstants.isProxy()) {
+		if (appConstants.isProxy()) {			
 			System.setProperty("http.proxyHost", appConstants.proxyHostName());
 			System.setProperty("http.proxyPort", ""+appConstants.proxyPort());
+			logger.info(String.format("proxyHost: %s, proxyPort: %s", appConstants.proxyHostName(), ""+appConstants.proxyPort()));			
 		}		
 		buildCache(duration, timeUnit, size);		
 	}
@@ -74,14 +80,13 @@ public class GeonamesSearchServiceImpl implements SearchService<List<Toponym>> {
 	 * @param size the cache size
 	 */
 	private void buildCache(long duration, TimeUnit timeUnit, long size) {
-
 		cache = CacheBuilder.newBuilder()								
 				.expireAfterWrite(duration, timeUnit).maximumSize(size)
 				// .refreshAfterWrite(duration, unit)
 				.build(new CacheLoader<String, List<Toponym>>() {								
 					@Override
 					public List<Toponym> load(String queryPlaceName) throws Exception {
-						System.out.println("queryKey" + queryPlaceName);
+						logger.debug("Request Geonames Web Services Search: " + queryPlaceName);
 						List<Toponym> toponymList = Lists.newArrayList();
 						ToponymSearchCriteria searchCriteria = new ToponymSearchCriteria();
 						/*
@@ -143,8 +148,16 @@ public class GeonamesSearchServiceImpl implements SearchService<List<Toponym>> {
 	/**
 	 * Place name search 
 	 */	
-	public List<Toponym> search(String queryPlaceName) throws Exception {
-		return cache.get(queryPlaceName);
+	public List<Toponym> search(String queryPlaceName)  {
+		List<Toponym> toponymList = Lists.newArrayList(); 
+			try {
+				toponymList = cache.get(queryPlaceName);
+				logger.debug(String.format("Get Cache. PlaceName: %s , Number of Toponyms: %d", queryPlaceName, toponymList.size()));				
+			} catch (ExecutionException e) {
+				logger.error(e.getMessage()); 
+				e.printStackTrace();
+			}
+		return toponymList; 
 	}
 
 	

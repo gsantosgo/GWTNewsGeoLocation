@@ -18,17 +18,17 @@ package es.uem.geolocation.server;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import es.uem.geolocation.client.services.GeonamesService;
 import es.uem.geolocation.geonames.ToponymDisambiguator;
-import es.uem.geolocation.server.cache.GeonamesSearchServiceImpl;
-import es.uem.geolocation.server.cache.SearchService;
 import es.uem.geolocation.shared.Article;
 import es.uem.geolocation.shared.NewMap;
 import es.uem.geolocation.shared.Toponym;
@@ -42,7 +42,9 @@ import es.uem.geolocation.shared.Toponym;
 
 @SuppressWarnings("serial")
 public class GeonamesServiceImpl extends RemoteServiceServlet implements
-		GeonamesService {	
+		GeonamesService {
+	
+	final static Logger logger = LoggerFactory.getLogger(GeonamesServiceImpl.class);	
 	private ToponymDisambiguator toponymDisambiguator;  
 
 	/**
@@ -53,7 +55,7 @@ public class GeonamesServiceImpl extends RemoteServiceServlet implements
 	
 	
 	@Override
-	public void init() throws ServletException {
+	public void init() throws ServletException {		
 		toponymDisambiguator = new ToponymDisambiguator();
 	}
 	
@@ -101,16 +103,15 @@ public class GeonamesServiceImpl extends RemoteServiceServlet implements
 
 			// Categories =====
 			if (categoriesLocations != null && !categoriesLocations.isEmpty()) {				
-				Map<String,Toponym> toponymDisambiguatonMaps = toponymDisambiguator.getToponymDisambiguation(categoriesLocations);												
-				if (!toponymDisambiguatonMaps.isEmpty()) {				
-					Map.Entry<String, Toponym> entry = toponymDisambiguatonMaps.entrySet().iterator().next();
-					System.out.println("entry" + entry.getValue().toString());
+				Map<String,Toponym> toponymDisambiguationMaps = toponymDisambiguator.getToponymDisambiguation(categoriesLocations);												
+				if (!toponymDisambiguationMaps.isEmpty()) {				
+					Map.Entry<String, Toponym> entry = toponymDisambiguationMaps.entrySet().iterator().next();
 					categoriesToponymList.add(entry.getValue()); 
 				}
 				
 				// OJO!!
-				if (!categoriesToponymList.isEmpty()) {		
-					System.out.println("Entraaa" + categoriesToponymList.get(0).getName());
+				if (!categoriesToponymList.isEmpty()) {					
+					logger.info(String.format(" Categories: %s", categoriesToponymList.get(0).getName())); 
 					newMap.setLatitude(categoriesToponymList.get(0).getLatitude()); 
 					newMap.setLongitude(categoriesToponymList.get(0).getLongitude());
 					newMap.setPlacename(categoriesToponymList.get(0).getName());
@@ -123,15 +124,14 @@ public class GeonamesServiceImpl extends RemoteServiceServlet implements
 			// HeadlineDescription =====
 			if (headlineDescriptionLocations != null && 
 				!headlineDescriptionLocations.isEmpty()) {		
-				Map<String,Toponym> toponymDisambiguatonMaps = toponymDisambiguator.getToponymDisambiguation(headlineDescriptionLocations);												
-				if (!toponymDisambiguatonMaps.isEmpty()) {				
-					Map.Entry<String, Toponym> entry = toponymDisambiguatonMaps.entrySet().iterator().next();
-					headlineDescriptionToponymList.add(entry.getValue()); 
-					System.out.println("entry" + entry.getValue().toString());					
+				Map<String,Toponym> toponymDisambiguationMaps = toponymDisambiguator.getToponymDisambiguation(headlineDescriptionLocations);												
+				if (!toponymDisambiguationMaps.isEmpty()) {				
+					Map.Entry<String, Toponym> entry = toponymDisambiguationMaps.entrySet().iterator().next();
+					headlineDescriptionToponymList.add(entry.getValue()); 					
 				}
 				
 				if (!headlineDescriptionToponymList.isEmpty()) {
-					System.out.println("Entraaa" + headlineDescriptionToponymList.get(0).getName());
+					logger.info(String.format(" Headline Description: %s", headlineDescriptionToponymList.get(0).getName()));					
 					newMap.setLatitude(headlineDescriptionToponymList.get(0).getLatitude()); 
 					newMap.setLongitude(headlineDescriptionToponymList.get(0).getLongitude());
 					newMap.setPlacename(headlineDescriptionToponymList.get(0).getName());

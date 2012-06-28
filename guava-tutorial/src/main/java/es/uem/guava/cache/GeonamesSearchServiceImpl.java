@@ -15,12 +15,15 @@
 package es.uem.guava.cache;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import org.geonames.Style;
 import org.geonames.ToponymSearchCriteria;
 import org.geonames.ToponymSearchResult;
 import org.geonames.WebService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -29,14 +32,16 @@ import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 
 
+
 /**
  * 
- * Geonames Search Service
+ * Geonames Search Service Implementation
  * 
  * @author Guillermo Santos (gsantosgo@yahoo.es)
  * 
  */
-public class GeonamesSearchServiceImpl implements SearchService<List<Toponym>> {	
+public class GeonamesSearchServiceImpl implements SearchService<List<Toponym>> {
+	final static Logger logger = LoggerFactory.getLogger(GeonamesSearchServiceImpl.class);
 	protected LoadingCache<String, List<Toponym>> cache;
 			
 	/** 
@@ -129,8 +134,16 @@ public class GeonamesSearchServiceImpl implements SearchService<List<Toponym>> {
 	/**
 	 * Place name search 
 	 */	
-	public List<Toponym> search(String queryPlaceName) throws Exception {
-		return cache.getUnchecked(queryPlaceName);
+	public List<Toponym> search(String queryPlaceName){
+		List<Toponym> result = Lists.newArrayList();		
+		try {
+			cache.get(queryPlaceName);
+		} catch (ExecutionException e) {
+			logger.debug(e.getMessage());
+			e.printStackTrace();
+		}
+		
+		return result; 
 	}
 
 	

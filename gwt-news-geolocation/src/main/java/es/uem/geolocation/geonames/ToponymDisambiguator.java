@@ -15,23 +15,15 @@
 package es.uem.geolocation.geonames;
 
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
-import org.mortbay.log.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.CharMatcher;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -55,172 +47,28 @@ import es.uem.geolocation.shared.ToponymCountry;
  * 
  */
 public class ToponymDisambiguator {		
-	final static Logger logger = LoggerFactory.getLogger(ToponymDisambiguator.class);
-	public static Map<String, String> mapAbbreviations = null;
-	public static Map<String, ToponymCountry> mapContinents = null;
-	public static Map<String, ToponymCountry> mapCountries = null;		 	
-	GeonamesSearchServiceImpl geonamesSearch = new GeonamesSearchServiceImpl(2, TimeUnit.DAYS, 1000); 
-	// Initialize continents, countries 
-	static {	
-		mapAbbreviations = Maps.newHashMapWithExpectedSize(10);
-		mapContinents = Maps.newHashMapWithExpectedSize(7);
-		mapCountries = Maps.newHashMapWithExpectedSize(300);
- 		
-		// Abbreviations ======================================================== 
-		String abbreviationsFileName = "abbreviations.xml"; 		
-		Preconditions.checkNotNull(abbreviationsFileName,
-				"Input filename should NOT be NULL");
-		File abbreviationsInputFile = new File(new ToponymDisambiguator()
-				.getClass().getResource(abbreviationsFileName).getFile());
-		Preconditions.checkArgument(abbreviationsInputFile.exists(),
-				"File does not exist: %s", abbreviationsInputFile);
-				
-		SAXBuilder parserAbbreviations = new SAXBuilder();
-		Document docAbbreviations = null;  
-		try {
-			docAbbreviations = parserAbbreviations.build(abbreviationsInputFile);
-		} catch (JDOMException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		Preconditions.checkNotNull(docAbbreviations, "Error en documento XML" + abbreviationsFileName);		
-		Element rootAbbreviations = docAbbreviations.getRootElement();	
-		for (Object obj : rootAbbreviations.getChildren("geoname")) {						
-				Element element = (Element) obj;
-				String id = element.getChildText("id"); 
-				String name = element.getChildText("name");	
-				mapAbbreviations.put(id, name);
-		}
-		parserAbbreviations = null; 
-		docAbbreviations = null; 
-		logger.info("Cached Continents: " + mapAbbreviations.size());
-		
-		
-		// Continents ========================================================
-		String continentFileName = "continents.xml";
-		Preconditions.checkNotNull(continentFileName,
-				"Input filename should NOT be NULL");
-		File continentInputFile = new File(new ToponymDisambiguator()
-				.getClass().getResource(continentFileName).getFile());
-		Preconditions.checkArgument(continentInputFile.exists(),
-				"File does not exist: %s", continentInputFile);
-				
-		SAXBuilder parser = new SAXBuilder();
-		Document docContinent = null;  
-		try {
-			docContinent = parser.build(continentInputFile);
-		} catch (JDOMException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		Preconditions.checkNotNull(docContinent, "Error en documento XML" + continentFileName);		
-		Element root = docContinent.getRootElement();
-		
-		int totalResultsCount = Integer.parseInt(root.getChildText("totalResultsCount"));
-		if (totalResultsCount > 0) { 
-			for (Object obj : root.getChildren("geoname")) {						
-				Element toponymElement = (Element) obj;
-				es.uem.geolocation.shared.ToponymCountry toponym = MyWebService.getToponymContinentCountryFromElement(toponymElement);		
-				mapContinents.put(toponym.getName(), toponym);
-			}
-		}	
-		parser = null; 
-		docContinent = null; 
-		logger.info("Cached Continents: " + mapContinents.size());
-	 				
-		// Countries ====================================================================
-		// CountryInfo 
-		String countryInfoFileName = "countryinfo.xml";
-		Preconditions.checkNotNull(countryInfoFileName, "Input filename should NOT be NULL");
-		File countryInfoInputFile = new File(new ToponymDisambiguator().getClass().getResource(countryInfoFileName).getFile());
-		Preconditions.checkArgument(countryInfoInputFile.exists(), "File does not exist: %s", countryInfoFileName);
-		
-		SAXBuilder parserCountryInfo = new SAXBuilder();
-		Document docCountryInfo = null; 
-		try {
-			docCountryInfo = parserCountryInfo.build(countryInfoInputFile);
-		} catch (JDOMException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		Preconditions.checkNotNull(docCountryInfo, "Error en documento XML" + countryInfoFileName);		
-		Element rootCountryInfo = docCountryInfo.getRootElement();
-			
-		Map<Integer, ToponymCountry> mapCountryInfoTemp = Maps.newHashMap(); 
-		for (Object obj : rootCountryInfo.getChildren("country")) {						
-			Element toponymElement = (Element) obj;
-			es.uem.geolocation.shared.ToponymCountry toponym = MyWebService.getToponymCountryInfoFromElement(toponymElement);
-			mapCountryInfoTemp.put(toponym.getGeoNameId(), toponym);  			 		
-		}		
-		parserCountryInfo = null; 
-		docCountryInfo = null; 
-		logger.info("Cached Map CountryInfo (Temp): " + mapCountryInfoTemp.size());
-		
-
-		// Countries ========================================================
-		String countriesFileName = "countries.xml";
-		Preconditions.checkNotNull(countriesFileName, "Input filename should NOT be NULL");
-		File countriesInputFile = new File(new ToponymDisambiguator().getClass().getResource(countriesFileName).getFile());
-		Preconditions.checkArgument(countriesInputFile.exists(),"File does not exist: %s", countriesInputFile);
-				
-		SAXBuilder parserCountries = new SAXBuilder();
-		Document docCountries = null;
-		try {
-			docCountries = parserCountries.build(countriesInputFile);
-		} catch (JDOMException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		Preconditions.checkNotNull(docCountries, "Error en documento XML" + countriesFileName);		
-		Element rootCountries = docCountries.getRootElement();
-		
-		totalResultsCount = Integer.parseInt(rootCountries.getChildText("totalResultsCount"));
-		if (totalResultsCount > 0) { 
-			for (Object obj : rootCountries.getChildren("geoname")) {						
-				Element toponymElement = (Element) obj;
-				es.uem.geolocation.shared.ToponymCountry toponym = MyWebService.getToponymContinentCountryFromElement(toponymElement);				
-				
-				Integer geoNameId = toponym.getGeoNameId();   
-				ToponymCountry toponymCountryInfo = mapCountryInfoTemp.get(geoNameId);
-				if (toponymCountryInfo != null) { 
-					toponym.setIsoAlpha2(toponymCountryInfo.getIsoAlpha2());
-					toponym.setIsoNumeric(toponymCountryInfo.getIsoNumeric()); 
-					toponym.setIsoAlpha3(toponymCountryInfo.getIsoAlpha3());
-					toponym.setFipsCode(toponymCountryInfo.getFipsCode()); 
-					toponym.setCapital(toponymCountryInfo.getCapital()); 
-					toponym.setContinentName(toponymCountryInfo.getContinentName());
-					toponym.setAreaInSqKm(toponymCountryInfo.getAreaInSqKm());
-					toponym.setCurrencyCode(toponymCountryInfo.getCurrencyCode());
-					toponym.setLanguages(toponymCountryInfo.getLanguages());
-				}						
-				else {
-					logger.info("No CountryInfo for " + toponymCountryInfo);
-				}
-				mapCountries.put(toponym.getName(), toponym);
-			}
-		}
-		
-		if (mapCountryInfoTemp != null) {
-			mapCountryInfoTemp.clear();
-			mapCountryInfoTemp = null; 
-		}
-		parserCountries = null; 
-		docCountries = null; 
-		logger.info("Cached Countries: " + mapCountries.size());		
-	}
+	final static Logger logger = LoggerFactory.getLogger(ToponymDisambiguator.class); 
+	final static LoadCache loadCache = new LoadCache();
+	private SearchService<List<Toponym>> geonamesSearch = new GeonamesSearchServiceImpl(2, TimeUnit.DAYS, 1000);
 	
 	/**
 	 * Constructor 
 	 */
-	public ToponymDisambiguator() {		
+	public ToponymDisambiguator() {
 	}
+	
+
+	/**
+	 *
+	 * Set Geonames Search Cache 
+	 * 
+	 * @param geonamesSearch the Geonames Search 
+	 */
+	public void setGeonamesSearch (SearchService<List<Toponym>> geonamesSearch) {
+		this.geonamesSearch = geonamesSearch;  
+	}
+	
+	
 	/**
 	 * Toponym Disambiguation  
 	 * 
@@ -230,11 +78,10 @@ public class ToponymDisambiguator {
 	public Map<String,Toponym> getToponymDisambiguation(List<String> placeNamesList) {
 		logger.info("List of place names: " + placeNamesList); 
 		placeNamesList = translateAbbreviations(placeNamesList); 
-		logger.info("Traslation List of place names (Abbreviations): " + placeNamesList);
+		logger.info("Translation List of place names (Abbreviations): " + placeNamesList);
 		
 		Map<String,Toponym> resultToponyms = Maps.newHashMap(); 	
 		Map<String,List<Toponym>> placeNames = extractPlaceNames(placeNamesList);
-		System.out.println("Size placeNames: " + placeNames.size());
 		Map<ToponymCountry,List<Toponym>> countriesMap = Maps.newHashMap();				
 				
 		for (Iterator<String> iteratorPlaceNames = placeNames.keySet().iterator();iteratorPlaceNames.hasNext();) {
@@ -256,7 +103,7 @@ public class ToponymDisambiguator {
 					String countryCode = toponym.getCountryCode();					
 					if (countryCode != null && countryCode.length() == 2) { 
 						// If it is a placename (not continent, not country), then return information about its country.
-						Map<String, ToponymCountry> filterCountryCode = Maps.filterValues(mapCountries, new ExactCountryCodePredicate(countryCode));
+						Map<String, ToponymCountry> filterCountryCode = Maps.filterValues(LoadCache.mapCountries, new ExactCountryCodePredicate(countryCode));
 						if (filterCountryCode.size() > 0) {
 							List<ToponymCountry> countriesList = Lists.newArrayList(filterCountryCode.values());
 							toponymCountrySelection = countriesList.get(0); 
@@ -301,7 +148,7 @@ public class ToponymDisambiguator {
 			}								
 		}
 		
-		logger.info("Numero paises: " + countriesMap.size());
+		logger.info("Number of countries: " + countriesMap.size());
 		// ====================================================		
 		// cleanCountries 
 		List<ToponymCountry> countries = Lists.newArrayList();
@@ -326,9 +173,10 @@ public class ToponymDisambiguator {
 			List<Toponym> toponymList = placeNames.get(placeNameKey);			
 			toponymList = removeToponyms(toponymList, countries); 			
 			getScore(placeNameKey, toponymList, 1);
-			int size = toponymList.size();  
+			int size = toponymList.size();
+			logger.info(String.format("Place Name: %s ,Number of Toponyms: %d ",placeNameKey, toponymList.size())); 
 			if ( size == 1) {
-				// Resultado 		
+				// Resultado
 				resultToponyms.put(placeNameKey, toponymList.get(0)); 
 			} else if (size > 1) {
 				resultToponyms.put(placeNameKey, toponymList.get(0));	 			
@@ -341,10 +189,6 @@ public class ToponymDisambiguator {
 	}
 	
 	
-	/*	Checks each KafTerm to see if it is a location; if so, the possible locations are 
-	 * 	retrieved from GeoNames and returned in a HashMap, with the KafTerm as key.
-	 */
-
 	/**
 	 *  To each placename checks it it is a location.  
 	 *   	Is it a location? Yes, the possible locations are stored in a HashMap, to each placename
@@ -356,11 +200,10 @@ public class ToponymDisambiguator {
 	 */
 	public Map<String,List<Toponym>> extractPlaceNames(List<String> placeNames)  {		
 		Map<String,List<Toponym>> result = Maps.newHashMap();		
-		for (String placeName : placeNames) {							
-			System.out.println("placeName" + placeName);
+		for (String placeName : placeNames) {			
 			List<Toponym> toponymList = Lists.newArrayList();
 			// Find continents =====			
-			Map<String, ToponymCountry> filterContinents = Maps.filterKeys(mapContinents, new ExactNamePredicate(placeName));
+			Map<String, ToponymCountry> filterContinents = Maps.filterKeys(LoadCache.mapContinents, new ExactNamePredicate(placeName));
 			if (filterContinents.size() > 0) {
 				List<ToponymCountry> list = Lists.newArrayList(filterContinents.values());
 				toponymList.add(list.get(0));								
@@ -368,7 +211,7 @@ public class ToponymDisambiguator {
 			
 			// Find countries =====			
 			if (toponymList.size() == 0 ) {								
-				Map<String, ToponymCountry> filterCountries = Maps.filterKeys(mapCountries, new ExactNamePredicate(placeName));				
+				Map<String, ToponymCountry> filterCountries = Maps.filterKeys(LoadCache.mapCountries, new ExactNamePredicate(placeName));				
 				if (filterCountries.size() > 0)  {
 					List<ToponymCountry> list = Lists.newArrayList(filterCountries.values());
 					try {						
@@ -383,7 +226,7 @@ public class ToponymDisambiguator {
 				else if (placeName.length() == 2 && CharMatcher.JAVA_UPPER_CASE.matchesAllOf(placeName)) {					
 					// There aren't continents, search continents 				
 					// ISO Alpha2 =====
-					Map<String, ToponymCountry> filterCountryIsoAlpha2 = Maps.filterValues(mapCountries, new ExactIsoAlpha2Predicate(placeName));
+					Map<String, ToponymCountry> filterCountryIsoAlpha2 = Maps.filterValues(LoadCache.mapCountries, new ExactIsoAlpha2Predicate(placeName));
 					if (filterCountryIsoAlpha2.size() > 0) {
 						List<ToponymCountry> list = Lists.newArrayList(filterCountryIsoAlpha2.values());
 						try {
@@ -397,7 +240,7 @@ public class ToponymDisambiguator {
 					
 					// FipsCode ===== 
 					if (filterCountryIsoAlpha2.size() == 0) {
-						Map<String, ToponymCountry> filterCountryFipsCode = Maps.filterValues(mapCountries, new ExactFipsCodePredicate(placeName));					
+						Map<String, ToponymCountry> filterCountryFipsCode = Maps.filterValues(LoadCache.mapCountries, new ExactFipsCodePredicate(placeName));					
 						if (filterCountryFipsCode.size() > 0) {
 							List<ToponymCountry> list = Lists.newArrayList(filterCountryFipsCode.values());
 							try {								
@@ -412,7 +255,7 @@ public class ToponymDisambiguator {
 				}
 				// IsoAlpha3 USA  
 				else if (placeName.length() == 3 && CharMatcher.JAVA_UPPER_CASE.matchesAllOf(placeName)) {					
-					Map<String, ToponymCountry> filterCountryIsoAlpha3 = Maps.filterValues(mapCountries, new ExactIsoAlpha3Predicate(placeName));					
+					Map<String, ToponymCountry> filterCountryIsoAlpha3 = Maps.filterValues(LoadCache.mapCountries, new ExactIsoAlpha3Predicate(placeName));					
 					if (filterCountryIsoAlpha3.size() > 0) {
 						List<ToponymCountry> list = Lists.newArrayList(filterCountryIsoAlpha3.values());
 						try {
@@ -428,7 +271,7 @@ public class ToponymDisambiguator {
 				// performance 
 				// alternateNames
 				else {
-					Map<String, ToponymCountry> filterAlternateNamesCountries = Maps.filterValues(mapCountries, new ExactAlternateNamesPredicate(placeName));				
+					Map<String, ToponymCountry> filterAlternateNamesCountries = Maps.filterValues(LoadCache.mapCountries, new ExactAlternateNamesPredicate(placeName));				
 					if (filterAlternateNamesCountries.size() > 0)  {
 						List<ToponymCountry> list = Lists.newArrayList(filterAlternateNamesCountries.values());
 						try {						
@@ -446,18 +289,15 @@ public class ToponymDisambiguator {
 			if(toponymList.size() == 0) {				
 				// There aren't countries, search locations								
 				// name = 'name', name REGEXP, ansiname REGEXP, alternatenames REGEXP()									
-				// !!OJO Exception 
-				try {					
-					toponymList = geonamesSearch.search(placeName);
-					System.out.println("toponymList.size()==== " + toponymList.size());
-				} catch (Exception e) {
-					e.printStackTrace();
-				} 				
+				// !!OJO Exception	
+				List<Toponym> geonamesList = Lists.newArrayList();
+				System.out.println("placeName " + placeName );
+				geonamesList = geonamesSearch.search(placeName);
+				if (geonamesList != null && geonamesList.size() > 0)  toponymList.addAll(geonamesList); 				
 			}
 						
 			// Are there toponym 
 			if (toponymList.size() > 0) {
-				System.out.println("placeName:" + placeName + "(" +toponymList.size() + ")");
 				result.put(placeName, toponymList);
 			}
 		}		
@@ -769,8 +609,9 @@ public class ToponymDisambiguator {
 	private List<String> translateAbbreviations(List<String> placeNamesList) {
 		List<String> placeNamesListTemp = Lists.newArrayList(); 
 		for (String placeName : placeNamesList) {
-			if (mapAbbreviations.containsKey(placeName)) {
-				placeNamesListTemp.add(mapAbbreviations.get(placeName)); 
+			if (LoadCache.mapAbbreviations != null && 
+				LoadCache.mapAbbreviations.containsKey(placeName)) {
+				placeNamesListTemp.add(LoadCache.mapAbbreviations.get(placeName)); 
 			} 
 			else {
 				placeNamesListTemp.add(placeName); 

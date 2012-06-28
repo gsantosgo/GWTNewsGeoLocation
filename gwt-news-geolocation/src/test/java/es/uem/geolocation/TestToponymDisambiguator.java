@@ -34,7 +34,6 @@ import com.google.common.collect.Lists;
 import es.uem.geolocation.geonames.ToponymDisambiguator;
 import es.uem.geolocation.server.cache.GeonamesSearchServiceImpl;
 import es.uem.geolocation.shared.Toponym;
-import es.uem.geolocation.shared.ToponymCountry;
 
 
 /**
@@ -53,9 +52,9 @@ public class TestToponymDisambiguator {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {		
-		 //geonamesSearch = 
+		 geonamesSearch = new GeonamesSearchServiceImpl(2, TimeUnit.DAYS, 1000);  
 		 toponymDisambiguator = new ToponymDisambiguator();
-		 //toponymDisambiguator.setSearchService(geonamesSearch); 
+		 toponymDisambiguator.setGeonamesSearch(geonamesSearch); 
 	}
 
 	/**
@@ -107,11 +106,13 @@ public class TestToponymDisambiguator {
 
 		*/
 		
+		//List<String> placeNames = Lists.newArrayList("Asturias", "Filipinas"); 
 		//List<String> placeNames = Lists.newArrayList("Asturias", "España", "Estados Unidos", "Europa", "UK", "GB", "Oceanía", "Talavera de la Reina", "Toledo");
 		//List<String> placeNames = Lists.newArrayList("Valladolid", "España", "Guijo de Santa Barbara");
 		
-		List<String> placeNames = Lists.newArrayList("Protección", "Cataluña", "Mallorca");		
-		// [fue, Zumárraga, PSE, Guipúzcoa]
+		//List<String> placeNames = Lists.newArrayList("Protección", "Cataluña", "Mallorca", "España");		
+		
+		List<String> placeNames = Lists.newArrayList("fue", "Zumárraga", "PSE", "Guipúzcoa", "España"); 
 		//List<String> placeNames = Lists.newArrayList("Asturias", "Talavera de la Reina", "Toledo");
 /*		Map<String,List<es.uem.geolocation.shared.Toponym>> toponyms = toponymDisambiguator.extractPlaceNames(placeNames);
 		System.out.println("Tamaño: " + toponyms.size());
