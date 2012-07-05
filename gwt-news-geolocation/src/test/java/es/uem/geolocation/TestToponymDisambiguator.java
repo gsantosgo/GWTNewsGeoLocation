@@ -111,8 +111,10 @@ public class TestToponymDisambiguator {
 		//List<String> placeNames = Lists.newArrayList("Valladolid", "España", "Guijo de Santa Barbara");
 		
 		//List<String> placeNames = Lists.newArrayList("Protección", "Cataluña", "Mallorca", "España");		
-		
-		List<String> placeNames = Lists.newArrayList("fue", "Zumárraga", "PSE", "Guipúzcoa", "España"); 
+							
+	    List<String> placeNames = Lists.newArrayList("Burgos","Plan", "ES");				
+		//List<String> placeNames = Lists.newArrayList("fue", "Manzanal de los Infantes", "Zamora", "ES");
+		//List<String> placeNames = Lists.newArrayList("fue", "Zumárraga", "PSE", "Guipúzcoa", "España"); 
 		//List<String> placeNames = Lists.newArrayList("Asturias", "Talavera de la Reina", "Toledo");
 /*		Map<String,List<es.uem.geolocation.shared.Toponym>> toponyms = toponymDisambiguator.extractPlaceNames(placeNames);
 		System.out.println("Tamaño: " + toponyms.size());

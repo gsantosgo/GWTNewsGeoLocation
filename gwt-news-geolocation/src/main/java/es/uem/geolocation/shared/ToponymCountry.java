@@ -242,8 +242,8 @@ public class ToponymCountry extends Toponym {
 	public String toString() {		
 		return Objects.toStringHelper(this.getClass())
 				.add("toponym", super.toString())				
-				.add("countryName", this.getCountryCode())
-				.add("countryCode", this.getCountryName())
+				.add("countryName", this.getCountryName())
+				.add("countryCode", this.getCountryCode())
 				.add("isoAlpha2", this.getIsoAlpha2())
 				.add("isoNumeric", this.getIsoNumeric())
 				.add("isoAlpha3", this.getIsoAlpha3())

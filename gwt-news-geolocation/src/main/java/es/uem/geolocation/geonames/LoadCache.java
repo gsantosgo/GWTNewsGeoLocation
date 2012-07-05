@@ -181,6 +181,7 @@ public class LoadCache {
 					toponym.setAreaInSqKm(toponymCountryInfo.getAreaInSqKm());
 					toponym.setCurrencyCode(toponymCountryInfo.getCurrencyCode());
 					toponym.setLanguages(toponymCountryInfo.getLanguages());
+									
 				}						
 				else {
 					logger.info("No CountryInfo for " + toponymCountryInfo);

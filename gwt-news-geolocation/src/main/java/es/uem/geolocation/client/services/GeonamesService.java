@@ -41,12 +41,13 @@ public interface GeonamesService extends RemoteService {
 	 */
 	List<Toponym> toponymSearchCriteria(String toponym);	
 	
+
 	/**
-	 * 
 	 * Toponym search on Geonames Services
-	 * 
-	 * @param articles the List of articles 
-	 * @return the List of NewMap 
+	 *  
+	 * @param articles the List of articles
+	 * @param countryCode the countryCode "ES","GB" 
+	 * @return
 	 */
-	List<NewMap> toponymSearchCriteria(List<Article> articles);	
+	List<NewMap> toponymSearchCriteria(List<Article> articles, String countryCode);	
 }

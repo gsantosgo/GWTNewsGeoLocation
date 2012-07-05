@@ -32,19 +32,22 @@ public interface RSSService extends RemoteService {
 	
 	/**
 	 * 
-	 * @param the Type of News (Nacional, Internacional)  
-	 * @return the RSS Source 
+	 * Load Local RSS Source (Testing)
+	 * 
+	 * @param type the Type of News (Nacional, Internacional)
+	 * @param countryCode the countryCode  
+	 * @return
 	 * @throws Exception
 	 */
 	RSS loadLocalRSSNews(String type) throws Exception;
 	
 	/**
 	 * 
-	 * Load Local RSS Source (Testing)  
-	 * 
-	 * @param uri the Remote URI RSS Source    
-	 * @return the RSS Source 
-	 * @throws Exception  
+	 * Load RSS News (Remote) 
+	 * @param uri the Remote URI RSS Source
+	 * @param countryCode the countryCode RSS
+	 * @return the RSS Source
+	 * @throws Exception
 	 */
 	RSS loadRSSNews(String uri) throws Exception; 	
 }

@@ -38,7 +38,7 @@ public class Constant {
 
 	public static final String FILE_LOCATIONS = "ANNIE_locations.gapp";	
 		
-	public static final Map<String, String> MENU_LIST  = new HashMap<String, String>(){
+	public static final Map<String, Menu> MENU_LIST  = new HashMap<String, Menu>(){
 		private static final long serialVersionUID = 1L;
 		
 		{			
@@ -49,25 +49,25 @@ public class Constant {
 			*/
 			
 			// LARAZON.ES 
-			put("larazonGeneralesMenuItem","http://www.larazon.es/noticias/rss"); 	
-			put("larazonEspanaMenuItem","http://www.larazon.es/noticias/rss/espana");
-			put("larazonInternacionalMenuItem","http://www.larazon.es/noticias/rss/internacional");			
+			put("larazonGeneralesMenuItem", new Menu("http://www.larazon.es/noticias/rss","")); 	
+			put("larazonEspanaMenuItem", new Menu("http://www.larazon.es/noticias/rss/espana", "ES"));
+			put("larazonInternacionalMenuItem", new Menu("http://www.larazon.es/noticias/rss/internacional",""));			
 			
 			// ELMUNDO.ES
-			put("elmundoPortadaMenuItem", "http://elmundo.feedsportal.com/elmundo/rss/portada.xml");			
-			put("elmundoEspanaMenuItem", "http://elmundo.feedsportal.com/elmundo/rss/espana.xml");
-			put("elmundoInternacionalMenuItem","http://elmundo.feedsportal.com/elmundo/rss/internacional.xml");
+			put("elmundoPortadaMenuItem", new Menu("http://elmundo.feedsportal.com/elmundo/rss/portada.xml",""));			
+			put("elmundoEspanaMenuItem", new Menu("http://elmundo.feedsportal.com/elmundo/rss/espana.xml","ES"));
+			put("elmundoInternacionalMenuItem", new Menu("http://elmundo.feedsportal.com/elmundo/rss/internacional.xml",""));
 			
 			// ELPAIS.COM 
-			put("elpaisPortadaMenuItem","http://ep00.epimg.net/rss/elpais/portada.xml");
-			put("elpaisUltimaNoticiasMenuItem","http://ep00.epimg.net/rss/tags/ultimas_noticias.xml");
-			put("elpaisInternacionalMenuItem","http://ep00.epimg.net/rss/internacional/portada.xml");
+			put("elpaisPortadaMenuItem", new Menu("http://ep00.epimg.net/rss/elpais/portada.xml",""));
+			put("elpaisUltimaNoticiasMenuItem", new Menu("http://ep00.epimg.net/rss/tags/ultimas_noticias.xml",""));
+			put("elpaisInternacionalMenuItem", new Menu("http://ep00.epimg.net/rss/internacional/portada.xml",""));
 			
 			// Servlet Implemented
 			// put("rssMenuItem", GWT.getModuleBaseURL() + "rssnews");
 			// LOCAL News (No remote)  
-			put("rssLocalNacionalMenuItem", "localNacional");
-			put("rssLocalInternacionalMenuItem", "localInternacional");
+			put("rssLocalNacionalMenuItem", new Menu("localNacional","ES"));
+			put("rssLocalInternacionalMenuItem", new Menu("localInternacional",""));
 		}
 	}; 
 

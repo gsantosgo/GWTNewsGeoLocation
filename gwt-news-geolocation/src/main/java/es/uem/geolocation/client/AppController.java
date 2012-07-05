@@ -14,7 +14,6 @@
  */
 package es.uem.geolocation.client;
 
-import com.google.common.base.Strings;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerManager;
@@ -66,7 +65,7 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 
 	public void onValueChange(ValueChangeEvent<String> event) {		
 		String token = event.getValue();
-		String uri = null; 		
+		Menu menu = null;  		
 		
 		if (view == null) {
 			view = new MapView(); 
@@ -74,7 +73,7 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 		if (token != null) {
 			Presenter presenter = null; 
 			if (!token.equals("display")) {
-				uri = Constant.MENU_LIST.get(token); 				
+				menu = Constant.MENU_LIST.get(token); 				
 			} 
 			presenter = new GeoRSSPresenter(
 						rssService, 
@@ -82,7 +81,7 @@ public class AppController implements Presenter, ValueChangeHandler<String> {
 						geonamesService,
 						eventBus,
 						view,
-						Strings.nullToEmpty(uri));  				
+						menu);  				
 		
 			if (presenter != null) {
 				presenter.go(container); 

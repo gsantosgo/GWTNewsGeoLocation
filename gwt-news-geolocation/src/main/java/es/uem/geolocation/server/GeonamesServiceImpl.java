@@ -21,9 +21,11 @@ import java.util.Map;
 
 import javax.servlet.ServletException;
 
+import org.mortbay.log.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -80,12 +82,13 @@ public class GeonamesServiceImpl extends RemoteServiceServlet implements
 	/**
 	 * Toponym search criteria
 	 */
-	public List<NewMap> toponymSearchCriteria(List<Article> articles) {
+	public List<NewMap> toponymSearchCriteria(List<Article> articles, String countryCode) {
 		List<NewMap>  result = Lists.newArrayList();  
 			
 		List<Toponym> categoriesToponymList = null;  
 		List<Toponym> headlineDescriptionToponymList = null;
-		
+
+		logger.info("Starting the processing Named Entities Resolution.");
 		for (Article article : articles) {		
 			NewMap newMap = new NewMap();
 			
@@ -95,15 +98,24 @@ public class GeonamesServiceImpl extends RemoteServiceServlet implements
 
 			
 			List<String> categoriesLocations = article.getCategoriesLocations();			
-			List<String> headlineDescriptionLocations = article.getHeadlineDescriptionLocations();			
+			List<String> headlineDescriptionLocations = article.getHeadlineDescriptionLocations();
+ 
 			
 			categoriesToponymList = Lists.newArrayList();			
 			headlineDescriptionToponymList = Lists.newArrayList(); 
 			
 
 			// Categories =====
-			if (categoriesLocations != null && !categoriesLocations.isEmpty()) {				
-				Map<String,Toponym> toponymDisambiguationMaps = toponymDisambiguator.getToponymDisambiguation(categoriesLocations);												
+			if (categoriesLocations != null && !categoriesLocations.isEmpty()) {
+				// Add countryCode to disambiguate toponyms
+				if (!Strings.isNullOrEmpty(countryCode)) categoriesLocations.add(countryCode);
+				logger.info("List of locations (Categories): " + categoriesLocations.toString());				
+				Map<String,Toponym> toponymDisambiguationMaps = toponymDisambiguator.getToponymDisambiguation(categoriesLocations);				
+				/*Iterator<String> categoriesIterator = toponymDisambiguationMaps.keySet().iterator();
+				while (categoriesIterator.hasNext()) {
+					String placeName = categoriesIterator.next(); 
+					logger.debug(":::: Selected " + placeName + " " + toponymDisambiguationMaps.get(placeName));
+				}*/				
 				if (!toponymDisambiguationMaps.isEmpty()) {				
 					Map.Entry<String, Toponym> entry = toponymDisambiguationMaps.entrySet().iterator().next();
 					categoriesToponymList.add(entry.getValue()); 
@@ -111,7 +123,7 @@ public class GeonamesServiceImpl extends RemoteServiceServlet implements
 				
 				// OJO!!
 				if (!categoriesToponymList.isEmpty()) {					
-					logger.info(String.format(" Categories: %s", categoriesToponymList.get(0).getName())); 
+					logger.info(String.format(":::: Selected Categories: %s (%f,%f)", categoriesToponymList.get(0).getName(), categoriesToponymList.get(0).getLatitude(), categoriesToponymList.get(0).getLongitude()));
 					newMap.setLatitude(categoriesToponymList.get(0).getLatitude()); 
 					newMap.setLongitude(categoriesToponymList.get(0).getLongitude());
 					newMap.setPlacename(categoriesToponymList.get(0).getName());
@@ -122,16 +134,23 @@ public class GeonamesServiceImpl extends RemoteServiceServlet implements
 			} 
 			
 			// HeadlineDescription =====
-			if (headlineDescriptionLocations != null && 
-				!headlineDescriptionLocations.isEmpty()) {		
-				Map<String,Toponym> toponymDisambiguationMaps = toponymDisambiguator.getToponymDisambiguation(headlineDescriptionLocations);												
+			if (headlineDescriptionLocations != null && !headlineDescriptionLocations.isEmpty()) {
+				// Add countryCode to disambiguate toponyms
+				if (!Strings.isNullOrEmpty(countryCode)) headlineDescriptionLocations.add(countryCode);
+				logger.info("List of locations (HeadlineDesc): " + headlineDescriptionLocations.toString());
+				Map<String,Toponym> toponymDisambiguationMaps = toponymDisambiguator.getToponymDisambiguation(headlineDescriptionLocations);
+				/*Iterator<String> iterator = toponymDisambiguationMaps.keySet().iterator();
+				while (iterator.hasNext()) {
+					String placeName = iterator.next(); 					
+					logger.debug(":::: Selected " + placeName + " " + toponymDisambiguationMaps.get(placeName));
+				}*/								
 				if (!toponymDisambiguationMaps.isEmpty()) {				
 					Map.Entry<String, Toponym> entry = toponymDisambiguationMaps.entrySet().iterator().next();
 					headlineDescriptionToponymList.add(entry.getValue()); 					
 				}
 				
 				if (!headlineDescriptionToponymList.isEmpty()) {
-					logger.info(String.format(" Headline Description: %s", headlineDescriptionToponymList.get(0).getName()));					
+					logger.info(String.format(":::: Selected HeadlineDesc : %s (%f,%f)", headlineDescriptionToponymList.get(0).getName(), headlineDescriptionToponymList.get(0).getLatitude(), headlineDescriptionToponymList.get(0).getLongitude()));					
 					newMap.setLatitude(headlineDescriptionToponymList.get(0).getLatitude()); 
 					newMap.setLongitude(headlineDescriptionToponymList.get(0).getLongitude());
 					newMap.setPlacename(headlineDescriptionToponymList.get(0).getName());
@@ -143,6 +162,7 @@ public class GeonamesServiceImpl extends RemoteServiceServlet implements
 		
 			result.add(newMap);			
 		}
+		logger.info("End the processing Named Entities Resolution.");
 				
 		return result; 
 	}

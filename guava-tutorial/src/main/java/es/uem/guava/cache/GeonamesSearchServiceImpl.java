@@ -22,8 +22,6 @@ import org.geonames.Style;
 import org.geonames.ToponymSearchCriteria;
 import org.geonames.ToponymSearchResult;
 import org.geonames.WebService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -41,7 +39,7 @@ import com.google.common.collect.Lists;
  * 
  */
 public class GeonamesSearchServiceImpl implements SearchService<List<Toponym>> {
-	final static Logger logger = LoggerFactory.getLogger(GeonamesSearchServiceImpl.class);
+
 	protected LoadingCache<String, List<Toponym>> cache;
 			
 	/** 
@@ -139,7 +137,6 @@ public class GeonamesSearchServiceImpl implements SearchService<List<Toponym>> {
 		try {
 			cache.get(queryPlaceName);
 		} catch (ExecutionException e) {
-			logger.debug(e.getMessage());
 			e.printStackTrace();
 		}
 		

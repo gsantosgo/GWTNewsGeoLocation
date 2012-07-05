@@ -32,5 +32,5 @@ import es.uem.geolocation.shared.Toponym;
 public interface GeonamesServiceAsync {
 	void toponymSearchCriteria(String toponym,
 			AsyncCallback<List<Toponym>> asyncCallback);	
-	void toponymSearchCriteria(List<Article> articles, AsyncCallback<List<NewMap>> asyncCallback);	
+	void toponymSearchCriteria(List<Article> articles, String countryCode, AsyncCallback<List<NewMap>> asyncCallback);	
 }

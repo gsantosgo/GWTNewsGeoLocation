@@ -76,15 +76,15 @@ public class ToponymDisambiguator {
 	 * @return 
 	 */
 	public Map<String,Toponym> getToponymDisambiguation(List<String> placeNamesList) {
-		logger.info("List of place names: " + placeNamesList); 
+		logger.debug("List of place names: " + placeNamesList); 
 		placeNamesList = translateAbbreviations(placeNamesList); 
-		logger.info("Translation List of place names (Abbreviations): " + placeNamesList);
+		logger.debug("Translation List of place names (Abbreviations): " + placeNamesList);
 		
-		Map<String,Toponym> resultToponyms = Maps.newHashMap(); 	
+		Map<String,Toponym> resultToponyms = Maps.newLinkedHashMap(); // maintain order inserted 	
 		Map<String,List<Toponym>> placeNames = extractPlaceNames(placeNamesList);
 		Map<ToponymCountry,List<Toponym>> countriesMap = Maps.newHashMap();				
 				
-		for (Iterator<String> iteratorPlaceNames = placeNames.keySet().iterator();iteratorPlaceNames.hasNext();) {
+		for (Iterator<String> iteratorPlaceNames = placeNames.keySet().iterator();iteratorPlaceNames.hasNext();) {			
 			String placeNameKey = iteratorPlaceNames.next();
 			List<Toponym> list = placeNames.get(placeNameKey);			
 			if (list.size() == 1) {
@@ -148,13 +148,13 @@ public class ToponymDisambiguator {
 			}								
 		}
 		
-		logger.info("Number of countries: " + countriesMap.size());
+		logger.debug("Number of countries: " + countriesMap.size());
 		// ====================================================		
 		// cleanCountries 
 		List<ToponymCountry> countries = Lists.newArrayList();
 		for (Toponym toponym : countriesMap.keySet()) {
 			List<Toponym> toponymList = countriesMap.get(toponym);
-			logger.info("Place name in " + toponym.getCountryCode() + ":");
+			logger.debug("Place name in " + toponym.getCountryCode() + ":");
 			if (toponymList.size() > 1)
 				countries.add((ToponymCountry)toponym); 
 			else if ((toponymList.size() == 1) && ((toponymList.get(0) instanceof ToponymCountry)))
@@ -162,21 +162,21 @@ public class ToponymDisambiguator {
 		}		
 		if (countries.size() == 0)
 			countries.addAll(countriesMap.keySet());
-		logger.info("Using the following countries:");
+		/*logger.debug("Using the following countries:");
 		for (ToponymCountry country : countries) {
 			logger.info("" + country.getName() + " " + country.getCountryCode());
-		}		
+		}*/		
 				
 		// ====================================================		
 		for (Iterator<String> iteratorPlaceNames = placeNames.keySet().iterator();iteratorPlaceNames.hasNext();) {
-			String placeNameKey = iteratorPlaceNames.next();			
+			String placeNameKey = iteratorPlaceNames.next();					
 			List<Toponym> toponymList = placeNames.get(placeNameKey);			
 			toponymList = removeToponyms(toponymList, countries); 			
 			getScore(placeNameKey, toponymList, 1);
 			int size = toponymList.size();
-			logger.info(String.format("Place Name: %s ,Number of Toponyms: %d ",placeNameKey, toponymList.size())); 
+			logger.debug(String.format("Place Name: %s ,Number of Toponyms: %d ",placeNameKey, toponymList.size())); 
 			if ( size == 1) {
-				// Resultado
+				// Resultado				
 				resultToponyms.put(placeNameKey, toponymList.get(0)); 
 			} else if (size > 1) {
 				resultToponyms.put(placeNameKey, toponymList.get(0));	 			
@@ -184,7 +184,8 @@ public class ToponymDisambiguator {
 				// There aren't toponym
 				logger.info("Not find toponyms for " + placeNameKey);
 			}			
-		}		
+		}				
+		
 		return resultToponyms; 
 	}
 	
@@ -199,7 +200,7 @@ public class ToponymDisambiguator {
 	 * @return the Map 
 	 */
 	public Map<String,List<Toponym>> extractPlaceNames(List<String> placeNames)  {		
-		Map<String,List<Toponym>> result = Maps.newHashMap();		
+		Map<String,List<Toponym>> result = Maps.newLinkedHashMap(); // maintain order inserted		
 		for (String placeName : placeNames) {			
 			List<Toponym> toponymList = Lists.newArrayList();
 			// Find continents =====			
@@ -291,7 +292,6 @@ public class ToponymDisambiguator {
 				// name = 'name', name REGEXP, ansiname REGEXP, alternatenames REGEXP()									
 				// !!OJO Exception	
 				List<Toponym> geonamesList = Lists.newArrayList();
-				System.out.println("placeName " + placeName );
 				geonamesList = geonamesSearch.search(placeName);
 				if (geonamesList != null && geonamesList.size() > 0)  toponymList.addAll(geonamesList); 				
 			}
@@ -300,7 +300,8 @@ public class ToponymDisambiguator {
 			if (toponymList.size() > 0) {
 				result.put(placeName, toponymList);
 			}
-		}		
+		}
+
 		return result; 
 	}
 		
@@ -340,7 +341,8 @@ public class ToponymDisambiguator {
 							// political entity
 							if (featureCode.startsWith("PCL")) score += 1;
 							// a primary administrative division of a country, such as a state in the United States 
-							else if (featureCode.startsWith("ADM1")) score += 1;
+							else if (featureCode.startsWith("ADM1") ||
+									 featureCode.startsWith("ADM2")) score += 1;
 							else score += .5;
 							break;
 							
@@ -419,7 +421,7 @@ public class ToponymDisambiguator {
 					default: 
 						break; 										
 				}		
-				logger.debug(toponym.getName() + " in " + toponym.getContinentCode() + ":" + featureClassC + ", " + score);				
+				logger.debug(toponym.getName() + " in " + toponym.getCountryName() + ":" + featureClassC + ", " + score);				
 			}						
 		}
 		return score; 
@@ -609,12 +611,16 @@ public class ToponymDisambiguator {
 	private List<String> translateAbbreviations(List<String> placeNamesList) {
 		List<String> placeNamesListTemp = Lists.newArrayList(); 
 		for (String placeName : placeNamesList) {
-			if (LoadCache.mapAbbreviations != null && 
-				LoadCache.mapAbbreviations.containsKey(placeName)) {
-				placeNamesListTemp.add(LoadCache.mapAbbreviations.get(placeName)); 
-			} 
-			else {
-				placeNamesListTemp.add(placeName); 
+			// 05.07.2012 Must begin Uppercase
+			char chr = placeName.charAt(0);
+			if (Character.isUpperCase(chr)) { 
+				if (LoadCache.mapAbbreviations != null && 
+						LoadCache.mapAbbreviations.containsKey(placeName)) {
+					placeNamesListTemp.add(LoadCache.mapAbbreviations.get(placeName)); 
+				} 
+				else {
+					placeNamesListTemp.add(placeName); 
+				}
 			}
 		}
 		return placeNamesListTemp; 

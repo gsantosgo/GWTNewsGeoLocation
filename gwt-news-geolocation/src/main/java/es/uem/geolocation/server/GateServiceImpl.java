@@ -24,6 +24,9 @@ import java.util.Set;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -38,8 +41,6 @@ import gate.Corpus;
 import gate.Document;
 import gate.Factory;
 import gate.Gate;
-import gate.corpora.DocumentContentImpl;
-import gate.corpora.DocumentImpl;
 import gate.creole.ANNIEConstants;
 import gate.creole.ExecutionException;
 import gate.creole.ResourceInstantiationException;
@@ -54,20 +55,20 @@ import gate.util.persistence.PersistenceManager;
  */
 
 @SuppressWarnings("serial")
-public class GateServiceImpl extends RemoteServiceServlet implements
-		GateService {
-	//private RealtimeCorpusController annieController; 
+public class GateServiceImpl extends RemoteServiceServlet implements GateService {	
+	final static Logger logger = LoggerFactory.getLogger(GateServiceImpl.class);
+	//private RealtimeCorpusController annieController;
 	private SerialAnalyserController annieController;
 
 	@Override
 	public void init() throws ServletException {
+		// Gate must be initialized only one time !		
 		if (!Gate.isInitialised()) {
 			try {
 				ServletContext servletContext = getServletContext();
-				File gateHome = new File(
-						servletContext.getRealPath(Constant.WEB_INF));
+				File gateHome = new File(servletContext.getRealPath(Constant.WEB_INF));
 
-				// Establece directorio de instalación GATE
+				// Set installation's directory GATE
 				Gate.setGateHome(gateHome);
 				Gate.setUserConfigFile(new File(gateHome, Constant.USER_GATE));
 
@@ -88,9 +89,10 @@ public class GateServiceImpl extends RemoteServiceServlet implements
 								.getPluginsHome(), ANNIEConstants.PLUGIN_DIR),
 								Constant.FILE_LOCATIONS));
 
-			} catch (Exception ex) {
+			} catch (final Exception ex) {
+				logger.warn("Error when initialising Gate.", ex);
 				throw new ServletException(
-						"Excepcion en la inicializacion GATE ", ex);
+						"Excepcion when initialising GATE ", ex);
 			}
 		} // end init() 
 	}
@@ -98,30 +100,31 @@ public class GateServiceImpl extends RemoteServiceServlet implements
 	/**
 	 * Named Recognition Entities  
 	 */
-	public List<String> getNamedEntities(String texto) throws ExecutionException, ResourceInstantiationException {
+	public List<String> getNamedEntities(String texto) throws ExecutionException, ResourceInstantiationException {		
 		// To remove repeated items  
 		Set<String> namedEntities = new HashSet<String>();  
 		if (Gate.isInitialised()) {
-				gate.Corpus corpus = (Corpus) Factory
-						.createResource("gate.corpora.CorpusImpl");
+				final Corpus corpusGate = Factory.newCorpus("recurso" +System.nanoTime());  
 
-				Document document = new DocumentImpl();
-				DocumentContentImpl documentContent = new DocumentContentImpl(
-						texto);
-				document.setContent(documentContent);
+				final Document docGate = Factory.newDocument(texto);								
+				corpusGate.add(docGate); 
 
-				corpus.clear();
-				corpus.add(document);
-
-				annieController.cleanup();
-				annieController.setCorpus(corpus);
-				annieController.execute();
-
+				
+				if (corpusGate.isEmpty()) {
+					// Remove the corpus from Gate memory
+					Factory.deleteResource(corpusGate);
+					this.logger.error("Unable to instanciate Gate documents"); 
+				}
+				
+				synchronized (annieController) {
+					annieController.setCorpus(corpusGate);
+					annieController.execute();	
+				}
+                  				
 				Set<String> annotationTypesRequired = new HashSet<String>();
-				annotationTypesRequired
-						.add(ANNIEConstants.LOCATION_ANNOTATION_TYPE);
+				annotationTypesRequired.add(ANNIEConstants.LOCATION_ANNOTATION_TYPE);
 
-				Iterator<Document> iterator = corpus.iterator();
+				final Iterator<Document> iterator = corpusGate.iterator();
 				while (iterator.hasNext()) {
 					Document document2 = (Document) iterator.next();
 					AnnotationSet defaultAnnotationSet = document2
@@ -138,7 +141,13 @@ public class GateServiceImpl extends RemoteServiceServlet implements
 						namedEntities.add(location); 
 					}
 				}
-		}				 
+				// Empties the memory from doc
+				corpusGate.unloadDocument(docGate);				
+				Factory.deleteResource(docGate);
+				
+				// Empties the memory from the corpus				
+				Factory.deleteResource(corpusGate);				
+		}
 		return Lists.newArrayList(namedEntities); 
 	} // end getNamedEntities 
 
@@ -146,13 +155,12 @@ public class GateServiceImpl extends RemoteServiceServlet implements
 	/**
 	 * Named Recognition Entities   
 	 */
+	
 	public List<Article> getNamedEntities(List<Article> articles) throws ExecutionException, ResourceInstantiationException {
-		List<Article> articlesResult = Lists.newArrayList();
-		
+		logger.info("Starting the processing Named Entities Recognition with Gate.");		
+		List<Article> articlesResult = Lists.newArrayList();		
 		if (Gate.isInitialised()) {
-				gate.Corpus corpus = (Corpus) Factory
-						.createResource("gate.corpora.CorpusImpl");
-
+				
 				for (Article article : articles) {
 					 
 					String categories = ""; 
@@ -179,8 +187,9 @@ public class GateServiceImpl extends RemoteServiceServlet implements
 					}					
 					
 					articlesResult.add(article);																	
-				}				
+				}						
 		}		
+		logger.info("End the processing Named Entities Recognition with Gate.");
 		return articlesResult; 
 	} // end getNamedEntities 
 	

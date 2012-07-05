@@ -45,6 +45,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import es.uem.geolocation.client.AppConstants;
 import es.uem.geolocation.client.AppMessages;
+import es.uem.geolocation.client.Menu;
 import es.uem.geolocation.client.services.GateServiceAsync;
 import es.uem.geolocation.client.services.GeonamesServiceAsync;
 import es.uem.geolocation.client.services.RSSServiceAsync;
@@ -101,7 +102,7 @@ public class GeoRSSPresenter implements Presenter {
 	private final ArrayList<HasMarker> markers;
 	private List<Article> articles;
 	private final Display display;
-	private final String uri;
+	private final Menu menu; // uri y countryCode  
 	private final Resources resources = GWT.create(Resources.class);
 	private AppConstants constants =  GWT.create(AppConstants.class);
 	private AppMessages messages = GWT.create(AppMessages.class);	
@@ -124,7 +125,7 @@ public class GeoRSSPresenter implements Presenter {
 	 */
 	public GeoRSSPresenter(RSSServiceAsync rssService,
 			GateServiceAsync gateService, GeonamesServiceAsync geonamesService,
-			HandlerManager eventBus, Display view, String uri) {
+			HandlerManager eventBus, Display view, Menu menu) {
 		super();
 		this.rssService = rssService;
 		this.gateService = gateService;
@@ -133,7 +134,7 @@ public class GeoRSSPresenter implements Presenter {
 		this.display = view;
 		this.markers = Lists.newArrayList();
 		this.articles = Lists.newArrayList();  
-		this.uri = uri;
+		this.menu = menu;		
 	}
 
 	/**
@@ -141,7 +142,7 @@ public class GeoRSSPresenter implements Presenter {
 	 * 
 	 * @param uri the URI Source RSS
 	 */
-	private void fetchRSSNews(final String uri) {
+	private void fetchRSSNews(final String uri, final String countryCode) {
 		display.setStatus(messages.fetchRSS(uri));
 		display.setStatus(messages.loadingRSS(uri));
 		
@@ -163,7 +164,7 @@ public class GeoRSSPresenter implements Presenter {
 							display.setStatus(messages.loadingRSSArticles(articlesCount)); 
 							display.setCountNewsRSS(""+articlesCount); 
 
-							handleNER(articles); 
+							handleNER(articles, countryCode); 
 						}
 					}
 					else {
@@ -189,13 +190,13 @@ public class GeoRSSPresenter implements Presenter {
 	 * 
 	 * @param articles the List of articles 
 	 */
-	private void handleNER(List<Article> articles) {  
+	private void handleNER(List<Article> articles, final String countryCode) {  
 		try {
 			gateService.getNamedEntities(articles, new AsyncCallback<List<Article>>() {
 				//@Override
 				public void onSuccess(List<Article> articlesResult) {
 					display.setStatus(messages.processingNERSuccess()); 					
-					handleGeonames(articlesResult);				
+					handleGeonames(articlesResult, countryCode);				
 				}
 
 				//@Override
@@ -218,8 +219,8 @@ public class GeoRSSPresenter implements Presenter {
 	 * 
 	 * @param articles the List of Articles 
 	 */
-	private void handleGeonames(List<Article> articles) {						
-		geonamesService.toponymSearchCriteria(articles, new AsyncCallback<List<NewMap>>() {			
+	private void handleGeonames(List<Article> articles, String countryCode) {						
+		geonamesService.toponymSearchCriteria(articles, countryCode, new AsyncCallback<List<NewMap>>() {			
 			public void onSuccess(List<NewMap> result) {
 				
 				for (NewMap newMap : result) {										
@@ -352,7 +353,7 @@ public class GeoRSSPresenter implements Presenter {
 		container.clear();
 		display.reset(); 
 		container.add(display.asWidget());
-		if (!Strings.isNullOrEmpty(uri)) fetchRSSNews(uri);	
+		if (!Strings.isNullOrEmpty(menu.getUri())) fetchRSSNews(menu.getUri(), menu.getCountryCode());	
 	}	
 	  
 }
