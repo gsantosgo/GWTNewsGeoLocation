@@ -31,22 +31,6 @@
             <mapType>gate.util.SimpleFeatureMapImpl</mapType>
             <localMap/>
           </runtimeParams>
-          <resourceType>gate.creole.tokeniser.DefaultTokeniser</resourceType>
-          <resourceName>ANNIE English Tokeniser_LOCATIONS</resourceName>
-          <initParams class="gate.util.persistence.MapPersistence">
-            <mapType>gate.util.SimpleFeatureMapImpl</mapType>
-            <localMap/>
-          </initParams>
-          <features class="gate.util.persistence.MapPersistence">
-            <mapType>gate.util.SimpleFeatureMapImpl</mapType>
-            <localMap/>
-          </features>
-        </gate.util.persistence.LanguageAnalyserPersistence>        
-        <gate.util.persistence.LanguageAnalyserPersistence>
-          <runtimeParams class="gate.util.persistence.MapPersistence">
-            <mapType>gate.util.SimpleFeatureMapImpl</mapType>
-            <localMap/>
-          </runtimeParams>
           <resourceType>gate.creole.gazetteer.DefaultGazetteer</resourceType>
           <resourceName>ANNIE Gazetteer_Locations</resourceName>
           <initParams class="gate.util.persistence.MapPersistence">
@@ -58,22 +42,6 @@
             <localMap/>
           </features>
         </gate.util.persistence.LanguageAnalyserPersistence>
-		<gate.util.persistence.LanguageAnalyserPersistence>
-          <runtimeParams class="gate.util.persistence.MapPersistence">
-            <mapType>gate.util.SimpleFeatureMapImpl</mapType>
-            <localMap/>
-          </runtimeParams>
-          <resourceType>gate.creole.splitter.SentenceSplitter</resourceType>
-          <resourceName>ANNIE Sentence Splitter</resourceName>
-          <initParams class="gate.util.persistence.MapPersistence">
-            <mapType>gate.util.SimpleFeatureMapImpl</mapType>
-            <localMap/>
-          </initParams>
-          <features class="gate.util.persistence.MapPersistence">
-            <mapType>gate.util.SimpleFeatureMapImpl</mapType>
-            <localMap/>
-          </features>
-        </gate.util.persistence.LanguageAnalyserPersistence>        
         <gate.util.persistence.LanguageAnalyserPersistence>
           <runtimeParams class="gate.util.persistence.MapPersistence">
             <mapType>gate.util.SimpleFeatureMapImpl</mapType>

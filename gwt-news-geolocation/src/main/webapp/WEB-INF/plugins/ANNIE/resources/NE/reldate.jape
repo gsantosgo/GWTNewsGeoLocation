@@ -16,7 +16,7 @@
 // this file must follow time.jape
 // handles relative time sequences
 
-Phase:	Name
+Phase:	RelDate
 Input: Token Lookup TempDate
 Options: control = appelt
 
