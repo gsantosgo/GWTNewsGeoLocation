@@ -105,6 +105,34 @@ public class GeonamesServiceImpl extends RemoteServiceServlet implements
 			headlineDescriptionToponymList = Lists.newArrayList(); 
 			
 
+			
+			// HeadlineDescription =====
+			if (headlineDescriptionLocations != null && !headlineDescriptionLocations.isEmpty()) {
+				// Add countryCode to disambiguate toponyms
+				if (!Strings.isNullOrEmpty(countryCode)) headlineDescriptionLocations.add(countryCode);
+				logger.info("List of locations (HeadlineDesc): " + headlineDescriptionLocations.toString());
+				Map<String,Toponym> toponymDisambiguationMaps = toponymDisambiguator.getToponymDisambiguation(headlineDescriptionLocations);
+				/*Iterator<String> iterator = toponymDisambiguationMaps.keySet().iterator();
+				while (iterator.hasNext()) {
+					String placeName = iterator.next(); 					
+					logger.debug(":::: Selected " + placeName + " " + toponymDisambiguationMaps.get(placeName));
+				}*/								
+				if (!toponymDisambiguationMaps.isEmpty()) {				
+					Map.Entry<String, Toponym> entry = toponymDisambiguationMaps.entrySet().iterator().next();
+					headlineDescriptionToponymList.add(entry.getValue()); 					
+				}
+				
+				if (!headlineDescriptionToponymList.isEmpty()) {
+					logger.info(String.format(":::: Selected HeadlineDesc : %s (%f,%f)", headlineDescriptionToponymList.get(0).getName(), headlineDescriptionToponymList.get(0).getLatitude(), headlineDescriptionToponymList.get(0).getLongitude()));					
+					newMap.setLatitude(headlineDescriptionToponymList.get(0).getLatitude()); 
+					newMap.setLongitude(headlineDescriptionToponymList.get(0).getLongitude());
+					newMap.setPlacename(headlineDescriptionToponymList.get(0).getName());
+					result.add(newMap);
+					
+					continue; 
+				}				
+			}
+			
 			// Categories =====
 			if (categoriesLocations != null && !categoriesLocations.isEmpty()) {
 				// Add countryCode to disambiguate toponyms
@@ -133,32 +161,6 @@ public class GeonamesServiceImpl extends RemoteServiceServlet implements
 				}
 			} 
 			
-			// HeadlineDescription =====
-			if (headlineDescriptionLocations != null && !headlineDescriptionLocations.isEmpty()) {
-				// Add countryCode to disambiguate toponyms
-				if (!Strings.isNullOrEmpty(countryCode)) headlineDescriptionLocations.add(countryCode);
-				logger.info("List of locations (HeadlineDesc): " + headlineDescriptionLocations.toString());
-				Map<String,Toponym> toponymDisambiguationMaps = toponymDisambiguator.getToponymDisambiguation(headlineDescriptionLocations);
-				/*Iterator<String> iterator = toponymDisambiguationMaps.keySet().iterator();
-				while (iterator.hasNext()) {
-					String placeName = iterator.next(); 					
-					logger.debug(":::: Selected " + placeName + " " + toponymDisambiguationMaps.get(placeName));
-				}*/								
-				if (!toponymDisambiguationMaps.isEmpty()) {				
-					Map.Entry<String, Toponym> entry = toponymDisambiguationMaps.entrySet().iterator().next();
-					headlineDescriptionToponymList.add(entry.getValue()); 					
-				}
-				
-				if (!headlineDescriptionToponymList.isEmpty()) {
-					logger.info(String.format(":::: Selected HeadlineDesc : %s (%f,%f)", headlineDescriptionToponymList.get(0).getName(), headlineDescriptionToponymList.get(0).getLatitude(), headlineDescriptionToponymList.get(0).getLongitude()));					
-					newMap.setLatitude(headlineDescriptionToponymList.get(0).getLatitude()); 
-					newMap.setLongitude(headlineDescriptionToponymList.get(0).getLongitude());
-					newMap.setPlacename(headlineDescriptionToponymList.get(0).getName());
-					result.add(newMap);
-					
-					continue; 
-				}				
-			}					
 		
 			result.add(newMap);			
 		}

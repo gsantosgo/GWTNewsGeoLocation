@@ -49,19 +49,19 @@ public class Constant {
 			*/
 			
 			// LARAZON.ES 
-			put("larazonGeneralesMenuItem", new Menu("http://www.larazon.es/noticias/rss","")); 	
+			put("larazonGeneralesMenuItem", new Menu("http://www.larazon.es/noticias/rss","ES")); 	
 			put("larazonEspanaMenuItem", new Menu("http://www.larazon.es/noticias/rss/espana", "ES"));
-			put("larazonInternacionalMenuItem", new Menu("http://www.larazon.es/noticias/rss/internacional",""));			
+			put("larazonInternacionalMenuItem", new Menu("http://www.larazon.es/noticias/rss/internacional","ES"));			
 			
 			// ELMUNDO.ES
-			put("elmundoPortadaMenuItem", new Menu("http://elmundo.feedsportal.com/elmundo/rss/portada.xml",""));			
+			put("elmundoPortadaMenuItem", new Menu("http://elmundo.feedsportal.com/elmundo/rss/portada.xml","ES"));			
 			put("elmundoEspanaMenuItem", new Menu("http://elmundo.feedsportal.com/elmundo/rss/espana.xml","ES"));
-			put("elmundoInternacionalMenuItem", new Menu("http://elmundo.feedsportal.com/elmundo/rss/internacional.xml",""));
+			put("elmundoInternacionalMenuItem", new Menu("http://elmundo.feedsportal.com/elmundo/rss/internacional.xml","ES"));
 			
 			// ELPAIS.COM 
-			put("elpaisPortadaMenuItem", new Menu("http://ep00.epimg.net/rss/elpais/portada.xml",""));
-			put("elpaisUltimaNoticiasMenuItem", new Menu("http://ep00.epimg.net/rss/tags/ultimas_noticias.xml",""));
-			put("elpaisInternacionalMenuItem", new Menu("http://ep00.epimg.net/rss/internacional/portada.xml",""));
+			put("elpaisPortadaMenuItem", new Menu("http://ep00.epimg.net/rss/elpais/portada.xml","ES"));
+			put("elpaisUltimaNoticiasMenuItem", new Menu("http://ep00.epimg.net/rss/tags/ultimas_noticias.xml","ES"));
+			put("elpaisInternacionalMenuItem", new Menu("http://ep00.epimg.net/rss/internacional/portada.xml","ES"));
 			
 			// Servlet Implemented
 			// put("rssMenuItem", GWT.getModuleBaseURL() + "rssnews");
